@@ -13,6 +13,13 @@
     <string name="abc_activity_chooser_view_see_all">See all</string>
     <string name="abc_shareactionprovider_share_with_application">Share with %s</string>
     <string name="abc_shareactionprovider_share_with">Share with</string>
+
+    <string name="SHAREDPREFERENCE_SETTINGS">settings</string>
+    <string name="SHAREDPREFERENCE_FACE_REG_ENABLED">faceRegEnabled</string>
+    <string name="SHAREDPREFERENCE_PACKAGES">apps</string>
+
+    <string name="EXTRA_FACE_REG_ENABLED">hu.uniobuda.nik.extra.FACE_REG_ENABLED</string>
+    <string name="EXTRA_PACKAGE_NAME">hu.uniobuda.nik.extra.PACKAGE_NAMED</string>
     <string name="app_name">ParentalControl</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -71,4 +78,6 @@
     <string name="title_activity_password_request">Feloldás jelszó segítségével</string>
     <string name="OK">Rendben</string>
     <string name="accessAllowedByPassword">Hozzáférés engedélyezve, jelszó megadásával!</string>
+    <string name="serviceTitle">Parental Control Service</string>
+    <string name="serviceMessage">A védelem aktív</string>
 </resources>
