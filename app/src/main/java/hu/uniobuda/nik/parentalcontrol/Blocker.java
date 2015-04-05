@@ -10,7 +10,7 @@ import android.util.Log;
 public class Blocker extends BroadcastReceiver {
 
     private static String pName;
-    public static String pName2;
+    //public static String pName2;
     private boolean faceRegEnabled;
 
     @Override
@@ -22,13 +22,13 @@ public class Blocker extends BroadcastReceiver {
         Log.d("OnReceivePN", pName);
         if (BlockerHashTable.containsBoolean(pName)) {
             Log.d("OnreceivePN", "if-blockornot");
-            pName2 = pName;
+            //pName2 = packageName;
             blockOrNot(context);
         }
     }
 
     private void blockOrNot(Context context) {
-        // Log.d("blockornot",pName);
+        // Log.d("blockornot",packageName);
         if (BlockerHashTable.containsBoolean(pName)
                 && BlockerHashTable.getBoolean(pName) == false) {
             Log.d("blockornot", "if-ben");
@@ -49,9 +49,8 @@ public class Blocker extends BroadcastReceiver {
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             i.putExtra(context.getResources().getString
                     (R.string.EXTRA_PACKAGE_NAME), pName);
-            CheckService.getContext().startActivity(i);
-
-
+            context.startActivity(i);
+            //CheckService.getContext().startActivity(i);
         }
     }
 }

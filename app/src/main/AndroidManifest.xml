@@ -22,6 +22,15 @@
             android:enabled="true"
             android:exported="false" >
         </service>
+
+        <activity
+            android:name=".CheckPersonActivity"
+            android:label="@string/title_activity_check_person" >
+        </activity>
+        <activity
+            android:name=".DeletePersonActivity"
+            android:label="@string/title_activity_delete_person" >
+        </activity>
     </application>
 
 </manifest>

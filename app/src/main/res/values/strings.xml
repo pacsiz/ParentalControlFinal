@@ -17,6 +17,7 @@
     <string name="SHAREDPREFERENCE_SETTINGS">settings</string>
     <string name="SHAREDPREFERENCE_FACE_REG_ENABLED">faceRegEnabled</string>
     <string name="SHAREDPREFERENCE_PACKAGES">apps</string>
+    <string name="SHAREDPREFERENCE_PERSONS">persons</string>
 
     <string name="EXTRA_FACE_REG_ENABLED">hu.uniobuda.nik.extra.FACE_REG_ENABLED</string>
     <string name="EXTRA_PACKAGE_NAME">hu.uniobuda.nik.extra.PACKAGE_NAMED</string>
@@ -32,6 +33,7 @@
     <string name="isRunning">A szolgáltatás fut!</string>
     <string name="back">Vissza</string>
     <string name="save">Mentés</string>
+    <string name="cancel">Mégse</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="selectApps">Tiltandó alkalmazások kiválasztása</string>
     <string name="newPersonInfo">Új személy felvételéhez több fényképre van szükség, amely alapján a program meg tudja tanulni az adott személy jellemző vonásait. Ehhez 5 kép fog készülni.</string>
@@ -59,7 +61,7 @@
     <string name="title_activity_settings_activity_new_api">Beállítások</string>
     <string name="deletePerson">Felvett személy törlése</string>
     <string name="deleteAlert">Törlés megerősítése</string>
-    <string name="deleteMessage">Biztosan törli a kiválasztott személyt?</string>
+    <string name="deleteMessage">Biztosan törli a személyt?</string>
     <string name="isParentLabel">A felvenni kívánt személy szülő:</string>
     <string name="newPassword">Mesterjelszó megadása</string>
     <string name="newPw">Új jelszó:</string>
@@ -80,4 +82,5 @@
     <string name="accessAllowedByPassword">Hozzáférés engedélyezve, jelszó megadásával!</string>
     <string name="serviceTitle">Parental Control Service</string>
     <string name="serviceMessage">A védelem aktív</string>
+    <string name="title_activity_delete_person">DeletePersonActivity</string>
 </resources>

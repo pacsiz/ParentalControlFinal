@@ -22,7 +22,6 @@ public class MainScreenActivity extends Activity {
     TextView serviceState;
     Button btnSettings;
     Button btnStartService;
-    Button btnAddNewPerson;
     boolean isRunning;
     SharedPreferences sh;
     private final String FACE_REG_SET = "faceRegEnabled";
@@ -35,7 +34,6 @@ public class MainScreenActivity extends Activity {
         serviceState = (TextView) findViewById(R.id.isRunning);
         btnSettings = (Button) findViewById(R.id.btnSettings);
         btnStartService = (Button) findViewById(R.id.btnStartService);
-        btnAddNewPerson = (Button) findViewById(R.id.btnAddNewPerson);
         isRunning = isMyServiceRunning(CheckService.class, serviceState);
         sh = getSharedPreferences("settings", Context.MODE_PRIVATE);
         if (!sh.contains(FACE_REG_SET)) {
@@ -97,15 +95,6 @@ public class MainScreenActivity extends Activity {
                     });
                     dialog.show();
                 }
-            }
-        });
-
-        btnAddNewPerson.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                Intent intent = new Intent(MainScreenActivity.this,
-                        SetNewPersonActivity.class);
-                startActivity(intent);
             }
         });
     }
