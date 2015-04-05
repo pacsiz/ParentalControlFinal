@@ -100,9 +100,17 @@ public class CheckPersonActivity extends Activity {
         }
 
         @Override
+        protected void onPreExecute() {
+            if (!FaceDetection.numberOfFaces(data, CheckPersonActivity.this)) {
+                cancel(true);
+            }
+        }
+
+        @Override
         protected Void doInBackground(Object... params) {
-            FaceDetection fd = new FaceDetection();
-            pResult = fd.predict(data, CheckPersonActivity.this);
+            if (!isCancelled()) {
+                pResult = FaceDetection.predict(data);
+            }
             return null;
         }
 

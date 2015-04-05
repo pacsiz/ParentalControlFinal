@@ -34,6 +34,8 @@
     <string name="back">Vissza</string>
     <string name="save">Mentés</string>
     <string name="cancel">Mégse</string>
+    <string name="pleaseWait">Kérem várjon...</string>
+    <string name="loadingApps">Telepített alkalmazások betöltése...</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="selectApps">Tiltandó alkalmazások kiválasztása</string>
     <string name="newPersonInfo">Új személy felvételéhez több fényképre van szükség, amely alapján a program meg tudja tanulni az adott személy jellemző vonásait. Ehhez 5 kép fog készülni.</string>
@@ -83,4 +85,5 @@
     <string name="serviceTitle">Parental Control Service</string>
     <string name="serviceMessage">A védelem aktív</string>
     <string name="title_activity_delete_person">DeletePersonActivity</string>
+    <string name="title_activity_filter_apps">FilterAppsActivity</string>
 </resources>

@@ -1,10 +1,11 @@
 package hu.uniobuda.nik.parentalcontrol;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.IntBuffer;
 
-import org.bytedeco.javacpp.opencv_contrib;
 import org.bytedeco.javacpp.opencv_core.IplImage;
 
 import static org.bytedeco.javacpp.opencv_contrib.*;
@@ -22,75 +23,86 @@ import android.media.FaceDetector;
 import android.media.FaceDetector.Face;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 public class FaceDetection {
 
     private static final int NUMBER_OF_PHOTOS = 5;
-    private final String XML_PATH = Environment.getExternalStorageDirectory().toString() + "/teszt.xml";
-    private Context context;
-    private Mat face;
-    private int result;
+    private static final String XML_PATH = Environment.getExternalStorageDirectory().toString() + "/teszt.xml";
 
-    public static Mat toRecognition(byte[] data)
+    public static void learn(MatVector faces, int label)
     {
-        int numberOfFaces = 0;
-        Bitmap bit = getBitmapFromBytes(data);
-        Bitmap out = bit.copy(Config.RGB_565, true);
-        FaceDetector fD = new FaceDetector(out.getWidth(), out.getHeight(), 2);
-        Face[] faces = new Face[2];
-        numberOfFaces = fD.findFaces(out, faces);
-        //Log.d("doinback", Integer.toString(numberOfFaces));
-
-
-        if (numberOfFaces == 0) {
-            return null;
-        } else {
-            Log.d("doinback", "else");
-            Bitmap b = cropFace(out, faces);
-            Log.d("b méret", Integer.toString(b.getByteCount()));
-            Bitmap out2 = b.copy(Config.ARGB_8888, true);
-            Log.d("out2 méret", Integer.toString(out2.getByteCount()));
-
-
-            IplImage face = IplImage.create(b.getWidth(),
-                    b.getHeight(), IPL_DEPTH_8U, 4);
-            IplImage gray = IplImage.create(b.getWidth(), b.getHeight(), IPL_DEPTH_8U, 1);
-            out2.copyPixelsToBuffer(face.createBuffer());
-            cvCvtColor(face, gray, CV_BGR2GRAY);
-
-            Mat img = new Mat(gray);
-
-            Log.d("Matrix", Boolean.toString(img.isNull()));
-            return img;
-        }
-    }
-
-    public IplImage matForLBPH (Bitmap bitmap, Context context)
-    {
-
-        int numberOfFaces = numberOfFaces(bitmap);
-        if (numberOfFaces == 1)
+        Mat labels = new Mat(NUMBER_OF_PHOTOS, 1, CV_32SC1);
+        IntBuffer intBuff = labels.getIntBuffer();
+        int index = 0;
+        FaceRecognizer fr = createLBPHFaceRecognizer();
+        for (int i = 0; i < NUMBER_OF_PHOTOS; i++)
         {
+            intBuff.put(i, label);
+        }
 
-            Bitmap temp = cropFace(bitmap, )
+        File file = new File(XML_PATH);
+        if(file.exists())
+        {
+            fr.load(XML_PATH);
+            fr.update(faces,labels);
+        }
+        else
+        {
+            fr.train(faces,labels);
+            fr.save(XML_PATH);
         }
     }
 
-    public int predict (byte[] rawData, Context context)
+    public static Mat matForLBPH (Bitmap bitmap)
+    {
+        FaceDetector fd = new FaceDetector(bitmap.getWidth(), bitmap.getHeight(), 1);
+        Face[] faceArray = new Face[1];
+        fd.findFaces(bitmap, faceArray);
+        Bitmap temp = cropFace(bitmap, faceArray);
+        Log.d("temp méret", Integer.toString(temp.getByteCount()));
+        Bitmap out = temp.copy(Config.ARGB_8888, true);
+        int height = out.getHeight();
+        int width = out.getWidth();
+        Log.d("out méret", Integer.toString(out.getByteCount()));
+        IplImage iplTemp = IplImage.create(width, height, IPL_DEPTH_8U, 4);
+        IplImage grayImg = IplImage.create(width,height,IPL_DEPTH_8U,1);
+        out.copyPixelsFromBuffer(iplTemp.createBuffer());
+        cvCvtColor(iplTemp,grayImg,CV_BGR2GRAY);
+
+        return new Mat(grayImg);
+    }
+
+    public static int predict (byte[] rawData)
     {
         FaceRecognizer fr = createLBPHFaceRecognizer();
         fr.load(XML_PATH);
         fr.set("threshold", 90);
         Bitmap bitmap = getBitmapFromBytes(rawData);
-        Mat mat = matForLBPH(bitmap, context);
+        Mat mat = matForLBPH(bitmap);
         return fr.predict(mat);
     }
 
-    public int numberOfFaces(Bitmap bitmap)
+    public static boolean numberOfFaces(byte[] rawData, Context context)
     {
+        Bitmap bitmap = getBitmapFromBytes(rawData);
         FaceDetector fd = new FaceDetector(bitmap.getWidth(), bitmap.getHeight(), 2);
         Face[] faces = new Face[2];
-        return fd.findFaces(bitmap,faces);
+        int numOfFaces = fd.findFaces(bitmap,faces);
+        if (numOfFaces == 1)
+        {
+            return true;
+        }
+        else if (numOfFaces == 0)
+        {
+            Toast.makeText(context, R.string.faceNotFound, Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else
+        {
+            Toast.makeText(context, R.string.moreFaces, Toast.LENGTH_LONG).show();
+            return false;
+        }
     }
 
     public static boolean saveCroppedFace(byte[] data, String person, int personId) {

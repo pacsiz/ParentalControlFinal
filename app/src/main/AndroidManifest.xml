@@ -31,6 +31,10 @@
             android:name=".DeletePersonActivity"
             android:label="@string/title_activity_delete_person" >
         </activity>
+        <activity
+            android:name=".FilterAppsActivity"
+            android:label="@string/title_activity_filter_apps" >
+        </activity>
     </application>
 
 </manifest>
