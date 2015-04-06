@@ -11,7 +11,7 @@
         </Preference>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/rec_title">
-        <Preference android:title="@string/addNewPerson">
+        <Preference android:title="@string/setNewPerson">
             <intent android:action="parentalcontrol.action.START_SETNEWPERSON_ACTIVITY" />
         </Preference>
         <Preference android:title="@string/deletePerson">

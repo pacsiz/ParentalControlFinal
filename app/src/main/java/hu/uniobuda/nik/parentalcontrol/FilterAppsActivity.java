@@ -115,18 +115,18 @@ public class FilterAppsActivity extends Activity implements OnItemClickListener 
                 ResolveInfo info = apps.get(i);
 
                 AppInfo newInfo = new AppInfo();
-                newInfo.appName = info.loadLabel(getPackageManager()).toString();
-                if (newInfo.appName.equals("hu.uniobuda.nik.parentalcontrol") ||
-                        newInfo.appName.equals("com.anroid.settings")) {
+                newInfo.pName = info.activityInfo.packageName;
+                if (newInfo.pName.equals("hu.uniobuda.nik.parentalcontrol") ||
+                        newInfo.pName.equals("com.android.settings")) {
                     continue;
                 } else {
+                    newInfo.appName = info.loadLabel(getPackageManager()).toString();
                     newInfo.pName = info.activityInfo.packageName;
                     newInfo.appIcon = info.loadIcon(getPackageManager());
                     //Log.d("appname", p.packageName);
                     //Log.d("appname", newInfo.pName);
                     res.add(newInfo);
                 }
-
             }
 
             for (AppInfo info : res) {
@@ -142,17 +142,18 @@ public class FilterAppsActivity extends Activity implements OnItemClickListener 
     public void onItemClick(AdapterView arg0, View v, int position, long arg3) {
         //Log.d("esemeny", "pipa");
         CheckBox cb = (CheckBox) v.findViewById(R.id.appChk);
-        TextView tv = (TextView) v.findViewById(R.id.appName);
-        //cb.performClick();
+
         if (cb.isChecked()) {
             Log.d("esemeny", list.get(position).pName);
             checkedValue.remove(list.get(position).pName);
             cb.setChecked(false);
-        } else if (!cb.isChecked()) {
+
+        } else {
             Log.d("esemeny", "checkvizsgaN");
             checkedValue.add(list.get(position).pName);
             cb.setChecked(true);
         }
+        cb.performClick();
     }
 }
 

@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -73,9 +75,16 @@ public class MainScreenActivity extends Activity {
             public void onClick(View v) {
                 sh = getSharedPreferences(getString
                         (R.string.SHAREDPREFERENCE_PASSWORD), Context.MODE_PRIVATE);
+
+                PackageManager pm = getPackageManager();
+                ComponentName receiver = new ComponentName(MainScreenActivity.this, CheckServiceStarter.class);
+
                 if (sh.contains(getString
                         (R.string.SHAREDPREFERENCE_PASSWORD))) {
                     if (!isRunning) {
+                        pm.setComponentEnabledSetting(receiver,
+                                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                                PackageManager.DONT_KILL_APP);
                         Intent i = new Intent(MainScreenActivity.this,
                                 CheckService.class);
                         startService(i);
@@ -83,6 +92,9 @@ public class MainScreenActivity extends Activity {
                         serviceState.setTextColor(Color.GREEN);
                         isRunning = true;
                     } else {
+                        pm.setComponentEnabledSetting(receiver,
+                                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                                PackageManager.DONT_KILL_APP);
                         Intent i = new Intent(MainScreenActivity.this,
                                 CheckService.class);
                         stopService(i);

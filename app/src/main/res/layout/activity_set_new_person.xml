@@ -53,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="29.0dip"
-        android:text="@string/addNewPerson"
+        android:text="@string/setNewPerson"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 

@@ -28,7 +28,7 @@
     <string name="startService">Szolgáltatás indítása</string>
     <string name="stopService">Szolgáltatás leállítása</string>
     <string name="settings">Beállítások</string>
-    <string name="addNewPerson">Új személy felvétele</string>
+    <string name="setNewPerson">Új személy felvétele</string>
     <string name="help">Segítség</string>
     <string name="isNotRunning">A szolgáltatás nem fut!</string>
     <string name="isRunning">A szolgáltatás fut!</string>
@@ -77,6 +77,7 @@
     <string name="noPassword">Írjon be egy jelszót!</string>
     <string name="passwordChanged">A jelszót sikeresen megváltoztatta</string>
     <string name="noPasswordSet">Amígy nincs jelszó beállítva, nem használhatja a szolgáltatást!</string>
+    <string name="shortPassword">A beírt jelszó túl rövid!</string>
     <string name="basic_title">Általános beállítások</string>
     <string name="childDenied">Gyermek hozzáférése letiltva a programhoz:</string>
     <string name="accessAllowed">Hozzáférés engedélyezve szülő számára:</string>

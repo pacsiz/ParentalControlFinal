@@ -20,6 +20,8 @@
 
     <CheckBox
         android:id="@+id/appChk"
+        android:clickable="false"
+        android:soundEffectsEnabled="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:layout_width="wrap_content"
@@ -27,4 +29,6 @@
         android:layout_marginRight="16.0dip"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true" />
+
+
 </RelativeLayout>

@@ -20,7 +20,6 @@ public class AppListAdapter extends ArrayAdapter<AppInfo> //implements CompoundB
 {
 
     SparseBooleanArray mCheckStates;
-
     private List<AppInfo> appList;
     private Context context;
     ArrayList<String> checkedApps;
@@ -38,8 +37,6 @@ public class AppListAdapter extends ArrayAdapter<AppInfo> //implements CompoundB
             if(checkedApps.contains(appList.get(i).pName))
                 itemChecked[i]= true;
         }
-
-
     }
 
     @Override
@@ -49,7 +46,7 @@ public class AppListAdapter extends ArrayAdapter<AppInfo> //implements CompoundB
 
         if (convertView == null) {
             holder = new AppInfoHolder();
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(R.layout.applist_layout, parent, false);
 
             ImageView appIcon = (ImageView) v.findViewById(R.id.appIcon);
