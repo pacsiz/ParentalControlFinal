@@ -54,8 +54,9 @@ public class FaceDetection {
         }
     }
 
-    public static Mat matForLBPH (Bitmap bitmap)
+    public static Mat matForLBPH (byte[] rawData)
     {
+        Bitmap bitmap = getBitmapFromBytes(rawData);
         FaceDetector fd = new FaceDetector(bitmap.getWidth(), bitmap.getHeight(), 1);
         Face[] faceArray = new Face[1];
         fd.findFaces(bitmap, faceArray);
@@ -78,8 +79,7 @@ public class FaceDetection {
         FaceRecognizer fr = createLBPHFaceRecognizer();
         fr.load(XML_PATH);
         fr.set("threshold", 90);
-        Bitmap bitmap = getBitmapFromBytes(rawData);
-        Mat mat = matForLBPH(bitmap);
+        Mat mat = matForLBPH(rawData);
         return fr.predict(mat);
     }
 

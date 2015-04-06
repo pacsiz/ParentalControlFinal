@@ -35,6 +35,18 @@
             android:name=".FilterAppsActivity"
             android:label="@string/title_activity_filter_apps" >
         </activity>
+        <activity
+            android:name=".SetNewPersonActivity"
+            android:label="@string/title_activity_set_new_person" >
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings" >
+        </activity>
+        <activity
+            android:name=".PasswordActivity"
+            android:label="@string/title_activity_password" >
+        </activity>
     </application>
 
 </manifest>

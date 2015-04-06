@@ -18,6 +18,7 @@
     <string name="SHAREDPREFERENCE_FACE_REG_ENABLED">faceRegEnabled</string>
     <string name="SHAREDPREFERENCE_PACKAGES">apps</string>
     <string name="SHAREDPREFERENCE_PERSONS">persons</string>
+    <string name="SHAREDPREFERENCE_PASSWORD">password</string>
 
     <string name="EXTRA_FACE_REG_ENABLED">hu.uniobuda.nik.extra.FACE_REG_ENABLED</string>
     <string name="EXTRA_PACKAGE_NAME">hu.uniobuda.nik.extra.PACKAGE_NAMED</string>
@@ -36,6 +37,8 @@
     <string name="cancel">Mégse</string>
     <string name="pleaseWait">Kérem várjon...</string>
     <string name="loadingApps">Telepített alkalmazások betöltése...</string>
+    <string name="working">Feldolgozás folyamatban...</string>
+    <string name="learning">Tanulás folyamatban...</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="selectApps">Tiltandó alkalmazások kiválasztása</string>
     <string name="newPersonInfo">Új személy felvételéhez több fényképre van szükség, amely alapján a program meg tudja tanulni az adott személy jellemző vonásait. Ehhez 5 kép fog készülni.</string>
@@ -86,4 +89,6 @@
     <string name="serviceMessage">A védelem aktív</string>
     <string name="title_activity_delete_person">DeletePersonActivity</string>
     <string name="title_activity_filter_apps">FilterAppsActivity</string>
+    <string name="title_activity_set_new_person">SetNewPersonActivity</string>
+    <string name="title_activity_password">PasswordActivity</string>
 </resources>

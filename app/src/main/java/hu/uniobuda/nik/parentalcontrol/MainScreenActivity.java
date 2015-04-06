@@ -24,7 +24,6 @@ public class MainScreenActivity extends Activity {
     Button btnStartService;
     boolean isRunning;
     SharedPreferences sh;
-    private final String FACE_REG_SET = "faceRegEnabled";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,23 +33,29 @@ public class MainScreenActivity extends Activity {
         serviceState = (TextView) findViewById(R.id.isRunning);
         btnSettings = (Button) findViewById(R.id.btnSettings);
         btnStartService = (Button) findViewById(R.id.btnStartService);
-        isRunning = isMyServiceRunning(CheckService.class, serviceState);
-        sh = getSharedPreferences("settings", Context.MODE_PRIVATE);
-        if (!sh.contains(FACE_REG_SET)) {
+        isRunning = ServiceInfo.isServiceRunning(CheckService.class, MainScreenActivity.this);
+        sh = getSharedPreferences(getString
+                (R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
+        if (!sh.contains(getString(R.string.SHAREDPREFERENCE_FACE_REG_ENABLED))) {
             Editor e = e = sh.edit();
             if (CameraSet.getFrontCameraIndex() == -1) {
-                e.commit();
+                e.putBoolean(getString(R.string.SHAREDPREFERENCE_FACE_REG_ENABLED), false);
             } else {
-                e.putBoolean(FACE_REG_SET, true);
+                e.putBoolean(getString(R.string.SHAREDPREFERENCE_FACE_REG_ENABLED), true);
             }
             e.commit();
         }
 
-
-        if (isRunning)
+        if (isRunning) {
+            serviceState.setText(getString(R.string.isRunning));
+            serviceState.setTextColor(Color.GREEN);
             btnStartService.setText(R.string.stopService);
-        else
+        } else {
+            serviceState.setText(getString(R.string.isNotRunning));
+            serviceState.setTextColor(Color.RED);
             btnStartService.setText(R.string.startService);
+        }
+
 
         btnSettings.setOnClickListener(new OnClickListener() {
 
@@ -58,7 +63,7 @@ public class MainScreenActivity extends Activity {
             public void onClick(View v) {
                 Intent intent;
                 intent = new Intent(MainScreenActivity.this,
-                        SettingsActivityNewApi.class);
+                        SettingsActivity.class);
                 startActivity(intent);
             }
         });
@@ -66,22 +71,24 @@ public class MainScreenActivity extends Activity {
         btnStartService.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                sh = getSharedPreferences("password", Context.MODE_PRIVATE);
-                if (sh.contains("password")) {
+                sh = getSharedPreferences(getString
+                        (R.string.SHAREDPREFERENCE_PASSWORD), Context.MODE_PRIVATE);
+                if (sh.contains(getString
+                        (R.string.SHAREDPREFERENCE_PASSWORD))) {
                     if (!isRunning) {
                         Intent i = new Intent(MainScreenActivity.this,
                                 CheckService.class);
-                        i.putExtra("name", "SurvivingwithAndroid");
                         startService(i);
-                        // MainScreenActivity.this.startService(i);
-                        isRunning = isMyServiceRunning(CheckService.class,
-                                serviceState);
+                        serviceState.setText(getString(R.string.isRunning));
+                        serviceState.setTextColor(Color.GREEN);
+                        isRunning = true;
                     } else {
                         Intent i = new Intent(MainScreenActivity.this,
                                 CheckService.class);
                         stopService(i);
-                        isRunning = isMyServiceRunning(CheckService.class,
-                                serviceState);
+                        serviceState.setText(getString(R.string.isNotRunning));
+                        serviceState.setTextColor(Color.RED);
+                        isRunning = false;
                     }
                 } else {
                     AlertDialog.Builder dialog = new AlertDialog.Builder(MainScreenActivity.this);
@@ -97,23 +104,6 @@ public class MainScreenActivity extends Activity {
                 }
             }
         });
-    }
-
-    private boolean isMyServiceRunning(Class<?> serviceClass, TextView tv) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (RunningServiceInfo service : manager
-                .getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                tv.setText(getString(R.string.isRunning));
-                tv.setTextColor(Color.GREEN);
-                btnStartService.setText(R.string.stopService);
-                return true;
-            }
-        }
-        tv.setText(getString(R.string.isNotRunning));
-        tv.setTextColor(Color.RED);
-        btnStartService.setText(R.string.startService);
-        return false;
     }
 
 }

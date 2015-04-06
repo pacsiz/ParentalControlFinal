@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:pcpref="http://schemas.android.com/apk/res/hu.uniobuda.nik.parentalcontrol">
+    <PreferenceCategory android:title="@string/basic_title">
+        <Preference android:title="@string/newPassword">
+            <intent android:action="parentalcontrol.action.START_SETNEWPASSWORD_ACTIVITY" />
+        </Preference>
+        <Preference android:title="@string/selectApps">
+            <intent android:action="parentalcontrol.action.START_SELECTAPPS_ACTIVITY" />
+        </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/rec_title">
+        <Preference android:title="@string/addNewPerson">
+            <intent android:action="parentalcontrol.action.START_SETNEWPERSON_ACTIVITY" />
+        </Preference>
+        <Preference android:title="@string/deletePerson">
+            <intent android:action="parentalcontrol.action.START_DELETEPERSON_ACTIVITY" />
+        </Preference>
+        <Preference android:title="Azonosítás teszt">
+            <intent android:action="parentalcontrol.action.START_REC_TEST" />
+        </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/url_title">
+        <CheckBoxPreference android:title="@string/url_isOn" android:key="url_state" />
+        <PreferenceScreen android:title="@string/url_cat_title" android:key="url_cat_key">
+            <CheckBoxPreference android:title="@string/url_cat_1" android:key="url_cat_social" />
+            <CheckBoxPreference android:title="@string/url_cat_2" android:key="url_cat_adult" />
+        </PreferenceScreen>
+        <EditTextPreference android:title="@string/url_custom_title" android:key="url_custom" />
+    </PreferenceCategory>
+</PreferenceScreen>
