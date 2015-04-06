@@ -29,7 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.pm.PackageManager;
 
-public class FilterAppsActivity extends Activity implements OnItemClickListener {
+public class FilterAppsActivity extends Activity {
     ProgressDialog loading;
     AppListAdapter adapter;
     ListView appList;
@@ -43,16 +43,31 @@ public class FilterAppsActivity extends Activity implements OnItemClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter_apps);
-        checkedApps = getSharedPreferences("apps", Context.MODE_PRIVATE);
+        checkedApps = getSharedPreferences(getString
+                (R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_PRIVATE);
         appList = (ListView) findViewById(R.id.appList);
         btnSave = (Button) findViewById(R.id.btnSave);
         btnBack = (Button) findViewById(R.id.btnBack);
         checkedValue.clear();
         new backgroundLoadAppList().execute();
-        //list = getInstalledApps();
-        //adapter = new AppListAdapter(this, R.layout.applist_layout, list);
-        //appList.setAdapter(adapter);
-        //appList.setOnItemClickListener(this);
+
+        appList.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CheckBox cb = (CheckBox) view.findViewById(R.id.appChk);
+                cb.performClick();
+                if (cb.isChecked()) {
+                    Log.d("esemeny", list.get(position).pName);
+                    checkedValue.add(list.get(position).pName);
+                    //cb.setChecked(false);
+                } else {
+                    Log.d("esemeny", "checkvizsgaN");
+                    checkedValue.remove(list.get(position).pName);
+                    //cb.setChecked(true);
+                }
+            }
+        });
+
         btnBack.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -65,7 +80,7 @@ public class FilterAppsActivity extends Activity implements OnItemClickListener 
 
             @Override
             public void onClick(View v) {
-                Toast.makeText(FilterAppsActivity.this, "" + checkedValue, Toast.LENGTH_LONG).show();
+
                 Editor e = checkedApps.edit();
                 e.clear();
                 BlockerHashTable.clear();
@@ -79,10 +94,11 @@ public class FilterAppsActivity extends Activity implements OnItemClickListener 
                 e.putBoolean("com.android.settings", true);
                 BlockerHashTable.setBoolean("com.android.settings", true);
                 e.commit();
+                Toast.makeText(FilterAppsActivity.this, "" + checkedValue, Toast.LENGTH_LONG).show();
+                finish();
             }
         });
     }
-
 
     public class backgroundLoadAppList extends
             AsyncTask<Void, Void, List<AppInfo>> {
@@ -99,7 +115,6 @@ public class FilterAppsActivity extends Activity implements OnItemClickListener 
         protected void onPostExecute(List<AppInfo> result) {
             adapter = new AppListAdapter(FilterAppsActivity.this, R.layout.applist_layout, result, checkedValue);
             appList.setAdapter(adapter);
-            appList.setOnItemClickListener(FilterAppsActivity.this);
             list = result;
             pd.dismiss();
         }
@@ -123,38 +138,24 @@ public class FilterAppsActivity extends Activity implements OnItemClickListener 
                     newInfo.appName = info.loadLabel(getPackageManager()).toString();
                     newInfo.pName = info.activityInfo.packageName;
                     newInfo.appIcon = info.loadIcon(getPackageManager());
-                    //Log.d("appname", p.packageName);
-                    //Log.d("appname", newInfo.pName);
+                    if (checkedApps.contains(newInfo.pName)) {
+                        checkedValue.add(newInfo.pName);
+                    }
                     res.add(newInfo);
                 }
             }
 
-            for (AppInfo info : res) {
+            /*for (AppInfo info : res) {
                 if (checkedApps.contains(info.pName)) {
                     checkedValue.add(info.pName);
+
                 }
-            }
+            }*/
             return res;
         }
     }
 
-    @Override
-    public void onItemClick(AdapterView arg0, View v, int position, long arg3) {
-        //Log.d("esemeny", "pipa");
-        CheckBox cb = (CheckBox) v.findViewById(R.id.appChk);
 
-        if (cb.isChecked()) {
-            Log.d("esemeny", list.get(position).pName);
-            checkedValue.remove(list.get(position).pName);
-            cb.setChecked(false);
-
-        } else {
-            Log.d("esemeny", "checkvizsgaN");
-            checkedValue.add(list.get(position).pName);
-            cb.setChecked(true);
-        }
-        cb.performClick();
-    }
 }
 
 class AppInfo {
