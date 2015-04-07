@@ -40,7 +40,7 @@ public class CheckService extends Service {
         startForeground(1122, notification.build());
         if(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED),false))
         {
-          loadURL();
+          IPTablesAPI.unblockAllURL(CheckService.this);
         }
 
         return Service.START_STICKY;
@@ -71,6 +71,7 @@ public class CheckService extends Service {
     @Override
     public void onDestroy() {
         mt.interrupt();
+        IPTablesAPI.unblockAllURL(CheckService.this);
         super.onDestroy();
     }
 

@@ -1,5 +1,8 @@
 package hu.uniobuda.nik.parentalcontrol;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -10,6 +13,35 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class IPTablesAPI {
+
+    public static void blockAllURL(Context context) {
+        final SharedPreferences sh = context.getSharedPreferences(context.getString
+                (R.string.SHAREDPREFERENCE_URLS), Context.MODE_PRIVATE);
+        new Thread() {
+            @Override
+            public void run() {
+                Map<String, ?> map = sh.getAll();
+                for (Map.Entry entry : map.entrySet()) {
+                    IPTablesAPI.blockDomain(entry.getKey().toString());
+                }
+            }
+        }.start();
+    }
+
+    public static void unblockAllURL(Context context) {
+        final SharedPreferences sh = context.getSharedPreferences(context.getString
+                (R.string.SHAREDPREFERENCE_URLS), Context.MODE_PRIVATE);
+        new Thread() {
+            @Override
+            public void run() {
+                Map<String, ?> map = sh.getAll();
+                for (Map.Entry entry : map.entrySet()) {
+                    IPTablesAPI.unblockDomain(entry.getKey().toString());
+                }
+            }
+        }.start();
+    }
+
     public static void blockDomain(String domain) {
         for (InetAddress address : resolveDomain(domain)) {
             blockIP(address.getHostAddress());

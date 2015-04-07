@@ -1,4 +1,4 @@
-package hu.uniobuda.nik.parentalcontrol;
+/*package hu.uniobuda.nik.parentalcontrol;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -39,6 +39,14 @@ public class SettingsPreferenceFragment extends PreferenceFragment {
                     e.putBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), (boolean) newValue);
                     Log.d("URL_ENABLED", newValue.toString());
                     e.commit();
+                    if(urlEnabled.isChecked())
+                    {
+                        IPTablesAPI.blockAllURL(SettingsActivity.this);
+                    }
+                    else
+                    {
+                        IPTablesAPI.unblockAllURL(SettingsActivity.this);
+                    }
                     return true;
                 }
             });
@@ -58,4 +66,4 @@ public class SettingsPreferenceFragment extends PreferenceFragment {
             urlEnabled.setChecked(false);
         }
     }
-}
+}*/

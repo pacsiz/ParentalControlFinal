@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 
-
 public class URLActivity extends Activity {
 
     Button addUrl;
@@ -42,8 +41,7 @@ public class URLActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_url);
         sh = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
-        if(!sh.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED),false))
-        {
+        if (!sh.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), false)) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setTitle(R.string.failTitle);
             dialog.setMessage(getString(R.string.urlDisabled));
@@ -57,10 +55,10 @@ public class URLActivity extends Activity {
             dialog.show();
         }
         sh = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_URLS), Context.MODE_PRIVATE);
-        addUrl = (Button)findViewById(R.id.btnUrlAdd);
-        deleteUrl = (Button)findViewById(R.id.btnUrlDelete);
-        saveUrl = (Button)findViewById(R.id.btnUrlSave);
-        urlListView = (ListView)findViewById(R.id.urlListView);
+        addUrl = (Button) findViewById(R.id.btnUrlAdd);
+        deleteUrl = (Button) findViewById(R.id.btnUrlDelete);
+        saveUrl = (Button) findViewById(R.id.btnUrlSave);
+        urlListView = (ListView) findViewById(R.id.urlListView);
         e = sh.edit();
         new backgroundLoadURLS().execute();
         tempDeletedUrls = new ArrayList<>();
@@ -68,17 +66,14 @@ public class URLActivity extends Activity {
         urlListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CheckBox checkBox = (CheckBox)view.findViewById(R.id.urlCheckBox);
+                CheckBox checkBox = (CheckBox) view.findViewById(R.id.urlCheckBox);
                 checkBox.performClick();
-                if(checkBox.isChecked())
-                {
+                if (checkBox.isChecked()) {
                     Log.d("position", Integer.toString(position));
                     Log.d("url_meret_onclick", Integer.toString(urls.size()));
                     Log.d("url", urls.get(position));
                     tempDeletedUrls.add(urls.get(position));
-                }
-                else
-                {
+                } else {
                     tempDeletedUrls.remove(urls.get(position));
                 }
             }
@@ -96,7 +91,7 @@ public class URLActivity extends Activity {
 
                 alert.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        e.putString(input.getText().toString(),"");
+                        e.putString(input.getText().toString(), "");
                         urls.add(input.getText().toString());
                         adapter.updateItemCheckedSize(urls.size());
                         adapter.notifyDataSetChanged();
@@ -105,7 +100,7 @@ public class URLActivity extends Activity {
 
                 alert.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                       dialog.dismiss();
+                        dialog.dismiss();
                     }
                 });
                 alert.show();
@@ -115,8 +110,7 @@ public class URLActivity extends Activity {
         deleteUrl.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (String url : tempDeletedUrls)
-                {
+                for (String url : tempDeletedUrls) {
                     e.remove(url);
                     urls.remove(url);
                 }
@@ -131,23 +125,22 @@ public class URLActivity extends Activity {
             @Override
             public void onClick(View v) {
                 e.commit();
-                setURLS(tempDeletedUrls,urls);
+                if (ServiceInfo.isServiceRunning(CheckService.class, URLActivity.this)) {
+                    setURLS(tempDeletedUrls, urls);
+                }
                 finish();
             }
         });
     }
 
     private void setURLS(final ArrayList<String> unBlockURL, final ArrayList<String> blockURL) {
-        new Thread()
-        {
+        new Thread() {
             @Override
             public void run() {
-                for (String url : unBlockURL)
-                {
+                for (String url : unBlockURL) {
                     IPTablesAPI.unblockDomain(url);
                 }
-                for (String url : blockURL)
-                {
+                for (String url : blockURL) {
                     IPTablesAPI.blockDomain(url);
                 }
             }
@@ -181,8 +174,7 @@ public class URLActivity extends Activity {
             Map<String, ?> map = sh.getAll();
             //Map sortedMap = new TreeMap(new ValueComparator(map));
             //sortedMap.putAll(map);
-            for (Map.Entry entry : map.entrySet())
-            {
+            for (Map.Entry entry : map.entrySet()) {
                 temp.add(entry.getKey().toString());
             }
             return temp;
