@@ -23,10 +23,8 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/url_title">
         <CheckBoxPreference android:title="@string/url_isOn" android:key="urlEnabled" />
-        <PreferenceScreen android:title="@string/url_cat_title" android:key="url_cat_key">
-            <CheckBoxPreference android:title="@string/url_cat_1" android:key="url_cat_social" />
-            <CheckBoxPreference android:title="@string/url_cat_2" android:key="url_cat_adult" />
-        </PreferenceScreen>
-        <EditTextPreference android:title="@string/url_custom_title" android:key="url_custom" />
+        <Preference android:title="@string/url_custom_title" android:key="url_custom">
+            <intent android:action="parentalcontrol.action.START_URLACTIVITY" />
+        </Preference>
     </PreferenceCategory>
 </PreferenceScreen>

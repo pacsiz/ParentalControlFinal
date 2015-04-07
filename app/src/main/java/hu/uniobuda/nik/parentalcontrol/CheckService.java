@@ -18,7 +18,7 @@ public class CheckService extends Service {
     MonitorlogThread mt = new MonitorlogThread();
     static Context context;
 
-    SharedPreferences faceRegEnabled;
+    SharedPreferences sh;
     boolean frontCamera;
 
     public static Context getContext() {
@@ -29,17 +29,37 @@ public class CheckService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         context = getBaseContext();
 
-        faceRegEnabled = getSharedPreferences("settings", Context.MODE_PRIVATE);
-        frontCamera = faceRegEnabled.getBoolean(getString
+        sh = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
+        frontCamera = sh.getBoolean(getString
                 (R.string.SHAREDPREFERENCE_FACE_REG_ENABLED), false);
         StartT();
         NotificationCompat.Builder notification = new NotificationCompat.Builder(this);
         notification.setContentTitle(getString(R.string.serviceTitle));
         notification.setContentText(getString(R.string.serviceMessage));
         notification.setSmallIcon(R.mipmap.ic_launcher);
-
         startForeground(1122, notification.build());
+        if(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED),false))
+        {
+          loadURL();
+        }
+
         return Service.START_STICKY;
+    }
+
+    private void loadURL() {
+        sh = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_URLS),Context.MODE_PRIVATE);
+
+       new Thread()
+       {
+           @Override
+           public void run() {
+               Map<String, ?> map = sh.getAll();
+               for (Map.Entry entry : map.entrySet())
+               {
+                   IPTablesAPI.blockDomain(entry.getKey().toString());
+               }
+           }
+       }.start();
     }
 
     @Override

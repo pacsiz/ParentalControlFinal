@@ -23,71 +23,83 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity
-            android:label="@string/title_activity_check_person"
             android:name=".CheckPersonActivity"
             android:excludeFromRecents="true"
+            android:label="@string/title_activity_check_person"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="parentalcontrol.action.START_REC_TEST" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:label="@string/deletePerson"
-            android:name=".DeletePersonActivity">
+            android:name=".DeletePersonActivity"
+            android:label="@string/deletePerson">
             <intent-filter>
                 <action android:name="parentalcontrol.action.START_DELETEPERSON_ACTIVITY" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:label="@string/selectApps"
-            android:name=".FilterAppsActivity">
+            android:name=".FilterAppsActivity"
+            android:label="@string/selectApps">
             <intent-filter>
                 <action android:name="parentalcontrol.action.START_SELECTAPPS_ACTIVITY" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:label="@string/setNewPerson"
-            android:name=".SetNewPersonActivity">
+            android:name=".SetNewPersonActivity"
+            android:label="@string/setNewPerson">
             <intent-filter>
                 <action android:name="parentalcontrol.action.START_SETNEWPERSON_ACTIVITY" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings" />
         <activity
-            android:label="@string/newPassword"
-            android:name=".PasswordActivity">
+            android:name=".PasswordActivity"
+            android:label="@string/newPassword">
             <intent-filter>
                 <action android:name="parentalcontrol.action.START_SETNEWPASSWORD_ACTIVITY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".URLActivity"
+            android:label="@string/title_activity_url">
+            <intent-filter>
+                <action android:name="parentalcontrol.action.START_URLACTIVITY" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".PasswordRequestActivity"
-            android:label="@string/title_activity_password_request"
             android:excludeFromRecents="true"
+            android:label="@string/title_activity_password_request"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait"
-            android:noHistory="true"></activity>
+            android:noHistory="true"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".CheckService"
             android:enabled="true"
-            android:stopWithTask="false"
-            android:exported="false" />
+            android:exported="false"
+            android:stopWithTask="false" />
 
         <receiver
             android:name=".CheckServiceStarter"
@@ -102,6 +114,8 @@
                 <action android:name="hu.uniobuda.nik.parentalcontrol.NEW_APP_STARTED" />
             </intent-filter>
         </receiver>
+
+
     </application>
 
 </manifest>

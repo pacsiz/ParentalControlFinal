@@ -16,6 +16,5 @@ public class ValueComparator implements Comparator {
         Comparable valueB = (Comparable) map.get(keyB);
 
         return -(valueA.compareTo(valueB));
-
     }
 }

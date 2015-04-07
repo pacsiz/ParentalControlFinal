@@ -20,6 +20,7 @@
     <string name="SHAREDPREFERENCE_PERSONS">persons</string>
     <string name="SHAREDPREFERENCE_PASSWORD">password</string>
     <string name="SHAREDPREFERENCE_URL_ENABLED">urlEnabled</string>
+    <string name="SHAREDPREFERENCE_URLS">urls</string>
 
     <string name="EXTRA_FACE_REG_ENABLED">hu.uniobuda.nik.extra.FACE_REG_ENABLED</string>
     <string name="EXTRA_PACKAGE_NAME">hu.uniobuda.nik.extra.PACKAGE_NAMED</string>
@@ -36,6 +37,8 @@
     <string name="back">Vissza</string>
     <string name="save">Mentés</string>
     <string name="cancel">Mégse</string>
+    <string name="delete">Törlés</string>
+    <string name="add">Hozzáadás</string>
     <string name="pleaseWait">Kérem várjon...</string>
     <string name="loadingApps">Telepített alkalmazások betöltése...</string>
     <string name="working">Feldolgozás folyamatban...</string>
@@ -58,12 +61,16 @@
     <string name="nonRooted">A készülék nincs root-olva!</string>
     <string name="isRooted">A készülék root-olva van!</string>
     <string name="rec_title">Azonosítás</string>
+    <string name="url_add_title">URL hozzáadása</string>
+    <string name="url_add_message">Írja be a tiltandó URL címet:</string>
     <string name="url_title">URL blokkolás</string>
     <string name="url_cat_title">Kategória kiválasztása</string>
     <string name="url_cat_1">Közösségi oldalak</string>
     <string name="url_cat_2">Felnőtt tartalmú oldalak</string>
-    <string name="url_custom_title">Egyedi URL megadása</string>
-    <string name="url_isOn">URL blokkolás bekapcsolva</string>
+    <string name="url_custom_title">URL megadása és törlése</string>
+    <string name="url_isOn">URL blokkolás bekapcsolása</string>
+    <string name="urlDisabled">Az URL blokkolás funkció nincs bekapcsolva!</string>
+    <string name="rootFailed">Az URL blokkolás csak root-olt készülékeken használható!</string>
     <string name="title_activity_settings_activity_new_api">Beállítások</string>
     <string name="deletePerson">Felvett személy törlése</string>
     <string name="deleteAlert">Törlés megerősítése</string>
@@ -93,4 +100,5 @@
     <string name="title_activity_filter_apps">FilterAppsActivity</string>
     <string name="title_activity_set_new_person">SetNewPersonActivity</string>
     <string name="title_activity_password">PasswordActivity</string>
+    <string name="title_activity_url">URLActivity</string>
 </resources>
