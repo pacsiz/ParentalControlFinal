@@ -22,7 +22,7 @@
         </Preference>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/url_title">
-        <CheckBoxPreference android:title="@string/url_isOn" android:key="url_state" />
+        <CheckBoxPreference android:title="@string/url_isOn" android:key="urlEnabled" />
         <PreferenceScreen android:title="@string/url_cat_title" android:key="url_cat_key">
             <CheckBoxPreference android:title="@string/url_cat_1" android:key="url_cat_social" />
             <CheckBoxPreference android:title="@string/url_cat_2" android:key="url_cat_adult" />

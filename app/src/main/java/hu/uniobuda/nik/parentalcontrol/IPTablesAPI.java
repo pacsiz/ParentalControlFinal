@@ -1,0 +1,133 @@
+package hu.uniobuda.nik.parentalcontrol;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
+
+public class IPTablesAPI {
+    public static void blockDomain(String domain) {
+        for (InetAddress address : resolveDomain(domain)) {
+            blockIP(address.getHostAddress());
+        }
+    }
+
+    public static void unblockDomain(String domain) {
+        for (InetAddress address : resolveDomain(domain)) {
+            unblockIP(address.getHostAddress());
+        }
+    }
+
+    public static boolean blockIP(String ip) {
+        boolean alreadyBlocked = false;
+
+        for (Map.Entry<Integer, String> entry : enumerateBlocks().entrySet()) {
+            if (entry.getValue().equals(ip))
+                alreadyBlocked = true;
+        }
+
+        if (alreadyBlocked)
+            System.out.println(ip + " is already blocked.");
+        else
+            runCommand(new String[]{"iptables -I INPUT -s " + ip + " -j DROP"});
+
+        return alreadyBlocked;
+    }
+
+    public static boolean unblockIP(String ip) {
+        boolean wasBlocked = false;
+
+        for (Map.Entry<Integer, String> entry : enumerateBlocks().entrySet()) {
+            if (entry.getValue().equals(ip)) {
+                wasBlocked = true;
+                runCommand(new String[]{"iptables -D INPUT " + entry.getKey()});
+            }
+        }
+
+        if (!wasBlocked)
+            System.out.println(ip + " was not blocked.");
+
+        return wasBlocked;
+    }
+
+    public static boolean isBlockedIP(String ip) {
+        boolean blocked = false;
+
+        for (Map.Entry<Integer, String> entry : enumerateBlocks().entrySet()) {
+            if (entry.getValue().equals(ip))
+                blocked = true;
+        }
+
+        return blocked;
+    }
+
+    public static Map<Integer, String> enumerateBlocks() {
+        String r = runCommand(new String[]{"iptables -L -n"});
+
+        Map<Integer, String> blocked = new HashMap<Integer, String>();
+
+        boolean start = false;
+        int id = 0;
+
+        for (String s : r.split("\n")) {
+            if (s.startsWith("target")) {
+                start = true;
+            }
+
+            if (start) {
+                if (s.startsWith("DROP")) {
+                    blocked.put(id, s.substring(s.indexOf("--") + 2).trim().split(" ")[0]);
+                }
+
+                if (s.length() == 0) {
+                    break;
+                }
+                id++;
+            }
+        }
+
+        return blocked;
+    }
+
+    private static InetAddress[] resolveDomain(String domain) {
+        InetAddress[] machines = new InetAddress[0];
+        try {
+            machines = InetAddress.getAllByName(domain);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+        return machines;
+    }
+
+    private static String runCommand(String[] cmds) {
+        try {
+            Process p = Runtime.getRuntime().exec("su");
+            DataOutputStream os = new DataOutputStream(p.getOutputStream());
+            for (String tmpCmd : cmds) {
+                os.writeBytes(tmpCmd + "\n");
+            }
+            os.writeBytes("exit\n");
+            os.flush();
+
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+            StringBuffer buffer = new StringBuffer();
+            String sCurrentLine;
+            while ((sCurrentLine = bufferedReader.readLine()) != null) {
+                buffer.append(sCurrentLine + "\n");
+            }
+
+            return buffer.toString();
+
+            //return "";
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "ERROR";
+        }
+    }
+}

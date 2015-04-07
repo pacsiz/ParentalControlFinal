@@ -19,6 +19,7 @@
     <string name="SHAREDPREFERENCE_PACKAGES">apps</string>
     <string name="SHAREDPREFERENCE_PERSONS">persons</string>
     <string name="SHAREDPREFERENCE_PASSWORD">password</string>
+    <string name="SHAREDPREFERENCE_URL_ENABLED">urlEnabled</string>
 
     <string name="EXTRA_FACE_REG_ENABLED">hu.uniobuda.nik.extra.FACE_REG_ENABLED</string>
     <string name="EXTRA_PACKAGE_NAME">hu.uniobuda.nik.extra.PACKAGE_NAMED</string>
