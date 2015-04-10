@@ -9,48 +9,77 @@ import android.util.Log;
 
 public class Blocker extends BroadcastReceiver {
 
-    private static String pName;
     //public static String pName2;
-    private boolean faceRegEnabled;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        pName = intent.getStringExtra(context.getResources().getString
-                (R.string.EXTRA_PACKAGE_NAME));
-        faceRegEnabled = intent.getBooleanExtra(context.getResources().
-                getString(R.string.EXTRA_FACE_REG_ENABLED), false);
-        Log.d("OnReceivePN", pName);
-        if (BlockerHashTable.containsBoolean(pName)) {
-            Log.d("OnreceivePN", "if-blockornot");
-            //pName2 = packageName;
-            blockOrNot(context);
+
+        blockOrNot(context,
+                intent.getStringExtra(context.getResources().getString(R.string.EXTRA_PACKAGE_NAME)),
+                intent.getBooleanExtra(context.getResources().getString(R.string.EXTRA_FACE_REG_ENABLED), false));
+      /*  switch (intent.getAction())
+        {
+            case "hu.uniobuda.nik.parentalcontrol.REFRESH_HASHTABLE":
+                BlockerHashTable.refresh(context);
+                Log.d("OnReceive", "hashrefresh");
+                break;
+
+            case "hu.uniobuda.nik.parentalcontrol.SET_PACKAGE_FALSE":
+                BlockerHashTable.setBoolean(intent.getStringExtra
+                        (context.getString(R.string.EXTRA_PACKAGE_NAME)),false);
+                Log.d("OnReceive", "set_package_false");
+                break;
+            case "hu.uniobuda.nik.parentalcontrol.NEW_APP_STARTED":
+
+                Log.d("OnReceive", "newappstarted");
+                break;
         }
+*/
+
+        /*if (intent.getAction().equals("hu.uniobuda.nik.parentalcontrol.REFRESH_HASHTABLE")) {
+            BlockerHashTable.refresh(context);
+            Log.d("OnReceive", "hashrefresh");
+        } else {
+            pName = intent.getStringExtra(context.getResources().getString
+                    (R.string.EXTRA_PACKAGE_NAME));
+            faceRegEnabled = intent.getBooleanExtra(context.getResources().
+                    getString(R.string.EXTRA_FACE_REG_ENABLED), false);
+            Log.d("OnReceivePN", Boolean.toString(BlockerHashTable.isEmpty()));
+
+            if (BlockerHashTable.containsBoolean(pName)) {
+                Log.d("OnreceivePN", "if-blockornot");
+                //pName2 = packageName;
+                blockOrNot(context);
+            }
+        }*/
     }
 
-    private void blockOrNot(Context context) {
-        // Log.d("blockornot",packageName);
-        if (BlockerHashTable.containsBoolean(pName)
-                && BlockerHashTable.getBoolean(pName) == false) {
-            Log.d("blockornot", "if-ben");
-            Log.d("hash",
-                    ""
-                            + BlockerHashTable.containsBoolean(pName));
-            BlockerHashTable.setBoolean(pName, true);
-        } else {
-            Intent i;
-            if (faceRegEnabled) {
-                Log.d("blockornot", "BLOKK");
-                i = new Intent(CheckService.getContext(),
-                        CheckPersonActivity.class);
+    private void blockOrNot(Context context, String packageName, boolean faceRegEnabled) {
+        Log.d("blockornot", "blockornot");
+        if (BlockerHashTable.containsBoolean(packageName))
+        {
+            if (BlockerHashTable.getBoolean(packageName) == false) {
+                Log.d("blockornot", "if-ben");
+                Log.d("hash",""+ BlockerHashTable.containsBoolean(packageName));
+                BlockerHashTable.setBoolean(packageName, true);
             } else {
-                i = new Intent(CheckService.getContext(),
-                        PasswordRequestActivity.class);
+                Intent i;
+                if (faceRegEnabled) {
+                    Log.d("blockornot", "FACEON");
+                    i = new Intent(CheckService.getContext(),
+                            CheckPersonActivity.class);
+                } else {
+                    Log.d("blockornot", "FACEOFF");
+                    i = new Intent(context,
+                            PasswordRequestActivity.class);
+                }
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.putExtra(context.getResources().getString
+                        (R.string.EXTRA_PACKAGE_NAME), packageName);
+                context.startActivity(i);
+                Log.d("blockornot", "activitystarted");
+                //CheckService.getContext().startActivity(i);
             }
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            i.putExtra(context.getResources().getString
-                    (R.string.EXTRA_PACKAGE_NAME), pName);
-            context.startActivity(i);
-            //CheckService.getContext().startActivity(i);
         }
     }
 }

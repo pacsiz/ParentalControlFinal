@@ -1,0 +1,120 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="hu.uniobuda.nik.parentalcontrol.DeviceAccessPersonSettingsActivity">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:id="@+id/btnSaveDeviceAccessSettings"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/followingPersonSettings"
+        android:id="@+id/followingPersonSettings"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/personName"
+        android:layout_alignTop="@+id/followingPersonSettings"
+        android:layout_toRightOf="@+id/btnSaveDeviceAccessSettings"
+        android:layout_toEndOf="@+id/btnSaveDeviceAccessSettings"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/personAccessControlIsEnabled"
+        android:id="@+id/textViewAccessControlIsEnabled"
+        android:layout_below="@+id/followingPersonSettings"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="39dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkBoxAccessControlIsEnabled"
+        android:checked="false"
+        android:layout_alignBottom="@+id/textViewAccessControlIsEnabled"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:theme="@style/Theme.AppCompat.Light" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/from"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/textViewAccessControlIsEnabled"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:paddingTop="20dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="time"
+        android:ems="10"
+        android:id="@+id/editTextFrom"
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        style="@style/Widget.AppCompat.Spinner"
+        android:layout_toStartOf="@+id/btnSaveDeviceAccessSettings"
+        android:layout_toLeftOf="@+id/btnSaveDeviceAccessSettings" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/to"
+        android:id="@+id/textView"
+        android:layout_above="@+id/editTextFrom"
+        android:layout_toRightOf="@+id/followingPersonSettings"
+        android:layout_toEndOf="@+id/followingPersonSettings" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="time"
+        android:ems="10"
+        android:id="@+id/editTextTo"
+        android:layout_below="@+id/textView"
+        android:layout_alignRight="@+id/checkBoxAccessControlIsEnabled"
+        android:layout_alignEnd="@+id/checkBoxAccessControlIsEnabled"
+        style="@style/Widget.AppCompat.Spinner"
+        android:layout_alignBottom="@+id/editTextFrom"
+        android:layout_alignLeft="@+id/textView"
+        android:layout_alignStart="@+id/textView" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/selectDays"
+        android:id="@+id/btnSelectDays"
+        android:layout_below="@+id/editTextFrom"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="39dp"
+        style="@style/Widget.AppCompat.ActionButton"
+        android:layout_alignRight="@+id/followingPersonSettings"
+        android:layout_alignEnd="@+id/followingPersonSettings" />
+
+</RelativeLayout>

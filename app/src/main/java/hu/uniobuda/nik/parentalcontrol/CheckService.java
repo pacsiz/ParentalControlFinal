@@ -13,13 +13,13 @@ import android.util.Log;
 import java.util.Iterator;
 import java.util.Map;
 
-public class CheckService extends Service {
+public class CheckService extends Service{
 
     MonitorlogThread mt = new MonitorlogThread();
     static Context context;
-
     SharedPreferences sh;
     boolean frontCamera;
+
 
     public static Context getContext() {
         return context;
@@ -40,26 +40,10 @@ public class CheckService extends Service {
         startForeground(1122, notification.build());
         if(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED),false))
         {
-          IPTablesAPI.unblockAllURL(CheckService.this);
+          IPTablesAPI.blockAllURL(CheckService.this);
         }
 
         return Service.START_STICKY;
-    }
-
-    private void loadURL() {
-        sh = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_URLS),Context.MODE_PRIVATE);
-
-       new Thread()
-       {
-           @Override
-           public void run() {
-               Map<String, ?> map = sh.getAll();
-               for (Map.Entry entry : map.entrySet())
-               {
-                   IPTablesAPI.blockDomain(entry.getKey().toString());
-               }
-           }
-       }.start();
     }
 
     @Override
@@ -100,19 +84,22 @@ public class CheckService extends Service {
 
                     if (!(foregroundTaskPackageName.equals(previousPackage))
                             && previousPackage != "") {
+                        Log.d("BHT_EMPTY", Boolean.toString(BlockerHashTable.isEmpty()));
                         if (BlockerHashTable.isEmpty()) {
-                            SharedPreferences packages = getSharedPreferences(getString
+                            BlockerHashTable.refresh(CheckService.this);
+                            /*packages = getSharedPreferences(getString
                                     (R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_PRIVATE);
                             Map<String, ?> map = packages.getAll();
                             Iterator i = map.entrySet().iterator();
                             while (i.hasNext()) {
                                 Map.Entry entry = (Map.Entry) i.next();
+                                Log.d("BHT_ADD",entry.getKey().toString());
                                 BlockerHashTable.setBoolean(entry.getKey().toString(), true);
-                            }
+                            }*/
                         }
                         Intent packageChanged = new Intent();
                         packageChanged
-                                .setAction("hu.uniobuda.nik.parentalcontrol.NEW_APP_STARTED");
+                                .setAction(getString(R.string.BROADCAST_NEW_APP_STARTED));
                         packageChanged.putExtra(getString(R.string.EXTRA_PACKAGE_NAME),
                                 foregroundTaskPackageName);
                         packageChanged.putExtra(getString(R.string.EXTRA_FACE_REG_ENABLED), frontCamera);

@@ -98,6 +98,8 @@ public class MainScreenActivity extends Activity {
                         Intent i = new Intent(MainScreenActivity.this,
                                 CheckService.class);
                         stopService(i);
+
+
                         serviceState.setText(getString(R.string.isNotRunning));
                         serviceState.setTextColor(Color.RED);
                         isRunning = false;

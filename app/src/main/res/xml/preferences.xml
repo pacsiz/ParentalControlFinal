@@ -27,4 +27,10 @@
             <intent android:action="parentalcontrol.action.START_URLACTIVITY" />
         </Preference>
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/deviceAccess_title">
+        <CheckBoxPreference android:title="@string/deviceAccess_isEnabled" android:key="deviceAccessEnabled" />
+        <Preference android:title="@string/deviceAccess_persons" android:key="deviceAccessPersons">
+            <intent android:action="parentalcontrol.action.START_DEVICE_ACCESS_ACTIVITY" />
+        </Preference>
+    </PreferenceCategory>
 </PreferenceScreen>

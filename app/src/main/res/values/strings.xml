@@ -21,9 +21,27 @@
     <string name="SHAREDPREFERENCE_PASSWORD">password</string>
     <string name="SHAREDPREFERENCE_URL_ENABLED">urlEnabled</string>
     <string name="SHAREDPREFERENCE_URLS">urls</string>
+    <string name="SHAREDPREFERENCE_DEVICE_ACCESS_ISENABLED">deviceAccessIsEnabled</string>
+    <string name="SHAREDPREFERENCE_TIME_FROM">timeFrom</string>
+    <string name="SHAREDPREFERENCE_TIME_TO">timeTo</string>
+    <string name="SHAREDPREFERENCE_SELECTED_DAYS">selectedDays</string>
 
     <string name="EXTRA_FACE_REG_ENABLED">hu.uniobuda.nik.extra.FACE_REG_ENABLED</string>
-    <string name="EXTRA_PACKAGE_NAME">hu.uniobuda.nik.extra.PACKAGE_NAMED</string>
+    <string name="EXTRA_PACKAGE_NAME">hu.uniobuda.nik.extra.PACKAGE_NAME</string>
+    <string name="EXTRA_PERSON_NAME">hu.uniobuda.nik.extra.PERSON_NAME</string>
+
+    <string name="BROADCAST_NEW_APP_STARTED">hu.uniobuda.nik.parentalcontrol.NEW_APP_STARTED</string>
+    <string name="BROADCAST_REFRESH_HASHTABLE">hu.uniobuda.nik.parentalcontrol.REFRESH_HASHTABLE</string>
+    <string name="BROADCAST_SET_PACKAGE_FALSE">hu.uniobuda.nik.parentalcontrol.SET_PACKAGE_FALSE</string>
+
+    <string name="monday">hétfő</string>
+    <string name="tuesday">Kedd</string>
+    <string name="wednesday">szerda</string>
+    <string name="thursday">csütörtök</string>
+    <string name="saturday">szombat</string>
+    <string name="sunday">vasárnap</string>
+
+
     <string name="app_name">ParentalControl</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -34,6 +52,8 @@
     <string name="help">Segítség</string>
     <string name="isNotRunning">A szolgáltatás nem fut!</string>
     <string name="isRunning">A szolgáltatás fut!</string>
+    <string name="from">METTŐL</string>
+    <string name="to">MEDDIG</string>
     <string name="back">Vissza</string>
     <string name="save">Mentés</string>
     <string name="cancel">Mégse</string>
@@ -64,13 +84,13 @@
     <string name="url_add_title">URL hozzáadása</string>
     <string name="url_add_message">Írja be a tiltandó URL címet:</string>
     <string name="url_title">URL blokkolás</string>
-    <string name="url_cat_title">Kategória kiválasztása</string>
-    <string name="url_cat_1">Közösségi oldalak</string>
-    <string name="url_cat_2">Felnőtt tartalmú oldalak</string>
     <string name="url_custom_title">URL megadása és törlése</string>
     <string name="url_isOn">URL blokkolás bekapcsolása</string>
     <string name="urlDisabled">Az URL blokkolás funkció nincs bekapcsolva!</string>
     <string name="rootFailed">Az URL blokkolás csak root-olt készülékeken használható!</string>
+    <string name="deviceAccess_title">Készülék hozzáférés</string>
+    <string name="deviceAccess_isEnabled">Készülék hozzáférés korlátozása:</string>
+    <string name="deviceAccess_persons">Korlátozandó személyek beállításai</string>
     <string name="title_activity_settings_activity_new_api">Beállítások</string>
     <string name="deletePerson">Felvett személy törlése</string>
     <string name="deleteAlert">Törlés megerősítése</string>
@@ -101,4 +121,12 @@
     <string name="title_activity_set_new_person">SetNewPersonActivity</string>
     <string name="title_activity_password">PasswordActivity</string>
     <string name="title_activity_url">URLActivity</string>
+    <string name="title_activity_device_access">DeviceAccessActivity</string>
+    <string name="title_activity_device_access_person_settings">DeviceAccessPersonSettingsActivity</string>
+
+    <string name="followingPersonSettings">A következő személy beállításai:</string>
+    <string name="personAccessControlIsEnabled">Korlátozás bekapcsolva a személy számára:</string>
+    <string name="selectDays">Napok kiválasztása</string>
+    <string name="selectFromTime">Mettől legyen korlátozás:</string>
+    <string name="selectToTime">Meddig legyen korlátozás</string>
 </resources>

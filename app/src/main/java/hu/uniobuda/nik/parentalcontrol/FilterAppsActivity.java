@@ -37,6 +37,7 @@ public class FilterAppsActivity extends Activity {
     Button btnBack;
     List<AppInfo> list;
     ArrayList<String> checkedValue = new ArrayList<String>();
+    ArrayList<String> tempDelete = new ArrayList<String>();
     SharedPreferences checkedApps;
 
     @Override
@@ -44,7 +45,7 @@ public class FilterAppsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter_apps);
         checkedApps = getSharedPreferences(getString
-                (R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_PRIVATE);
+                (R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_MULTI_PROCESS);
         appList = (ListView) findViewById(R.id.appList);
         btnSave = (Button) findViewById(R.id.btnSave);
         btnBack = (Button) findViewById(R.id.btnBack);
@@ -56,13 +57,20 @@ public class FilterAppsActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 CheckBox cb = (CheckBox) view.findViewById(R.id.appChk);
                 cb.performClick();
+                String pName = list.get(position).pName;
                 if (cb.isChecked()) {
-                    Log.d("esemeny", list.get(position).pName);
-                    checkedValue.add(list.get(position).pName);
+
+                    Log.d("esemeny", pName);
+                    checkedValue.add(pName);
+                    if(tempDelete.contains(pName))
+                    {
+                        tempDelete.remove(pName);
+                    }
                     //cb.setChecked(false);
                 } else {
                     Log.d("esemeny", "checkvizsgaN");
-                    checkedValue.remove(list.get(position).pName);
+                    checkedValue.remove(pName);
+                    tempDelete.add(pName);
                     //cb.setChecked(true);
                 }
             }
@@ -82,8 +90,13 @@ public class FilterAppsActivity extends Activity {
             public void onClick(View v) {
 
                 Editor e = checkedApps.edit();
-                e.clear();
-                BlockerHashTable.clear();
+                //e.clear();
+                //BlockerHashTable.clear();
+                for (String pckg : tempDelete)
+                {
+                    e.remove(pckg);
+                    BlockerHashTable.deleteBoolean(pckg);
+                }
                 for (String pckg : checkedValue) {
                     e.putBoolean(pckg, true);
                     BlockerHashTable.setBoolean(pckg, true);
@@ -94,7 +107,11 @@ public class FilterAppsActivity extends Activity {
                 e.putBoolean("com.android.settings", true);
                 BlockerHashTable.setBoolean("com.android.settings", true);
                 e.commit();
+
                 Toast.makeText(FilterAppsActivity.this, "" + checkedValue, Toast.LENGTH_LONG).show();
+                Intent broadcast = new Intent();
+                broadcast.setAction(getString(R.string.BROADCAST_REFRESH_HASHTABLE));
+                sendBroadcast(broadcast);
                 finish();
             }
         });

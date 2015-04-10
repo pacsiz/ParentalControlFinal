@@ -5,7 +5,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
+import android.os.*;
 import android.text.Editable;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.security.PrivilegedAction;
+import java.util.List;
 
 public class PasswordRequestActivity
         extends Activity
@@ -54,6 +55,10 @@ public class PasswordRequestActivity
                 if (pw.equals(savedPw))
                 {
                     if (!pName.equals("hu.uniobuda.nik.parentalcontrol")) {
+                        //Intent broadcast = new Intent();
+                       // broadcast.setAction(getString(R.string.BROADCAST_SET_PACKAGE_FALSE));
+                        //broadcast.putExtra(getString(R.string.EXTRA_PACKAGE_NAME),pName);
+                        //sendBroadcast(broadcast);
                         BlockerHashTable.setBoolean(pName, false);
                     }
                     Toast.makeText(PasswordRequestActivity.this,R.string.accessAllowedByPassword,Toast.LENGTH_LONG).show();
@@ -62,13 +67,21 @@ public class PasswordRequestActivity
                 else
                 {
                     Toast.makeText(PasswordRequestActivity.this,R.string.incorrectPassword,Toast.LENGTH_LONG).show();
-                    ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
-                    BlockerHashTable.setBoolean(pName, true);
+                    //ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+                    //BlockerHashTable.setBoolean(pName, true);
                     Intent i = new Intent("android.intent.action.MAIN");
                     i.addCategory("android.intent.category.HOME");
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
-                    am.killBackgroundProcesses(PasswordRequestActivity.this.pName);
+                    //List<ActivityManager.RunningAppProcessInfo> pids = am.getRunningAppProcesses();
+                    /*for(ActivityManager.RunningAppProcessInfo info : pids)
+                    {
+                        if(info.processName.equals(pName))
+                        {
+                            android.os.Process.killProcess(info.pid);
+                            break;
+                        }
+                    }*/
                     finish();
 
                 }

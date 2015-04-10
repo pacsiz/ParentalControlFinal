@@ -1,6 +1,12 @@
 package hu.uniobuda.nik.parentalcontrol;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 public class BlockerHashTable {
 
@@ -23,6 +29,26 @@ public class BlockerHashTable {
     public static boolean containsBoolean(String key) {
         boolean result = tempAllowedPackages.containsKey(key);
         return result;
+    }
+
+    public static void deleteBoolean(String key)
+    {
+        tempAllowedPackages.remove(key);
+    }
+
+    public static void refresh(Context context)
+    {
+        tempAllowedPackages.clear();
+        SharedPreferences sh = context.getSharedPreferences(context.getString
+                (R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_PRIVATE);
+        Map<String, ?> map = sh.getAll();
+        for (Map.Entry entry : map.entrySet()) {
+            tempAllowedPackages.put(entry.getKey().toString(), true);
+            Log.d("pname", entry.getKey().toString());
+        }
+        tempAllowedPackages.put("hu.uniobuda.nik.parentalcontrol", true);
+        tempAllowedPackages.put("com.android.settings", true);
+
     }
 
     public static boolean isEmpty() {
