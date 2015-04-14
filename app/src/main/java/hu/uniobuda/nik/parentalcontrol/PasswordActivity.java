@@ -3,8 +3,11 @@ package hu.uniobuda.nik.parentalcontrol;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -24,6 +27,7 @@ public class PasswordActivity
     SharedPreferences pwSh;
     Button save;
     private static final int PW_MIN_LENGTH = 4;
+    private static int REQUEST_CODE = 1001;
 
 
     protected void onCreate(Bundle paramBundle)
@@ -86,9 +90,39 @@ public class PasswordActivity
                 e.putString(getString
                         (R.string.SHAREDPREFERENCE_PASSWORD), PasswordCreator.createPassword(pw));
                 e.commit();
-                Toast.makeText(PasswordActivity.this, R.string.passwordChanged, Toast.LENGTH_LONG).show();
-                finish();
+
+                DevicePolicyManager dpm
+                        = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+                ComponentName componentName
+                        = new ComponentName(PasswordActivity.this, DevAdminReceiver.class);
+                boolean isAdminActive = dpm.isAdminActive(componentName);
+                if (!isAdminActive) {
+                    Intent i = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+                    i.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
+                    startActivityForResult(i, REQUEST_CODE);
+                }
+                else
+                {
+                    finish();
+                    Toast.makeText(PasswordActivity.this, R.string.passwordChanged, Toast.LENGTH_LONG).show();
+                }
+
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                Toast.makeText(PasswordActivity.this, R.string.passwordChanged, Toast.LENGTH_LONG).show();
+                finish();
+                Log.d("ONRESULT", "Administration enabled!");
+            } else {
+                Log.d("ORESULT", "Administration enable FAILED!");
+            }
+        }
+
     }
 }

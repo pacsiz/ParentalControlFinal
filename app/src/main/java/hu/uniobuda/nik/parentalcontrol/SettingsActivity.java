@@ -66,6 +66,7 @@ public class SettingsActivity extends PreferenceActivity {
 
     public static class SettingsPreferenceFragment extends PreferenceFragment {
         CheckBoxPreference urlEnabled;
+        CheckBoxPreference accessControlEnabled;
         SharedPreferences sh;
         //Context context;
 
@@ -77,6 +78,8 @@ public class SettingsActivity extends PreferenceActivity {
 
             sh = getActivity().getSharedPreferences(getString
                     (R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
+
+            accessControlEnabled = (CheckBoxPreference)findPreference("deviceAccessEnabled");
             urlEnabled = (CheckBoxPreference) findPreference("urlEnabled");
             urlEnabled.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -108,6 +111,16 @@ public class SettingsActivity extends PreferenceActivity {
 
                     }
 
+                    return true;
+                }
+            });
+
+            accessControlEnabled.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    Editor e = sh.edit();
+                    e.putBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED),(boolean) newValue);
+                    e.commit();
                     return true;
                 }
             });

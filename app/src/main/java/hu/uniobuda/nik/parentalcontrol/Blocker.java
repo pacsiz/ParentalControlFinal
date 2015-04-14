@@ -1,11 +1,16 @@
 package hu.uniobuda.nik.parentalcontrol;
 
 import java.util.Hashtable;
+import java.util.Map;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
+
+import org.bytedeco.javacpp.Loader;
+import org.bytedeco.javacpp.opencv_nonfree;
 
 public class Blocker extends BroadcastReceiver {
 
@@ -14,59 +19,52 @@ public class Blocker extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        blockOrNot(context,
-                intent.getStringExtra(context.getResources().getString(R.string.EXTRA_PACKAGE_NAME)),
-                intent.getBooleanExtra(context.getResources().getString(R.string.EXTRA_FACE_REG_ENABLED), false));
-      /*  switch (intent.getAction())
-        {
-            case "hu.uniobuda.nik.parentalcontrol.REFRESH_HASHTABLE":
-                BlockerHashTable.refresh(context);
-                Log.d("OnReceive", "hashrefresh");
-                break;
 
-            case "hu.uniobuda.nik.parentalcontrol.SET_PACKAGE_FALSE":
-                BlockerHashTable.setBoolean(intent.getStringExtra
-                        (context.getString(R.string.EXTRA_PACKAGE_NAME)),false);
-                Log.d("OnReceive", "set_package_false");
-                break;
-            case "hu.uniobuda.nik.parentalcontrol.NEW_APP_STARTED":
+        String packageName = intent.getStringExtra(context.getResources().getString(R.string.EXTRA_PACKAGE_NAME));
+        SharedPreferences persons = context.getSharedPreferences(context.getString(R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
+        SharedPreferences sh = context.getSharedPreferences(context.getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
+        Map map = persons.getAll();
+        boolean faceRecEnabled = sh.getBoolean(context.getString(R.string.SHAREDPREFERENCE_FACE_REG_ENABLED),false);
+        if (intent.getAction().equals("android.intent.action.USER_PRESENT")) {
 
-                Log.d("OnReceive", "newappstarted");
-                break;
-        }
-*/
 
-        /*if (intent.getAction().equals("hu.uniobuda.nik.parentalcontrol.REFRESH_HASHTABLE")) {
-            BlockerHashTable.refresh(context);
-            Log.d("OnReceive", "hashrefresh");
-        } else {
-            pName = intent.getStringExtra(context.getResources().getString
-                    (R.string.EXTRA_PACKAGE_NAME));
-            faceRegEnabled = intent.getBooleanExtra(context.getResources().
-                    getString(R.string.EXTRA_FACE_REG_ENABLED), false);
-            Log.d("OnReceivePN", Boolean.toString(BlockerHashTable.isEmpty()));
+            Log.d("sh_access_control",faceRecEnabled+"");
+            if (sh.getBoolean(context.getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED), false)) {
+                Intent i;
 
-            if (BlockerHashTable.containsBoolean(pName)) {
-                Log.d("OnreceivePN", "if-blockornot");
-                //pName2 = packageName;
-                blockOrNot(context);
+                if (faceRecEnabled && !map.isEmpty()) {
+                    i = new Intent(context,
+                            CheckPersonActivity.class);
+
+                } else {
+                    i = new Intent(context,
+                            PasswordRequestActivity.class);
+                }
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                //i.putExtra(context.getResources().getString
+                        //(R.string.EXTRA_PACKAGE_NAME), packageName);
+                i.putExtra(context.getResources().getString(R.string.EXTRA_ACCESS_CONTROL),true);
+                context.startActivity(i);
             }
-        }*/
+        }
+        else
+        {
+            blockOrNot(context, packageName, faceRecEnabled, map);
+        }
     }
 
-    private void blockOrNot(Context context, String packageName, boolean faceRegEnabled) {
+    private void blockOrNot(Context context, String packageName, boolean faceRecEnabled, Map map) {
         Log.d("blockornot", "blockornot");
-        if (BlockerHashTable.containsBoolean(packageName))
-        {
+        if (BlockerHashTable.containsBoolean(packageName)) {
             if (BlockerHashTable.getBoolean(packageName) == false) {
                 Log.d("blockornot", "if-ben");
-                Log.d("hash",""+ BlockerHashTable.containsBoolean(packageName));
+                Log.d("hash", "" + BlockerHashTable.containsBoolean(packageName));
                 BlockerHashTable.setBoolean(packageName, true);
             } else {
                 Intent i;
-                if (faceRegEnabled) {
+                if (faceRecEnabled && !map.isEmpty()) {
                     Log.d("blockornot", "FACEON");
-                    i = new Intent(CheckService.getContext(),
+                    i = new Intent(context,
                             CheckPersonActivity.class);
                 } else {
                     Log.d("blockornot", "FACEOFF");
@@ -82,4 +80,5 @@ public class Blocker extends BroadcastReceiver {
             }
         }
     }
+
 }

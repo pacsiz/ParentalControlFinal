@@ -11,6 +11,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.PictureCallback;
@@ -21,27 +22,29 @@ import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import java.text.DateFormatSymbols;
+import java.util.*;
+import java.util.Arrays;
+
 public class CheckPersonActivity extends Activity {
 
     private Camera camera = null;
     private static Context context;
     private CameraView cameraPreview;
     CameraInfo info = new CameraInfo();
-    IplImage rec = new IplImage();
     int pResult = -2;
     int fails = 0;
     String packageName;
     private SharedPreferences learnedPersons;
-    FaceRecognizer fr = createLBPHFaceRecognizer();
-
+    boolean accessControl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_person);
 
-        Loader.load(opencv_nonfree.class);
         packageName = getIntent().getStringExtra(getString(R.string.EXTRA_PACKAGE_NAME));
+        accessControl = getIntent().getBooleanExtra(getString(R.string.EXTRA_ACCESS_CONTROL), false);
         learnedPersons = getSharedPreferences(getString
                 (R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
         int frontCameraIndex = CameraSet.getFrontCameraIndex();
@@ -55,12 +58,19 @@ public class CheckPersonActivity extends Activity {
         cameraPreview = new CameraView(this, camera);
         preview.addView(cameraPreview);
 
+        new Thread() {
+            @Override
+            public void run() {
+                Loader.load(opencv_nonfree.class);
+            }
+        }.start();
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 camera.takePicture(null, null, mPicture);
             }
-        }, 3000);
+        }, 5000);
 
         // new DelayedPhoto().execute();
     }
@@ -73,15 +83,8 @@ public class CheckPersonActivity extends Activity {
         }
     };
 
-    private void block() {
-        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        BlockerHashTable.setBoolean(packageName, true);
-        Intent i = new Intent("android.intent.action.MAIN");
-        i.addCategory("android.intent.category.HOME");
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(i);
-        am.killBackgroundProcesses(packageName);
-    }
+
+
 
     @Override
     public void onBackPressed() {
@@ -103,13 +106,15 @@ public class CheckPersonActivity extends Activity {
         protected void onPreExecute() {
             if (!FaceDetection.numberOfFaces(data, CheckPersonActivity.this)) {
                 cancel(true);
+                onPostExecute(null);
             }
         }
 
         @Override
         protected Void doInBackground(Object... params) {
             if (!isCancelled()) {
-                pResult = FaceDetection.predict(data);
+                Bitmap bitmap = FaceDetection.cropFace(data);
+                pResult = FaceDetection.predict(bitmap);
             }
             return null;
         }
@@ -117,22 +122,28 @@ public class CheckPersonActivity extends Activity {
         @Override
         protected void onPostExecute(Void result) {
             Log.d("result", Integer.toString(pResult));
-            Log.d("packageName", packageName);
+            // Log.d("packageName", packageName);
+            Log.d("accessControlEnabled", accessControl + "");
             if (learnedPersons.contains(Integer.toString(pResult))) {
                 String personName = learnedPersons.getString(Integer.toString(pResult), "");
-                String str;
+
                 if (personName.startsWith("CHILD-")) {
-                    str = getString(R.string.childDenied);
-                    Toast.makeText(CheckPersonActivity.this, str + personName.substring(6),
-                            Toast.LENGTH_LONG).show();
-                    block();
-                } else {
-                    str = getString(R.string.accessAllowed);
-                    Toast.makeText(CheckPersonActivity.this, str + personName.substring(0, 1).toUpperCase() +
-                            personName.substring(1), Toast.LENGTH_LONG).show();
-                    if (!packageName.equals(("hu.uniobuda.nik.parentalcontrol"))) {
-                        BlockerHashTable.setBoolean(packageName, false);
+
+                    personName = personName.substring(6, 7).toUpperCase() + personName.substring(7);
+                    Log.d("ChildName", personName);
+                    if (accessControl) {
+                        if (AccessControl.accessControl(personName, CheckPersonActivity.this)) {
+                            AccessControl.allow(CheckPersonActivity.this,personName,null);
+                            finish();
+                        } else {
+                            AccessControl.lock(CheckPersonActivity.this);
+                        }
+                    } else {
+                        AccessControl.deny(CheckPersonActivity.this,personName,packageName);
                     }
+
+                } else {
+                    AccessControl.allow(CheckPersonActivity.this,personName,packageName);
                     finish();
                 }
             } else {
@@ -140,6 +151,7 @@ public class CheckPersonActivity extends Activity {
                 if (fails <= 3) {
                     Toast.makeText(CheckPersonActivity.this,
                             R.string.recognitionFailMessage, Toast.LENGTH_LONG).show();
+                    camera.startPreview();
                     new Handler().postDelayed(new Runnable() {
                         public void run() {
                             camera.takePicture(null, null, mPicture);
@@ -152,7 +164,6 @@ public class CheckPersonActivity extends Activity {
                     i.putExtra(getString(R.string.EXTRA_PACKAGE_NAME), packageName);
                     startActivity(i);
                 }
-
             }
         }
     }

@@ -16,12 +16,14 @@
 
     <string name="SHAREDPREFERENCE_SETTINGS">settings</string>
     <string name="SHAREDPREFERENCE_FACE_REG_ENABLED">faceRegEnabled</string>
+    <string name="SHAREDPREFERENCE_SERVICE_ENABLED">serviceEnabled</string>
     <string name="SHAREDPREFERENCE_PACKAGES">apps</string>
     <string name="SHAREDPREFERENCE_PERSONS">persons</string>
     <string name="SHAREDPREFERENCE_PASSWORD">password</string>
     <string name="SHAREDPREFERENCE_URL_ENABLED">urlEnabled</string>
     <string name="SHAREDPREFERENCE_URLS">urls</string>
-    <string name="SHAREDPREFERENCE_DEVICE_ACCESS_ISENABLED">deviceAccessIsEnabled</string>
+    <string name="SHAREDPREFERENCE_ACCESS_CONTROL_FOR_PERSON">accessControlForPerson</string>
+    <string name="SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED">accessControlEnabled</string>
     <string name="SHAREDPREFERENCE_TIME_FROM">timeFrom</string>
     <string name="SHAREDPREFERENCE_TIME_TO">timeTo</string>
     <string name="SHAREDPREFERENCE_SELECTED_DAYS">selectedDays</string>
@@ -29,13 +31,15 @@
     <string name="EXTRA_FACE_REG_ENABLED">hu.uniobuda.nik.extra.FACE_REG_ENABLED</string>
     <string name="EXTRA_PACKAGE_NAME">hu.uniobuda.nik.extra.PACKAGE_NAME</string>
     <string name="EXTRA_PERSON_NAME">hu.uniobuda.nik.extra.PERSON_NAME</string>
+    <string name="EXTRA_ACCESS_CONTROL">hu.uniobuda.nik.extra.ACCESS_CONTROL</string>
+    <string name="EXTRA_DISABLE_REQUEST">hu.uniobuda.nik.extra.DISABLE_REQUEST</string>
 
     <string name="BROADCAST_NEW_APP_STARTED">hu.uniobuda.nik.parentalcontrol.NEW_APP_STARTED</string>
     <string name="BROADCAST_REFRESH_HASHTABLE">hu.uniobuda.nik.parentalcontrol.REFRESH_HASHTABLE</string>
     <string name="BROADCAST_SET_PACKAGE_FALSE">hu.uniobuda.nik.parentalcontrol.SET_PACKAGE_FALSE</string>
 
     <string name="monday">hétfő</string>
-    <string name="tuesday">Kedd</string>
+    <string name="tuesday">kedd</string>
     <string name="wednesday">szerda</string>
     <string name="thursday">csütörtök</string>
     <string name="saturday">szombat</string>
@@ -107,8 +111,8 @@
     <string name="noPasswordSet">Amígy nincs jelszó beállítva, nem használhatja a szolgáltatást!</string>
     <string name="shortPassword">A beírt jelszó túl rövid!</string>
     <string name="basic_title">Általános beállítások</string>
-    <string name="childDenied">Gyermek hozzáférése letiltva a programhoz:</string>
-    <string name="accessAllowed">Hozzáférés engedélyezve szülő számára:</string>
+    <string name="childDenied">Gyermek hozzáférése blokkolva: </string>
+    <string name="accessAllowed">Hozzáférés engedélyezve: </string>
     <string name="recognitionFailMessage">Az arc azonosítása nem sikerült, kérem készítsen új képet!</string>
     <string name="passwordRequest">Az arc azonosítása háromszor nem sikerült, kérem adja meg a mesterjelszót!</string>
     <string name="title_activity_password_request">Feloldás jelszó segítségével</string>

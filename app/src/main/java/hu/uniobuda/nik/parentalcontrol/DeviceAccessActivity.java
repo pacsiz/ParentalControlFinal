@@ -22,10 +22,10 @@ public class DeviceAccessActivity extends ListActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_device_access);
+        //setContentView(R.layout.activity_device_access);
         persons = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
         Map map = persons.getAll();
-        TreeMap<String, ?> sortedMap = new TreeMap(new ValueComparator(map));
+        TreeMap<String, ?> sortedMap = new TreeMap(new ValueComparatorInc(map));
         sortedMap.putAll(map);
         ArrayList<String> list = new ArrayList<>();
         String[] names = new String[sortedMap.size()];

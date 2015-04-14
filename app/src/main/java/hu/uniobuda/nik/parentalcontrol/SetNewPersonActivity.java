@@ -1,8 +1,6 @@
 package hu.uniobuda.nik.parentalcontrol;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -59,14 +57,20 @@ public class SetNewPersonActivity extends Activity {
     CameraInfo info = new CameraInfo();
     boolean isParentChecked = false;
     int personId = 0;
-
     MatVector matVector = new MatVector(NUMBER_OF_PHOTOS);
+    ArrayList<Bitmap> blist = new ArrayList<Bitmap>();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Loader.load(opencv_nonfree.class);
+        new Thread() {
+            @Override
+            public void run() {
+                Loader.load(opencv_nonfree.class);
+            }
+        }.start();
+
         numberOfPhotos = 0;
         learnedPersons = getSharedPreferences(getString
                 (R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
@@ -85,7 +89,7 @@ public class SetNewPersonActivity extends Activity {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 
         Map<String, ?> map = learnedPersons.getAll();
-        Map sortedMap = new TreeMap(new ValueComparator(map));
+        Map sortedMap = new TreeMap(new ValueComparatorDec(map));
         sortedMap.putAll(map);
 
         if (sortedMap.size() > 0) {
@@ -238,19 +242,6 @@ public class SetNewPersonActivity extends Activity {
         }
     };
 
-    public static Bitmap getBitmapFromBytes(byte[] imageContent) {
-        try {
-            Log.d("onClick", "getBitmapFromBytes");
-
-            return BitmapFactory.decodeByteArray(imageContent, 0,
-                    imageContent.length);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     private class ProcessRawBitmap extends AsyncTask<Object, Object, Void> {
         private byte[] data;
         ProgressDialog pd = new ProgressDialog(SetNewPersonActivity.this);
@@ -265,8 +256,13 @@ public class SetNewPersonActivity extends Activity {
             pd.setTitle(R.string.pleaseWait);
             pd.setMessage(getString(R.string.working));
             pd.show();
+            Log.d("personid", Integer.toString(personId));
+            Log.d("personid", Integer.toString(personId));
             if (!FaceDetection.numberOfFaces(data, SetNewPersonActivity.this)) {
                 cancel(true);
+                pd.dismiss();
+                camera.startPreview();
+                btnCapture.setEnabled(true);
             }
         }
 
@@ -275,7 +271,7 @@ public class SetNewPersonActivity extends Activity {
             pd.dismiss();
             btnCapture.setEnabled(true);
             numberOfPhotos++;
-            if (numberOfPhotos == 5) {
+            if (numberOfPhotos == NUMBER_OF_PHOTOS) {
                 camera.stopPreview();
                 camera.release();
                 new Trainer().execute();
@@ -290,7 +286,11 @@ public class SetNewPersonActivity extends Activity {
         @Override
         protected Void doInBackground(Object... params) {
             if (!isCancelled()) {
-                matVector.put(FaceDetection.matForLBPH(data));
+                //
+                Bitmap bitmap = FaceDetection.cropFace(data);
+                //matVector.put(FaceDetection.matForLBPH(bitmap));
+               // blist.add(FaceDetection.cropFace(data));
+                FaceDetection.saveCroppedFace(bitmap,person,personId);
             }
             return null;
         }
@@ -315,7 +315,9 @@ public class SetNewPersonActivity extends Activity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            FaceDetection.learn(matVector, personId);
+
+            FaceDetection.learnJPG(personId);
+            //FaceDetection.learn(blist, personId);
             return null;
         }
 
@@ -323,7 +325,7 @@ public class SetNewPersonActivity extends Activity {
             // TODO Auto-generated method stub
             Editor e = learnedPersons.edit();
             e.putString(Integer.toString(personId), person);
-            e.commit();
+            e.apply();
         }
 
     }

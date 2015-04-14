@@ -3,13 +3,16 @@ package hu.uniobuda.nik.parentalcontrol;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 
 import org.bytedeco.javacpp.opencv_core.IplImage;
 
 import static org.bytedeco.javacpp.opencv_contrib.*;
 import static org.bytedeco.javacpp.opencv_core.*;
+import static org.bytedeco.javacpp.opencv_highgui.*;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
 
 
@@ -30,10 +33,75 @@ public class FaceDetection {
     private static final int NUMBER_OF_PHOTOS = 5;
     private static final String XML_PATH = Environment.getExternalStorageDirectory().toString() + "/teszt.xml";
 
-    public static void learn(MatVector faces, int label)
+    public static void learnJPG(int personId)
     {
+        File root = Environment.getExternalStorageDirectory();
+
+        FilenameFilter imgFilter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                name = name.toLowerCase();
+                return name.endsWith(".jpg");
+            }
+        };
+
+        File[] imageFiles = root.listFiles(imgFilter);
+
+        MatVector images = new MatVector(imageFiles.length);
+
+        Mat labels = new Mat(imageFiles.length, 1, CV_32SC1);
+
+        IntBuffer labelsBuf = labels.getIntBuffer();
+
+        int counter = 0;
+
+        for (File image : imageFiles) {
+            Mat img = imread(image.getAbsolutePath(), CV_LOAD_IMAGE_GRAYSCALE);
+
+            int label = Integer.parseInt(image.getName().split("\\-")[0]);
+
+            images.put(counter, img);
+
+            labelsBuf.put(counter, label);
+
+            counter++;
+        }
+        Log.d("KÉPEK", Long.toString(images.size()));
+        FaceRecognizer faceRecognizer = createLBPHFaceRecognizer();
+        File f = new File(Environment
+                .getExternalStorageDirectory().toString()+"/teszt.xml");
+        if(f.exists())
+        {
+            faceRecognizer.load(XML_PATH);
+            faceRecognizer.update(images, labels);
+        }
+        else
+        {
+            faceRecognizer.train(images, labels);
+        }
+
+        faceRecognizer.save(Environment
+                .getExternalStorageDirectory().toString()+"/teszt.xml");
+
+        for (File image : imageFiles)
+        {
+            image.delete();
+        }
+    }
+
+
+    public static void learn(ArrayList<Bitmap> faces, int label)
+    {
+
+        //Log.d("tömbméret", Integer.toString(faces.size()));
         Mat labels = new Mat(NUMBER_OF_PHOTOS, 1, CV_32SC1);
+        MatVector matVector = new MatVector(NUMBER_OF_PHOTOS);
+        for(Bitmap face : faces)
+        {
+            matVector.put(matForLBPH(face));
+        }
+        faces.clear();
         IntBuffer intBuff = labels.getIntBuffer();
+        //IntBuffer intBuff = IntBuffer.allocate(NUMBER_OF_PHOTOS);
         int index = 0;
         FaceRecognizer fr = createLBPHFaceRecognizer();
         for (int i = 0; i < NUMBER_OF_PHOTOS; i++)
@@ -41,54 +109,65 @@ public class FaceDetection {
             intBuff.put(i, label);
         }
 
+        //labels.create(NUMBER_OF_PHOTOS,intBuff,CV_32SC1);
+
         File file = new File(XML_PATH);
         if(file.exists())
         {
             fr.load(XML_PATH);
-            fr.update(faces,labels);
+            fr.update(matVector,labels);
         }
         else
         {
-            fr.train(faces,labels);
+            fr.train(matVector,labels);
             fr.save(XML_PATH);
         }
     }
 
-    public static Mat matForLBPH (byte[] rawData)
+    public static Mat matForLBPH (Bitmap face)
     {
-        Bitmap bitmap = getBitmapFromBytes(rawData);
-        FaceDetector fd = new FaceDetector(bitmap.getWidth(), bitmap.getHeight(), 1);
-        Face[] faceArray = new Face[1];
-        fd.findFaces(bitmap, faceArray);
-        Bitmap temp = cropFace(bitmap, faceArray);
-        Log.d("temp méret", Integer.toString(temp.getByteCount()));
-        Bitmap out = temp.copy(Config.ARGB_8888, true);
+        //Bitmap bitmap = getBitmapFromBytes(rawData);
+        //FaceDetector fd = new FaceDetector(bitmap.getWidth(), bitmap.getHeight(), 2);
+        //Face[] faceArray = new Face[2];
+        //fd.findFaces(bitmap, faceArray);
+        //Bitmap temp = cropFace(bitmap, faceArray);
+        Log.d("temp méret", Integer.toString(face.getByteCount()));
+        Bitmap out = face.copy(Config.ARGB_8888, true);
+        face.recycle();
+        face = null;
         int height = out.getHeight();
         int width = out.getWidth();
         Log.d("out méret", Integer.toString(out.getByteCount()));
         IplImage iplTemp = IplImage.create(width, height, IPL_DEPTH_8U, 4);
         IplImage grayImg = IplImage.create(width,height,IPL_DEPTH_8U,1);
-        out.copyPixelsFromBuffer(iplTemp.createBuffer());
+        out.copyPixelsToBuffer(iplTemp.createBuffer());
+        out.recycle();
+        out = null;
         cvCvtColor(iplTemp,grayImg,CV_BGR2GRAY);
-
-        return new Mat(grayImg);
+        Mat mat = new Mat(grayImg);
+        Log.d("matméret", Boolean.toString(mat.isNull()));
+        return mat;
     }
 
-    public static int predict (byte[] rawData)
+    public static int predict (Bitmap bitmap)
     {
         FaceRecognizer fr = createLBPHFaceRecognizer();
         fr.load(XML_PATH);
-        fr.set("threshold", 90);
-        Mat mat = matForLBPH(rawData);
-        return fr.predict(mat);
+        fr.set("threshold", 95);
+        Mat mat = matForLBPH(bitmap);
+       return fr.predict(mat);
+
     }
 
     public static boolean numberOfFaces(byte[] rawData, Context context)
     {
         Bitmap bitmap = getBitmapFromBytes(rawData);
+        //Bitmap out = bitmap.copy(Config.RGB_565, true);
         FaceDetector fd = new FaceDetector(bitmap.getWidth(), bitmap.getHeight(), 2);
         Face[] faces = new Face[2];
         int numOfFaces = fd.findFaces(bitmap,faces);
+        bitmap.recycle();
+        bitmap = null;
         if (numOfFaces == 1)
         {
             return true;
@@ -105,21 +184,21 @@ public class FaceDetection {
         }
     }
 
-    public static boolean saveCroppedFace(byte[] data, String person, int personId) {
-        int numberOfFaces = 0;
-        Bitmap bit = getBitmapFromBytes(data);
+    public static boolean saveCroppedFace(Bitmap croppedFace, String person, int personId) {
+        //int numberOfFaces = 0;
+        //Bitmap bit = getBitmapFromBytes(data);
         // Bitmap out = bit.copy(Config.ARGB_8888, true);
-        Bitmap out = bit.copy(Config.RGB_565, true);
-        FaceDetector fD = new FaceDetector(out.getWidth(), out.getHeight(), 2);
-        Face[] faces = new Face[2];
-        numberOfFaces = fD.findFaces(out, faces);
+        //Bitmap out = bit.copy(Config.RGB_565, true);
+        //FaceDetector fD = new FaceDetector(out.getWidth(), out.getHeight(), 2);
+        //Face[] faces = new Face[2];
+        //numberOfFaces = fD.findFaces(out, faces);
         //Log.d("doinback", Integer.toString(numberOfFaces));
 
-        if (numberOfFaces == 0) {
-            return false;
-        } else {
-            Log.d("doinback", "else");
-            Bitmap b = cropFace(out, faces);
+       // if (numberOfFaces == 0) {
+         //   return false;
+        //} else {
+          //  Log.d("doinback", "else");
+            //Bitmap b = cropFace(out, faces);
 
             try {
                 FileOutputStream fos = new FileOutputStream(Environment
@@ -131,7 +210,7 @@ public class FaceDetection {
                         + "-"
                         + System.currentTimeMillis() + ".jpg");
 
-                b.compress(CompressFormat.JPEG, 90, fos);
+                croppedFace.compress(CompressFormat.JPEG, 90, fos);
 
                 fos.flush();
                 fos.close();
@@ -141,11 +220,15 @@ public class FaceDetection {
                 e.printStackTrace();
             }
             return true;
-        }
+        //}
     }
 
-    private static Bitmap cropFace(Bitmap bitmap, Face[] faces)
+    public static Bitmap cropFace(byte[] data)
     {
+        Bitmap bitmap = getBitmapFromBytes(data);
+        FaceDetector fd = new FaceDetector(bitmap.getWidth(), bitmap.getHeight(), 2);
+        Face[] faces = new Face[2];
+        fd.findFaces(bitmap,faces);
         int faceSize = (int) (faces[0].eyesDistance() * 2);
         PointF centerFace = new PointF();
         faces[0].getMidPoint(centerFace);
@@ -182,15 +265,19 @@ public class FaceDetection {
 
         Bitmap croppedBitmap = Bitmap.createBitmap(bitmap, initX, initY,
                 sizeX, sizeY);
+        bitmap.recycle();
+        bitmap = null;
         Bitmap b = Bitmap
                 .createScaledBitmap(croppedBitmap, 100, 150, false);
         return b;
     }
 
-    private static Bitmap getBitmapFromBytes(byte[] imageContent) {
+    public static Bitmap getBitmapFromBytes(byte[] imageContent) {
         try {
-            return BitmapFactory.decodeByteArray(imageContent, 0,
+            Bitmap bitmap =  BitmapFactory.decodeByteArray(imageContent, 0,
                     imageContent.length);
+
+            return (bitmap.copy(Config.RGB_565,true));
 
         } catch (Exception e) {
             e.printStackTrace();
