@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.view.WindowManager;
 
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.opencv_nonfree;
@@ -25,10 +26,10 @@ public class Blocker extends BroadcastReceiver {
         SharedPreferences sh = context.getSharedPreferences(context.getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
         Map map = persons.getAll();
         boolean faceRecEnabled = sh.getBoolean(context.getString(R.string.SHAREDPREFERENCE_FACE_REG_ENABLED),false);
-        if (intent.getAction().equals("android.intent.action.USER_PRESENT")) {
+        Log.d("blockerbroadcast", intent.getAction());
+        if (intent.getAction().equals(context.getString(R.string.BROADCAST_UNLOCK))) {
 
-
-            Log.d("sh_access_control",faceRecEnabled+"");
+            Log.d("sh_access_control", faceRecEnabled + "");
             if (sh.getBoolean(context.getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED), false)) {
                 Intent i;
 
@@ -46,6 +47,14 @@ public class Blocker extends BroadcastReceiver {
                 i.putExtra(context.getResources().getString(R.string.EXTRA_ACCESS_CONTROL),true);
                 context.startActivity(i);
             }
+        }
+
+        else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF))
+        {
+            Intent i = new Intent(context, LockScreenActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.addFlags(WindowManager.LayoutParams.TYPE_SYSTEM_ERROR);
+            context.startActivity(i);
         }
         else
         {

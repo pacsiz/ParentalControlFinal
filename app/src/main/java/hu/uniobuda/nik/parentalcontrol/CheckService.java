@@ -1,14 +1,19 @@
 package hu.uniobuda.nik.parentalcontrol;
 
+import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.KeyguardManager;
 import android.app.Service;
 import android.app.ActivityManager.RunningTaskInfo;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.view.WindowManager;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -19,6 +24,8 @@ public class CheckService extends Service{
     static Context context;
     SharedPreferences sh;
     boolean frontCamera;
+    BroadcastReceiver screenOff;
+    BroadcastReceiver screenOn;
 
 
     public static Context getContext() {
@@ -28,7 +35,9 @@ public class CheckService extends Service{
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         context = getBaseContext();
+        //((KeyguardManager)getSystemService(Activity.KEYGUARD_SERVICE)).newKeyguardLock("IN").disableKeyguard();
 
+        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         sh = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
         frontCamera = sh.getBoolean(getString
                 (R.string.SHAREDPREFERENCE_FACE_REG_ENABLED), false);
@@ -43,6 +52,28 @@ public class CheckService extends Service{
           IPTablesAPI.blockAllURL(CheckService.this);
         }
 
+        screenOff = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d("servicebroadcast", intent.getAction());
+                Intent i = new Intent(context, LockScreenActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.addFlags(WindowManager.LayoutParams.TYPE_SYSTEM_ERROR);
+                context.startActivity(i);
+                mt.interrupt();
+            }
+        };
+
+        screenOn = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                mt = new MonitorlogThread();
+                mt.start();
+            }
+        };
+
+        registerReceiver(screenOff,new IntentFilter(Intent.ACTION_SCREEN_OFF));
+        registerReceiver(screenOn,new IntentFilter(Intent.ACTION_SCREEN_ON));
         return Service.START_STICKY;
     }
 
@@ -55,6 +86,8 @@ public class CheckService extends Service{
     @Override
     public void onDestroy() {
         mt.interrupt();
+        unregisterReceiver(screenOff);
+        unregisterReceiver(screenOn);
         IPTablesAPI.unblockAllURL(CheckService.this);
         super.onDestroy();
     }

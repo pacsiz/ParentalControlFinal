@@ -37,6 +37,7 @@
     <string name="BROADCAST_NEW_APP_STARTED">hu.uniobuda.nik.parentalcontrol.NEW_APP_STARTED</string>
     <string name="BROADCAST_REFRESH_HASHTABLE">hu.uniobuda.nik.parentalcontrol.REFRESH_HASHTABLE</string>
     <string name="BROADCAST_SET_PACKAGE_FALSE">hu.uniobuda.nik.parentalcontrol.SET_PACKAGE_FALSE</string>
+    <string name="BROADCAST_UNLOCK">hu.uniobuda.nik.extra.UNLOCK</string>
 
     <string name="monday">hétfő</string>
     <string name="tuesday">kedd</string>
@@ -133,4 +134,6 @@
     <string name="selectDays">Napok kiválasztása</string>
     <string name="selectFromTime">Mettől legyen korlátozás:</string>
     <string name="selectToTime">Meddig legyen korlátozás</string>
+    <string name="title_activity_lock_screen">LockScreenActivity</string>
+    <string name="unlock">Feloldás</string>
 </resources>

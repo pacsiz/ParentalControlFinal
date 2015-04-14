@@ -30,7 +30,7 @@ public class AccessControl {
             String weekdays[] = new DateFormatSymbols(Locale.ENGLISH).getWeekdays();
             String[] selectedDays = childSettings.getString(context.getString(R.string.SHAREDPREFERENCE_SELECTED_DAYS), "").split(":");
             Log.d("weekday", weekdays[day].toLowerCase());
-            Log.d("weekday", selectedDays[day]);
+            //Log.d("weekday", selectedDays[day]);
             if (Arrays.asList(selectedDays).contains(weekdays[day].toLowerCase())) {
                 String[] fromTime = childSettings.getString(context.getString(R.string.SHAREDPREFERENCE_TIME_FROM), "").split(":");
                 String[] toTime = childSettings.getString(context.getString(R.string.SHAREDPREFERENCE_TIME_TO), "").split(":");
