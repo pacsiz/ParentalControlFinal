@@ -48,6 +48,8 @@ public class BlockerHashTable {
         }
         tempAllowedPackages.put("hu.uniobuda.nik.parentalcontrol", true);
         tempAllowedPackages.put("com.android.settings", true);
+        tempAllowedPackages.put("com.android.packageinstaller", true);
+
 
     }
 

@@ -174,12 +174,12 @@ public class FaceDetection {
         }
         else if (numOfFaces == 0)
         {
-            Toast.makeText(context, R.string.faceNotFound, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.faceNotFound, Toast.LENGTH_SHORT).show();
             return false;
         }
         else
         {
-            Toast.makeText(context, R.string.moreFaces, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.moreFaces, Toast.LENGTH_SHORT).show();
             return false;
         }
     }

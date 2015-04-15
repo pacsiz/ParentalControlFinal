@@ -22,6 +22,7 @@
         android:id="@+id/appChk"
         android:enabled="false"
         android:focusable="false"
+        android:soundEffectsEnabled="false"
         android:focusableInTouchMode="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

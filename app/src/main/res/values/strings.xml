@@ -43,6 +43,7 @@
     <string name="tuesday">kedd</string>
     <string name="wednesday">szerda</string>
     <string name="thursday">csütörtök</string>
+    <string name="friday">péntek</string>
     <string name="saturday">szombat</string>
     <string name="sunday">vasárnap</string>
 

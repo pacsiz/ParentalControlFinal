@@ -19,6 +19,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -28,6 +29,10 @@ import java.util.Arrays;
 
 public class CheckPersonActivity extends Activity {
 
+    private static final int ACTION_FINISH = 1;
+    private static final int ACTION_NEXTSTEP = 2;
+    private static final int ACTION_HOME = 3;
+    private static final int ACTION_LOCK = 4;
     private Camera camera = null;
     private static Context context;
     private CameraView cameraPreview;
@@ -37,13 +42,19 @@ public class CheckPersonActivity extends Activity {
     String packageName;
     private SharedPreferences learnedPersons;
     boolean accessControl;
-
+    int actionCode = 0;
+    Handler delay = new Handler();
+    Runnable r;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_person);
 
         packageName = getIntent().getStringExtra(getString(R.string.EXTRA_PACKAGE_NAME));
+        if (packageName != null)
+        {
+            actionCode = ACTION_HOME;
+        }
         accessControl = getIntent().getBooleanExtra(getString(R.string.EXTRA_ACCESS_CONTROL), false);
         learnedPersons = getSharedPreferences(getString
                 (R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
@@ -65,12 +76,21 @@ public class CheckPersonActivity extends Activity {
             }
         }.start();
 
-        new Handler().postDelayed(new Runnable() {
+         r = new Runnable() {
             @Override
             public void run() {
                 camera.takePicture(null, null, mPicture);
             }
-        }, 5000);
+        };
+
+
+        delay.postDelayed(r,5000);
+        /*new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                camera.takePicture(null, null, mPicture);
+            }
+        }, 5000);*/
 
         // new DelayedPhoto().execute();
     }
@@ -84,14 +104,32 @@ public class CheckPersonActivity extends Activity {
     };
 
 
+    @Override
+    public void onBackPressed() {
+        if (actionCode != 0)
+        {
+            Intent i = new Intent("android.intent.action.MAIN");
+            i.addCategory("android.intent.category.HOME");
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        if (actionCode == 0)
+        {
+            AccessControl.lock(CheckPersonActivity.this);
+        }
+        delay.removeCallbacks(r);
+        super.onStop();
+    }
 
 
     @Override
-    public void onBackPressed() {
-        Intent i = new Intent("android.intent.action.MAIN");
-        i.addCategory("android.intent.category.HOME");
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+    protected void onDestroy() {
+
+        super.onDestroy();
     }
 
     private class DelayedPhoto extends AsyncTask<Object, Object, Void> {
@@ -133,33 +171,46 @@ public class CheckPersonActivity extends Activity {
                     Log.d("ChildName", personName);
                     if (accessControl) {
                         if (AccessControl.accessControl(personName, CheckPersonActivity.this)) {
-                            AccessControl.allow(CheckPersonActivity.this,personName,null);
-                            finish();
+                            actionCode = ACTION_FINISH;
+
+                            AccessControl.allow(CheckPersonActivity.this, personName, null);
+                            //finish();
                         } else {
+                            actionCode = ACTION_LOCK;
+
                             AccessControl.lock(CheckPersonActivity.this);
+                            //finish;
                         }
+                        finish();
                     } else {
-                        AccessControl.deny(CheckPersonActivity.this,personName,packageName);
+                        actionCode = ACTION_HOME;
+
+                        AccessControl.deny(CheckPersonActivity.this, personName, packageName);
                     }
 
                 } else {
-                    AccessControl.allow(CheckPersonActivity.this,personName,packageName);
+                    actionCode = ACTION_FINISH;
+
+                    AccessControl.allow(CheckPersonActivity.this, personName, packageName);
                     finish();
                 }
             } else {
                 fails += 1;
                 if (fails <= 3) {
                     Toast.makeText(CheckPersonActivity.this,
-                            R.string.recognitionFailMessage, Toast.LENGTH_LONG).show();
+                            R.string.recognitionFailMessage, Toast.LENGTH_SHORT).show();
                     camera.startPreview();
-                    new Handler().postDelayed(new Runnable() {
+                    /*new Handler().postDelayed(new Runnable() {
                         public void run() {
                             camera.takePicture(null, null, mPicture);
                         }
-                    }, 3000);
+                    }, 3000);*/
+                    delay.postDelayed(r,3000);
                 } else {
+                    actionCode = ACTION_NEXTSTEP;
+
                     Toast.makeText(CheckPersonActivity.this,
-                            R.string.passwordRequest, Toast.LENGTH_LONG).show();
+                            R.string.passwordRequest, Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(CheckPersonActivity.this, PasswordRequestActivity.class);
                     i.putExtra(getString(R.string.EXTRA_PACKAGE_NAME), packageName);
                     startActivity(i);

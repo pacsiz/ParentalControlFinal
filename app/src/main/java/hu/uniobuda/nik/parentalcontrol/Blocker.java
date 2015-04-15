@@ -27,13 +27,13 @@ public class Blocker extends BroadcastReceiver {
         Map map = persons.getAll();
         boolean faceRecEnabled = sh.getBoolean(context.getString(R.string.SHAREDPREFERENCE_FACE_REG_ENABLED),false);
         Log.d("blockerbroadcast", intent.getAction());
-        if (intent.getAction().equals(context.getString(R.string.BROADCAST_UNLOCK))) {
+        if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)) {
 
             Log.d("sh_access_control", faceRecEnabled + "");
-            if (sh.getBoolean(context.getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED), false)) {
+            if (sh.getBoolean(context.getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED), false) && ServiceInfo.isServiceRunning(CheckService.class, context)) {
                 Intent i;
 
-                if (faceRecEnabled && !map.isEmpty()) {
+               if (faceRecEnabled && !map.isEmpty()) {
                     i = new Intent(context,
                             CheckPersonActivity.class);
 
@@ -49,13 +49,6 @@ public class Blocker extends BroadcastReceiver {
             }
         }
 
-        else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF))
-        {
-            Intent i = new Intent(context, LockScreenActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            i.addFlags(WindowManager.LayoutParams.TYPE_SYSTEM_ERROR);
-            context.startActivity(i);
-        }
         else
         {
             blockOrNot(context, packageName, faceRecEnabled, map);

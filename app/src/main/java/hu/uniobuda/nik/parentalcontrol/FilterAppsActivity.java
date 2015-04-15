@@ -106,7 +106,9 @@ public class FilterAppsActivity extends Activity {
                 BlockerHashTable.setBoolean("hu.uniobuda.nik.parentalcontrol", true);
                 e.putBoolean("com.android.settings", true);
                 BlockerHashTable.setBoolean("com.android.settings", true);
-                e.commit();
+                e.putBoolean("com.android.packageinstaller",true);
+                BlockerHashTable.setBoolean("com.android.packageinstaller", true);
+                e.apply();
 
                 Toast.makeText(FilterAppsActivity.this, "" + checkedValue, Toast.LENGTH_LONG).show();
                 Intent broadcast = new Intent();
@@ -163,8 +165,8 @@ public class FilterAppsActivity extends Activity {
             }
 
             /*for (AppInfo info : res) {
-                if (checkedApps.contains(info.pName)) {
-                    checkedValue.add(info.pName);
+                if (checkedApps.contains(info.packageName)) {
+                    checkedValue.add(info.packageName);
 
                 }
             }*/

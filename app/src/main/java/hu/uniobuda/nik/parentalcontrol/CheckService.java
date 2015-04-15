@@ -3,6 +3,7 @@ package hu.uniobuda.nik.parentalcontrol;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.BroadcastReceiver;
@@ -10,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -46,6 +48,11 @@ public class CheckService extends Service{
         notification.setContentTitle(getString(R.string.serviceTitle));
         notification.setContentText(getString(R.string.serviceMessage));
         notification.setSmallIcon(R.mipmap.ic_launcher);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, MainScreenActivity.class), 0);
+
+        notification.setContentIntent(contentIntent);
         startForeground(1122, notification.build());
         if(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED),false))
         {
@@ -56,10 +63,6 @@ public class CheckService extends Service{
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.d("servicebroadcast", intent.getAction());
-                Intent i = new Intent(context, LockScreenActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.addFlags(WindowManager.LayoutParams.TYPE_SYSTEM_ERROR);
-                context.startActivity(i);
                 mt.interrupt();
             }
         };
@@ -67,8 +70,14 @@ public class CheckService extends Service{
         screenOn = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mt = new MonitorlogThread();
-                mt.start();
+                Log.d("servicebroadcast", intent.getAction());
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                       mt = new MonitorlogThread();
+                       mt.start();
+                    }
+                }, 3000);
             }
         };
 

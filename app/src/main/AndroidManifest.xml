@@ -110,14 +110,13 @@
             android:enabled="false" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </receiver>
         <receiver android:name=".Blocker" >
             <intent-filter>
                 <action android:name="hu.uniobuda.nik.extra.UNLOCK"/>
                 <action android:name="hu.uniobuda.nik.parentalcontrol.NEW_APP_STARTED" />
-                <action android:name="android.intent.action.SCREEN_OFF" />
+                <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </receiver>
         <receiver android:name=".DevAdminReceiver"

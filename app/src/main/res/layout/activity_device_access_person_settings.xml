@@ -75,7 +75,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
         android:id="@+id/editTextFrom"
         style="@style/Theme.AppCompat.Light"
         android:background="@drawable/edittextstyle"
@@ -84,7 +83,8 @@
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@+id/btnSelectDays"
         android:layout_alignRight="@+id/textView2"
-        android:layout_alignEnd="@+id/textView2" />
+        android:layout_alignEnd="@+id/textView2"
+        android:height="30dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -98,7 +98,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
         android:id="@+id/editTextTo"
         android:background="@drawable/edittextstyle"
         android:layout_alignTop="@+id/editTextFrom"
@@ -108,7 +107,8 @@
         android:layout_alignRight="@+id/textView"
         android:layout_alignEnd="@+id/textView"
         android:layout_above="@+id/btnSelectDays"
-        style="@style/Widget.AppCompat.Light.DropDownItem.Spinner" />
+        style="@style/Widget.AppCompat.Light.DropDownItem.Spinner"
+        android:width="70dp" />
 
     <Button
         android:layout_width="wrap_content"

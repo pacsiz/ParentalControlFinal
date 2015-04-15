@@ -24,7 +24,7 @@ public class AccessControl {
         Log.d("accContEnForChild", accessControlEnabled + "");
         if (!childSettings.getAll().isEmpty() && accessControlEnabled) {
             Calendar time = new GregorianCalendar();
-            int hour = time.get(Calendar.HOUR);
+            int hour = time.get(Calendar.HOUR_OF_DAY);
             int min = time.get(Calendar.MINUTE);
             int day = time.get(Calendar.DAY_OF_WEEK);
             String weekdays[] = new DateFormatSymbols(Locale.ENGLISH).getWeekdays();
@@ -46,18 +46,25 @@ public class AccessControl {
                 int compareFromTime = (fromHour * 60) + fromMin;
                 int compareToTime = (toHour * 60) + toMin;
                 int currentTime = (hour * 60) + min;
+                Log.d("compareFromTime",compareFromTime+"");
+                Log.d("compareToTime",compareToTime+"");
+                Log.d("currentTime",currentTime+"");
 
                 if (fromHour > toHour) //átnyúlik másik napba
                 {
                     if ((compareFromTime >= currentTime && compareToTime <= currentTime)) {
+                        Log.d("From>to","true");
                         return true;
                     } else {
+                        Log.d("From>to","false");
                         return false;
                     }
                 } else {
                     if (compareFromTime <= currentTime && compareToTime >= currentTime) {
+                        Log.d("From<to","false");
                         return false;
                     } else {
+                        Log.d("From<to","true");
                         return true;
                     }
                 }

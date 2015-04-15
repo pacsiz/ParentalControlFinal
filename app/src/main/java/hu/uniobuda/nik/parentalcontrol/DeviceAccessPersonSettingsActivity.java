@@ -55,14 +55,14 @@ public class DeviceAccessPersonSettingsActivity extends Activity {
         minute = currentTime.get(Calendar.MINUTE);
         String weekdays[] = new DateFormatSymbols(Locale.ENGLISH).getWeekdays();
 
-        orderedwd[6] = weekdays[0].toLowerCase();
-        Log.d("ordwdutolsó", orderedwd[6]);
-        for (int i = 0; i < weekdays.length-1; i++)
-        {
-            orderedwd[i] = weekdays[i+1].toLowerCase();
-            Log.d("ordwd",orderedwd[i]);
-        }
 
+        //Log.d("ordwdutolsó", orderedwd[6]);
+        for (int i = 0; i < weekdays.length-2; i++)
+        {
+            orderedwd[i] = weekdays[i+2].toLowerCase();
+            Log.d("ordwd",orderedwd[i]+"<->"+weekdays[i+2]);
+        }
+        orderedwd[6] = weekdays[1].toLowerCase();
 
         String name = getIntent().getStringExtra(getString(R.string.EXTRA_PERSON_NAME)).toLowerCase();
         personName.setText(name.substring(0,1).toUpperCase()+name.substring(1));
@@ -148,6 +148,7 @@ public class DeviceAccessPersonSettingsActivity extends Activity {
                 foreignDays.add(getString(R.string.tuesday));
                 foreignDays.add(getString(R.string.wednesday));
                 foreignDays.add(getString(R.string.thursday));
+                foreignDays.add(getString(R.string.friday));
                 foreignDays.add(getString(R.string.saturday));
                 foreignDays.add(getString(R.string.sunday));
                 DeviceAccessPersonSettingsListAdapter adapter = new DeviceAccessPersonSettingsListAdapter
