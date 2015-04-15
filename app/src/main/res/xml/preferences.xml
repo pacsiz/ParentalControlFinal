@@ -17,9 +17,6 @@
         <Preference android:title="@string/deletePerson">
             <intent android:action="parentalcontrol.action.START_DELETEPERSON_ACTIVITY" />
         </Preference>
-        <Preference android:title="Azonosítás teszt">
-            <intent android:action="parentalcontrol.action.START_REC_TEST" />
-        </Preference>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/url_title">
         <CheckBoxPreference android:title="@string/url_isOn" android:key="urlEnabled" />

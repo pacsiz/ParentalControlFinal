@@ -57,9 +57,6 @@ public class SetNewPersonActivity extends Activity {
     CameraInfo info = new CameraInfo();
     boolean isParentChecked = false;
     int personId = 0;
-    MatVector matVector = new MatVector(NUMBER_OF_PHOTOS);
-    ArrayList<Bitmap> blist = new ArrayList<Bitmap>();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,6 +204,7 @@ public class SetNewPersonActivity extends Activity {
 //		int rotate = (info.orientation - degrees + 360) % 360;
 
         //STEP #2: Set the 'rotation' parameter
+        frontCameraIndex = CameraSet.getFrontCameraIndex();
         camera = Camera.open(frontCameraIndex);
         Camera.Parameters params = camera.getParameters();
         params.setRotation(CameraSet.setCameraRotation(this.getWindowManager().getDefaultDisplay().getRotation(),

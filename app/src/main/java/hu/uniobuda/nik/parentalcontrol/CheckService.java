@@ -55,7 +55,7 @@ public class CheckService extends Service {
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, MainScreenActivity.class), 0);
 
-        notification.setContentIntent(contentIntent);
+       notification.setContentIntent(contentIntent);
         startForeground(1122, notification.build());
         if (sh.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), false)) {
             IPTablesAPI.blockAllURL(CheckService.this);
