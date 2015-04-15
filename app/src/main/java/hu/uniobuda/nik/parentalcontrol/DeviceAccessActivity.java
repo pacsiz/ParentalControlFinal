@@ -30,14 +30,6 @@ public class DeviceAccessActivity extends ListActivity{
         ArrayList<String> list = new ArrayList<>();
         String[] names = new String[sortedMap.size()];
 
-        if(sortedMap.size() == 0)
-        {
-            SharedPreferences.Editor e = persons.edit();
-            e.putString("1111","TESZT");
-            e.putString("1112","CHILD-TESZTGYEREK");
-            e.commit();
-        }
-
         for (Map.Entry<String, ?> entry : sortedMap.entrySet())
         {
             String name = entry.getValue().toString();

@@ -100,7 +100,7 @@ public class AccessControl {
 
     public static void deny(Context context, String personName, String packageName) {
         String str = context.getString(R.string.childDenied);
-        Toast.makeText(context, str + personName.substring(6),
+        Toast.makeText(context, str + personName,
                 Toast.LENGTH_LONG).show();
         block(context, packageName);
     }

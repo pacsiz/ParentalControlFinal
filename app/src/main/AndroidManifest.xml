@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="hu.uniobuda.nik.parentalcontrol"
-    android:installLocation="preferExternal" >
+    package="hu.uniobuda.nik.parentalcontrol">
 
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -20,11 +19,12 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".MainScreenActivity"
             android:excludeFromRecents="true"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,7 +37,7 @@
             android:label="@string/title_activity_check_person"
             android:launchMode="singleInstance"
             android:noHistory="true"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="parentalcontrol.action.START_REC_TEST" />
 
@@ -46,7 +46,8 @@
         </activity>
         <activity
             android:name=".DeletePersonActivity"
-            android:label="@string/deletePerson" >
+            android:label="@string/deletePerson"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="parentalcontrol.action.START_DELETEPERSON_ACTIVITY" />
 
@@ -55,7 +56,8 @@
         </activity>
         <activity
             android:name=".FilterAppsActivity"
-            android:label="@string/selectApps" >
+            android:label="@string/selectApps"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="parentalcontrol.action.START_SELECTAPPS_ACTIVITY" />
 
@@ -64,7 +66,8 @@
         </activity>
         <activity
             android:name=".SetNewPersonActivity"
-            android:label="@string/setNewPerson" >
+            android:label="@string/setNewPerson"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="parentalcontrol.action.START_SETNEWPERSON_ACTIVITY" />
 
@@ -73,10 +76,12 @@
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" />
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".PasswordActivity"
-            android:label="@string/newPassword" >
+            android:label="@string/newPassword"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="parentalcontrol.action.START_SETNEWPASSWORD_ACTIVITY" />
 
@@ -85,7 +90,8 @@
         </activity>
         <activity
             android:name=".URLActivity"
-            android:label="@string/title_activity_url" >
+            android:label="@string/title_activity_url"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="parentalcontrol.action.START_URLACTIVITY" />
 
@@ -107,19 +113,19 @@
 
         <receiver
             android:name=".CheckServiceStarter"
-            android:enabled="false" >
+            android:enabled="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".Blocker" >
+        <receiver android:name=".Blocker">
             <intent-filter>
-                <action android:name="hu.uniobuda.nik.extra.UNLOCK"/>
                 <action android:name="hu.uniobuda.nik.parentalcontrol.NEW_APP_STARTED" />
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".DevAdminReceiver"
+        <receiver
+            android:name=".DevAdminReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
@@ -133,7 +139,8 @@
 
         <activity
             android:name=".DeviceAccessActivity"
-            android:label="@string/title_activity_device_access" >
+            android:label="@string/title_activity_device_access"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="parentalcontrol.action.START_DEVICE_ACCESS_ACTIVITY" />
 
@@ -142,12 +149,8 @@
         </activity>
         <activity
             android:name=".DeviceAccessPersonSettingsActivity"
-            android:label="@string/title_activity_device_access_person_settings" >
-        </activity>
-        <activity
-            android:name=".LockScreenActivity"
-            android:label="@string/title_activity_lock_screen" >
-        </activity>
+            android:label="@string/title_activity_device_access_person_settings"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

@@ -116,7 +116,7 @@
         android:text="@string/selectDays"
         android:id="@+id/btnSelectDays"
         android:layout_marginTop="44dp"
-        style="@style/Widget.AppCompat.ActionButton"
+        style="@style/Base.TextAppearance.AppCompat.Button"
         android:layout_below="@+id/editTextFrom"
         android:layout_centerHorizontal="true" />
 

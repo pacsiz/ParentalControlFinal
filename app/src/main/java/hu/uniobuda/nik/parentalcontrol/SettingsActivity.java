@@ -18,6 +18,7 @@ import android.util.Log;
 public class SettingsActivity extends PreferenceActivity {
 
     CheckBoxPreference urlEnabled;
+    CheckBoxPreference accessControlEnabled;
     SharedPreferences sh;
 
     @Override
@@ -25,37 +26,53 @@ public class SettingsActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             addPreferencesFromResource(R.xml.preferences);
-            if (RootCheck.isDeviceRooted()) {
-                urlEnabled = (CheckBoxPreference) findPreference("urlEnabled");
-                sh = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
-                urlEnabled.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                    @Override
-                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+            urlEnabled = (CheckBoxPreference) findPreference("urlEnabled");
+            accessControlEnabled = (CheckBoxPreference)findPreference("deviceAccessEnabled");
+            sh = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
+
+            urlEnabled.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    if (RootCheck.isDeviceRooted()) {
                         Editor e = sh.edit();
                         e.putBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), (boolean) newValue);
                         Log.d("URL_ENABLED", newValue.toString());
                         e.commit();
-                        if (urlEnabled.isChecked()) {
-                            IPTablesAPI.blockAllURL(SettingsActivity.this);
-                        } else {
-                            IPTablesAPI.unblockAllURL(SettingsActivity.this);
+                        if (ServiceInfo.isServiceRunning(CheckService.class, SettingsActivity.this)) {
+                            if (urlEnabled.isChecked()) {
+                                IPTablesAPI.unblockAllURL(SettingsActivity.this);
+                            } else {
+                                IPTablesAPI.blockAllURL(SettingsActivity.this);
+                            }
                         }
-                        return true;
+                    } else {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(SettingsActivity.this);
+                        dialog.setTitle(R.string.failTitle);
+                        dialog.setMessage(getString(R.string.rootFailed));
+                        dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                urlEnabled.setChecked(false);
+                            }
+                        });
+                        dialog.show();
+
                     }
-                });
-            } else {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-                dialog.setTitle(R.string.failTitle);
-                dialog.setMessage(getString(R.string.rootFailed));
-                dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
-                urlEnabled.setChecked(false);
-            }
+                    return true;
+                }
+            });
+
+            accessControlEnabled.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    Editor e = sh.edit();
+                    e.putBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED),(boolean) newValue);
+                    e.commit();
+                    return true;
+                }
+            });
+
         } else {
             getFragmentManager().beginTransaction()
                     .replace(android.R.id.content, new SettingsPreferenceFragment())

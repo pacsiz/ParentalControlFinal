@@ -17,10 +17,13 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.WindowManager;
 
+import org.bytedeco.javacpp.Loader;
+import org.bytedeco.javacpp.opencv_nonfree;
+
 import java.util.Iterator;
 import java.util.Map;
 
-public class CheckService extends Service{
+public class CheckService extends Service {
 
     MonitorlogThread mt = new MonitorlogThread();
     static Context context;
@@ -36,7 +39,7 @@ public class CheckService extends Service{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        context = getBaseContext();
+       // context = getBaseContext();
         //((KeyguardManager)getSystemService(Activity.KEYGUARD_SERVICE)).newKeyguardLock("IN").disableKeyguard();
 
         //getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
@@ -54,9 +57,17 @@ public class CheckService extends Service{
 
         notification.setContentIntent(contentIntent);
         startForeground(1122, notification.build());
-        if(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED),false))
-        {
-          IPTablesAPI.blockAllURL(CheckService.this);
+        if (sh.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), false)) {
+            IPTablesAPI.blockAllURL(CheckService.this);
+        }
+
+        if (frontCamera) {
+            new Thread() {
+                @Override
+                public void run() {
+                    Loader.load(opencv_nonfree.class);
+                }
+            }.start();
         }
 
         screenOff = new BroadcastReceiver() {
@@ -74,15 +85,15 @@ public class CheckService extends Service{
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                       mt = new MonitorlogThread();
-                       mt.start();
+                        mt = new MonitorlogThread();
+                        mt.start();
                     }
                 }, 3000);
             }
         };
 
-        registerReceiver(screenOff,new IntentFilter(Intent.ACTION_SCREEN_OFF));
-        registerReceiver(screenOn,new IntentFilter(Intent.ACTION_SCREEN_ON));
+        registerReceiver(screenOff, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+        registerReceiver(screenOn, new IntentFilter(Intent.ACTION_USER_PRESENT));
         return Service.START_STICKY;
     }
 
@@ -114,7 +125,7 @@ public class CheckService extends Service{
             while (!this.isInterrupted()) {
 
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(100);
 
                     ActivityManager am = (ActivityManager) getBaseContext()
                             .getSystemService(ACTIVITY_SERVICE);
@@ -125,7 +136,7 @@ public class CheckService extends Service{
                             .getPackageName();
 
                     if (!(foregroundTaskPackageName.equals(previousPackage))
-                            && previousPackage != "") {
+                            && !previousPackage.equals("")) {
                         Log.d("BHT_EMPTY", Boolean.toString(BlockerHashTable.isEmpty()));
                         if (BlockerHashTable.isEmpty()) {
                             BlockerHashTable.refresh(CheckService.this);

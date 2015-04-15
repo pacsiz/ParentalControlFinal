@@ -112,6 +112,7 @@
     <string name="passwordChanged">A jelszót sikeresen megváltoztatta</string>
     <string name="noPasswordSet">Amígy nincs jelszó beállítva, nem használhatja a szolgáltatást!</string>
     <string name="shortPassword">A beírt jelszó túl rövid!</string>
+    <string name="adminNeeded">A eszközkezelő funkció aktiválása szükséges a jelszó mentéséhez!</string>
     <string name="basic_title">Általános beállítások</string>
     <string name="childDenied">Gyermek hozzáférése blokkolva: </string>
     <string name="accessAllowed">Hozzáférés engedélyezve: </string>

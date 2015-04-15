@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/btnStartService"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="14dp"
+        android:paddingBottom="25dp"
         android:text="" />
 
     <Button
@@ -33,13 +33,14 @@
         android:layout_height="wrap_content"
         android:text="@string/settings"
         android:layout_below="@+id/isRunning"
+        android:layout_marginBottom="25dp"
         android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/btnHelp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+
         android:text="@string/help"
         android:layout_below="@+id/btnSettings"
         android:layout_centerHorizontal="true" />

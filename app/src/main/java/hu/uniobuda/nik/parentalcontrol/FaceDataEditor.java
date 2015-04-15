@@ -6,8 +6,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -24,7 +26,11 @@ public class FaceDataEditor {
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.parse(ClassLoader.getSystemResourceAsStream(file));
+        //Document document = builder.parse(ClassLoader.getSystemResourceAsStream(file));
+        Document document;
+        InputStream stream = new FileInputStream(file);
+        document = builder.parse(stream);
+
         NodeList nodeList = document.getDocumentElement().getChildNodes();
 
         for (int i = 0; i < nodeList.getLength(); i++) {
@@ -58,7 +64,10 @@ public class FaceDataEditor {
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.parse(ClassLoader.getSystemResourceAsStream(file));
+        //Document document = builder.parse(ClassLoader.getSystemResourceAsStream(file));
+        Document document;
+        InputStream stream = new FileInputStream(file);
+        document = builder.parse(stream);
         NodeList nodeList = document.getDocumentElement().getChildNodes();
 
         //System.out.println("---- READING ---- " + nodeList.getLength());

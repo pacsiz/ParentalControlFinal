@@ -16,7 +16,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:paddingRight="10dp" />
+        android:layout_marginRight="10dp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -26,7 +26,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="false"
-        android:paddingLeft="10dp" />
+        android:layout_marginLeft="10dp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -45,6 +45,5 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
         android:layout_above="@+id/btnUrlAdd" />
-
 
 </RelativeLayout>

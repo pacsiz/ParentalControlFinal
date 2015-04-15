@@ -11,7 +11,7 @@ public class DevAdminReceiver extends DeviceAdminReceiver{
 
     @Override
     public CharSequence onDisableRequested(Context context, Intent intent) {
-        Log.d("Devadminreceiver", "enabled");
+       /* Log.d("Devadminreceiver", "enabled");
         Intent i = new Intent(context,PasswordRequestActivity.class);
        // i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         //i.putExtra(context.getString(R.string.EXTRA_DISABLE_REQUEST),true);
@@ -20,8 +20,8 @@ public class DevAdminReceiver extends DeviceAdminReceiver{
         intent.putExtra(DeviceAdminReceiver.EXTRA_DISABLE_WARNING,true);
         context.startActivity(intent);
         intent.putExtra(DeviceAdminReceiver.EXTRA_DISABLE_WARNING,"cacaca");
-        return "dfsf";
-
+        return "dfsf";*/
+        return super.onDisableRequested(context,intent);
     }
 
     @Override

@@ -28,6 +28,7 @@ public class PasswordActivity
     Button save;
     private static final int PW_MIN_LENGTH = 4;
     private static int REQUEST_CODE = 1001;
+    Editor e;
 
 
     protected void onCreate(Bundle paramBundle)
@@ -86,10 +87,9 @@ public class PasswordActivity
                     dialog.show();
                     return;
                 }
-                Editor e = pwSh.edit();
+                e = pwSh.edit();
                 e.putString(getString
                         (R.string.SHAREDPREFERENCE_PASSWORD), PasswordCreator.createPassword(pw));
-                e.commit();
 
                 DevicePolicyManager dpm
                         = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
@@ -117,9 +117,11 @@ public class PasswordActivity
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 Toast.makeText(PasswordActivity.this, R.string.passwordChanged, Toast.LENGTH_LONG).show();
+                e.commit();
                 finish();
                 Log.d("ONRESULT", "Administration enabled!");
             } else {
+                Toast.makeText(PasswordActivity.this, R.string.adminNeeded, Toast.LENGTH_LONG).show();
                 Log.d("ORESULT", "Administration enable FAILED!");
             }
         }
