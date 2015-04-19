@@ -94,7 +94,10 @@
     <string name="url_isOn">URL blokkolás bekapcsolása</string>
     <string name="urlDisabled">Az URL blokkolás funkció nincs bekapcsolva!</string>
     <string name="rootFailed">Az URL blokkolás csak root-olt készülékeken használható!</string>
-    <string name="deviceAccess_title">Készülék hozzáférés</string>
+
+    <string name="childSettings">beállításai</string>
+
+
     <string name="deviceAccess_isEnabled">Készülék hozzáférés korlátozása:</string>
     <string name="deviceAccess_persons">Korlátozandó személyek beállításai</string>
     <string name="title_activity_settings_activity_new_api">Beállítások</string>
@@ -130,6 +133,9 @@
     <string name="title_activity_url">URLActivity</string>
     <string name="title_activity_device_access">DeviceAccessActivity</string>
     <string name="title_activity_device_access_person_settings">DeviceAccessPersonSettingsActivity</string>
+    <string name="title_deviceAccess">Készülék hozzáférés</string>
+
+    <string name="title_childControl">Gyermekek korlátozása</string>
 
     <string name="followingPersonSettings">A következő személy beállításai:</string>
     <string name="personAccessControlIsEnabled">Korlátozás bekapcsolva a személy számára:</string>
@@ -137,5 +143,6 @@
     <string name="selectFromTime">Mettől legyen korlátozás:</string>
     <string name="selectToTime">Meddig legyen korlátozás</string>
     <string name="title_activity_lock_screen">LockScreenActivity</string>
-    <string name="unlock">Feloldás</string>
+    <string name="title_activity_child_list_activty">ChildListActivty</string>
+    <string name="title_activity_child_preference">ChildPreferenceActivity</string>
 </resources>

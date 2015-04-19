@@ -2,6 +2,7 @@ package hu.uniobuda.nik.parentalcontrol;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import android.widget.AdapterView.OnItemClickListener;
 import android.app.Activity;
@@ -39,13 +40,23 @@ public class FilterAppsActivity extends Activity {
     ArrayList<String> checkedValue = new ArrayList<String>();
     ArrayList<String> tempDelete = new ArrayList<String>();
     SharedPreferences checkedApps;
+    String personName;
+    Map<String, ?> checkedAppMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter_apps);
         checkedApps = getSharedPreferences(getString
-                (R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_MULTI_PROCESS);
+                (R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_PRIVATE);
+        checkedAppMap = checkedApps.getAll();
+        Log.d("map size", checkedAppMap.size()+"");
+        personName = getIntent().getStringExtra(getString(R.string.EXTRA_PERSON_NAME));
+        if (personName == null)
+        {
+            personName = "all";
+        }
+
         appList = (ListView) findViewById(R.id.appList);
         btnSave = (Button) findViewById(R.id.btnSave);
         btnBack = (Button) findViewById(R.id.btnBack);
@@ -94,26 +105,59 @@ public class FilterAppsActivity extends Activity {
                 //BlockerHashTable.clear();
                 for (String pckg : tempDelete)
                 {
-                    e.remove(pckg);
-                    BlockerHashTable.deleteBoolean(pckg);
+                    String deniedPersons = "";
+                    if (checkedAppMap.containsKey(pckg))
+                    {
+                        deniedPersons = checkedAppMap.get(pckg).toString();
+                    }
+                    Log.d("DELdeniedPersons",deniedPersons);
+                    Log.d("package",pckg);
+                    String[] deniedPerson = deniedPersons.split(":");
+                    if(deniedPerson.length <= 1)
+                    {
+                        e.remove(pckg);
+                        BlockerHashTable.deleteBoolean(pckg);
+                    }
+                    else
+                    {
+                        deniedPersons = deniedPersons.replace(":"+personName,"");
+                        Log.d("DELdenPersReplaced",deniedPersons);
+                        e.putString(pckg,deniedPersons);
+                    }
                 }
                 for (String pckg : checkedValue) {
-                    e.putBoolean(pckg, true);
+                    String deniedPersons = "";
+                    if (checkedAppMap.containsKey(pckg))
+                    {
+                        deniedPersons = checkedAppMap.get(pckg).toString();
+                    }
+                    Log.d("ADDdeniedPersons",deniedPersons);
+                    Log.d("package",pckg);
+                    String[] deniedPerson = deniedPersons.split(":");
+                    if(deniedPerson.length >= 1)
+                    {
+                        deniedPersons = deniedPersons+":"+personName;
+                        Log.d("ADDdenPersReplaced",deniedPersons);
+                        e.putString(pckg,deniedPersons);
+                    }
+                    else{
+
+                        e.putString(pckg,deniedPersons);
+                    }
                     BlockerHashTable.setBoolean(pckg, true);
+                   // e.putBoolean(pckg, true);
+                   // BlockerHashTable.setBoolean(pckg, true);
                     //Log.d("save", pckg);
                 }
-                e.putBoolean("hu.uniobuda.nik.parentalcontrol", true);
+                e.putString("hu.uniobuda.nik.parentalcontrol", "all");
                 BlockerHashTable.setBoolean("hu.uniobuda.nik.parentalcontrol", true);
-                e.putBoolean("com.android.settings", true);
+                e.putString("com.android.settings", "all");
                 BlockerHashTable.setBoolean("com.android.settings", true);
-                e.putBoolean("com.android.packageinstaller",true);
+                e.putString("com.android.packageinstaller","all");
                 BlockerHashTable.setBoolean("com.android.packageinstaller", true);
                 e.apply();
 
-                Toast.makeText(FilterAppsActivity.this, "" + checkedValue, Toast.LENGTH_LONG).show();
-                Intent broadcast = new Intent();
-                broadcast.setAction(getString(R.string.BROADCAST_REFRESH_HASHTABLE));
-                sendBroadcast(broadcast);
+                Toast.makeText(FilterAppsActivity.this, "" + checkedValue, Toast.LENGTH_LONG).show();;
                 finish();
             }
         });
@@ -158,7 +202,11 @@ public class FilterAppsActivity extends Activity {
                     newInfo.pName = info.activityInfo.packageName;
                     newInfo.appIcon = info.loadIcon(getPackageManager());
                     if (checkedApps.contains(newInfo.pName)) {
-                        checkedValue.add(newInfo.pName);
+                        if(checkedAppMap.get(newInfo.pName).toString().contains(personName))
+                        {
+                            Log.d("nevek",checkedAppMap.get(newInfo.pName).toString());
+                            checkedValue.add(newInfo.pName);
+                        }
                     }
                     res.add(newInfo);
                 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="hu.uniobuda.nik.parentalcontrol">
+    package="hu.uniobuda.nik.parentalcontrol"
+    android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -150,7 +151,26 @@
         <activity
             android:name=".DeviceAccessPersonSettingsActivity"
             android:label="@string/title_activity_device_access_person_settings"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="parentalcontrol.action.START_DEVICE_ACCESS_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ChildListActivty"
+            android:label="@string/title_activity_child_list_activty">
+            <intent-filter>
+                <action android:name="parentalcontrol.action.START_CHILDLIST" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            </activity>
+        <activity
+            android:name=".ChildPreferencesActivity"
+            android:label="@string/title_activity_child_preference">
+
+        </activity>
     </application>
 
 </manifest>

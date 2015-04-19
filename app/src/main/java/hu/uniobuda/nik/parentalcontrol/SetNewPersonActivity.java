@@ -86,8 +86,9 @@ public class SetNewPersonActivity extends Activity {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 
         Map<String, ?> map = learnedPersons.getAll();
-        Map sortedMap = new TreeMap(new ValueComparatorDec(map));
+        final Map sortedMap = new TreeMap(new ValueComparatorDec(map));
         sortedMap.putAll(map);
+
 
         if (sortedMap.size() > 0) {
             Iterator it = sortedMap.entrySet().iterator();
@@ -141,7 +142,7 @@ public class SetNewPersonActivity extends Activity {
                                 }
                             });
                     dialog.show();
-                } else if (learnedPersons.contains(person)) {
+                } else if (sortedMap.containsValue(person)) {
                     dialog.setTitle(R.string.failTitle);
                     dialog.setMessage(R.string.nameExistMessage);
                     dialog.setPositiveButton("OK",

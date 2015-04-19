@@ -177,6 +177,7 @@ public class DeviceAccessPersonSettingsActivity extends Activity {
                     public void onClick(DialogInterface dialog, int which) {
                             String days ="";
                             StringBuilder sb = new StringBuilder();
+
                             for (String day : selectedDays)
                             {
                                 sb.append(day+":");

@@ -9,6 +9,11 @@
         <Preference android:title="@string/selectApps">
             <intent android:action="parentalcontrol.action.START_SELECTAPPS_ACTIVITY" />
         </Preference>
+
+        <Preference android:title="@string/title_childControl">
+            <intent android:action="parentalcontrol.action.START_CHILDLIST" />
+
+        </Preference>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/rec_title">
         <Preference android:title="@string/setNewPerson">
@@ -24,7 +29,7 @@
             <intent android:action="parentalcontrol.action.START_URLACTIVITY" />
         </Preference>
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/deviceAccess_title">
+    <PreferenceCategory android:title="@string/title_deviceAccess">
         <CheckBoxPreference android:title="@string/deviceAccess_isEnabled" android:key="deviceAccessEnabled" />
         <Preference android:title="@string/deviceAccess_persons" android:key="deviceAccessPersons">
             <intent android:action="parentalcontrol.action.START_DEVICE_ACCESS_ACTIVITY" />

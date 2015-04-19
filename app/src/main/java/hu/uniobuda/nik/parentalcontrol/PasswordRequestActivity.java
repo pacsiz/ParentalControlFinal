@@ -67,7 +67,7 @@ public class PasswordRequestActivity
                     actionCode = ACTION_FINISH;
                     if(!accessControl) {
 
-                        if (!packageName.equals("hu.uniobuda.nik.parentalcontrol")) {
+                        if (packageName != null && !packageName.equals("hu.uniobuda.nik.parentalcontrol")) {
                             BlockerHashTable.setBoolean(packageName, false);
                         }
                     }
