@@ -115,6 +115,8 @@ public class FilterAppsActivity extends Activity {
                     String[] deniedPerson = deniedPersons.split(":");
                     if(deniedPerson.length <= 1)
                     {
+                        Log.d("del","mindent töröl");
+
                         e.remove(pckg);
                         BlockerHashTable.deleteBoolean(pckg);
                     }
@@ -134,16 +136,16 @@ public class FilterAppsActivity extends Activity {
                     Log.d("ADDdeniedPersons",deniedPersons);
                     Log.d("package",pckg);
                     String[] deniedPerson = deniedPersons.split(":");
-                    if(deniedPerson.length >= 1)
+                    if(!deniedPersons.contains(personName))
                     {
                         deniedPersons = deniedPersons+":"+personName;
                         Log.d("ADDdenPersReplaced",deniedPersons);
                         e.putString(pckg,deniedPersons);
                     }
-                    else{
+                    /*else{
 
                         e.putString(pckg,deniedPersons);
-                    }
+                    }*/
                     BlockerHashTable.setBoolean(pckg, true);
                    // e.putBoolean(pckg, true);
                    // BlockerHashTable.setBoolean(pckg, true);

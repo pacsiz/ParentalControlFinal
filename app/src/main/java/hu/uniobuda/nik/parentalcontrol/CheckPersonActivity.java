@@ -84,7 +84,7 @@ public class CheckPersonActivity extends Activity {
         };
 
 
-        delay.postDelayed(r,5000);
+        delay.postDelayed(r,3000);
         /*new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -185,7 +185,8 @@ public class CheckPersonActivity extends Activity {
                     } else {
                         actionCode = ACTION_HOME;
 
-                        AccessControl.deny(CheckPersonActivity.this, personName, packageName);
+                        //AccessControl.deny(CheckPersonActivity.this, personName, packageName);
+                        AccessControl.personCheck(CheckPersonActivity.this,personName,packageName);
                     }
 
                 } else {

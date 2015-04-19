@@ -15,6 +15,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class AccessControl {
 
@@ -103,6 +104,23 @@ public class AccessControl {
         Toast.makeText(context, str + personName,
                 Toast.LENGTH_LONG).show();
         block(context, packageName);
+    }
+
+
+    public static void personCheck(Context context,String personName, String packageName)
+    {
+        SharedPreferences apps = context.getSharedPreferences(context.getString(R.string.SHAREDPREFERENCE_PACKAGES),Context.MODE_PRIVATE);
+        Map<String, ?> map = apps.getAll();
+        String blockedPerson = map.get(packageName).toString();
+        if(blockedPerson.contains(personName) || blockedPerson.contains("all"))
+        {
+            deny(context,personName,packageName);
+        }
+        else
+        {
+            allow(context,personName,packageName);
+        }
+
     }
 
     public static void lock(Context context) {
