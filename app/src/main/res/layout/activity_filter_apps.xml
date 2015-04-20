@@ -19,16 +19,18 @@
         android:id="@+id/btnSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/appList"
+        android:text="@string/save"
         android:layout_alignParentBottom="true"
-        android:text="@string/save" />
+        android:layout_alignRight="@+id/appList"
+        android:layout_alignEnd="@+id/appList" />
 
-    <Button
-        android:id="@+id/btnBack"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/appList"
-        android:layout_centerHorizontal="true"
-        android:text="@string/back" />
+        android:text="New Text"
+        android:id="@+id/childName"
+        android:layout_alignBottom="@+id/btnSave"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

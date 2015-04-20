@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:pcpref="http://schemas.android.com/apk/res/hu.uniobuda.nik.parentalcontrol">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:key="childPreferenceCategory">
-        <Preference
+        <hu.uniobuda.nik.parentalcontrol.LongTextPreference
             android:title="@string/selectApps"
             android:key="childSelectApps">
             <intent android:action="parentalcontrol.action.START_SELECTAPPS_ACTIVITY" />
-        </Preference>
-        <Preference
+        </hu.uniobuda.nik.parentalcontrol.LongTextPreference>
+        <hu.uniobuda.nik.parentalcontrol.LongTextPreference
             android:title="@string/title_deviceAccess"
             android:key="childDeviceAccess">
             <intent android:action="parentalcontrol.action.START_DEVICE_ACCESS_ACTIVITY" />
-        </Preference>
+        </hu.uniobuda.nik.parentalcontrol.LongTextPreference>
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -2,27 +2,25 @@ package hu.uniobuda.nik.parentalcontrol;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -94,19 +92,22 @@ public class DeletePersonActivity extends ListActivity {
                             public void onClick(DialogInterface arg0, int arg1) {
                                 //int index = Arrays.asList(names).indexOf(name);
                                 int index = nn.indexOf(name);
+                                new Remover(index).execute();
                                 //if (names.length == 1) {
-                                if(nn.size() == 1){
-                                    new File(Environment.getExternalStorageDirectory().toString() + "/teszt.xml").delete();
+                               // File f = new File(getFilesDir(),getString(R.string.xmlName));
+                                /*if(nn.size() == 1){
+                                    f.delete();
                                 } else {
                                     try {
-                                        FaceDataEditor.loadXML(Environment.getExternalStorageDirectory().toString() + "/teszt.xml");
+
+                                        FaceDataEditor.loadXML(f.getAbsolutePath());
                                         Iterator i = FaceDataEditor.faceData.iterator();
                                         while (i.hasNext()) {
                                             if (((FaceData) i.next()).id == Integer.parseInt(labels[index])) {
                                                 i.remove();
                                             }
                                         }
-                                        FaceDataEditor.writeXML(Environment.getExternalStorageDirectory().toString() + "/teszt.xml");
+                                        FaceDataEditor.writeXML(f.getAbsolutePath());
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     } catch (ParserConfigurationException e) {
@@ -118,14 +119,20 @@ public class DeletePersonActivity extends ListActivity {
                                     }
 
 
-                                }
+                                }*/
                                // Arrays.asList(labels).remove(index);
                                // Arrays.asList(names).remove(index);
 
                                 Editor e = persons.edit();
                                 e.remove(ll.get(index));
                                 Log.d("name", nn.get(index));
-                                e.commit();
+                                e.apply();
+                                File sh = new File(getApplicationInfo().dataDir+"/shared_prefs/"+nn.get(index)+".xml");
+                                Log.d("sh_path", sh.getAbsolutePath());
+                                if(sh.exists())
+                                {
+                                    sh.delete();
+                                }
                                 nn.remove(index);
                                 ll.remove(index);
                                 adapter.notifyDataSetChanged();
@@ -135,5 +142,55 @@ public class DeletePersonActivity extends ListActivity {
 
             }
         });
+    }
+
+    private class Remover extends AsyncTask<Void, Void, Void> {
+        ProgressDialog pd = new ProgressDialog(DeletePersonActivity.this);
+        int index;
+        public Remover(int index)
+        {
+            this.index = index;
+        }
+        @Override
+        protected void onPreExecute() {
+            pd.setTitle(R.string.pleaseWait);
+            pd.setMessage(getString(R.string.deleting));
+            pd.show();
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            pd.dismiss();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            File f = new File(getFilesDir(), getString(R.string.xmlName));
+            if (nn.size() == 1) {
+                f.delete();
+            } else {
+                try {
+
+                    FaceDataEditor.loadXML(f.getAbsolutePath());
+                    Iterator i = FaceDataEditor.faceData.iterator();
+                    while (i.hasNext()) {
+                        if (((FaceData) i.next()).id == Integer.parseInt(labels[index])) {
+                            i.remove();
+                        }
+                    }
+                    FaceDataEditor.writeXML(f.getAbsolutePath());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ParserConfigurationException e) {
+                    e.printStackTrace();
+                } catch (SAXException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
     }
 }

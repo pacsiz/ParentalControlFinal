@@ -152,7 +152,7 @@ public class CheckPersonActivity extends Activity {
         protected Void doInBackground(Object... params) {
             if (!isCancelled()) {
                 Bitmap bitmap = FaceDetection.cropFace(data);
-                pResult = FaceDetection.predict(bitmap);
+                pResult = FaceDetection.predict(CheckPersonActivity.this,bitmap);
             }
             return null;
         }

@@ -1,7 +1,5 @@
 package hu.uniobuda.nik.parentalcontrol;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,16 +7,16 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.preference.SwitchPreference;
 import android.util.Log;
 
 public class SettingsActivity extends PreferenceActivity {
 
-    CheckBoxPreference urlEnabled;
-    CheckBoxPreference accessControlEnabled;
+    LongTextCheckBoxPreference urlEnabled;
+    LongTextCheckBoxPreference accessControlEnabled;
     SharedPreferences sh;
 
     @Override
@@ -26,9 +24,12 @@ public class SettingsActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             addPreferencesFromResource(R.xml.preferences);
-            urlEnabled = (CheckBoxPreference) findPreference("urlEnabled");
-            accessControlEnabled = (CheckBoxPreference)findPreference("deviceAccessEnabled");
+            urlEnabled = (LongTextCheckBoxPreference) findPreference("urlEnabled");
+            accessControlEnabled = (LongTextCheckBoxPreference)findPreference("deviceAccessEnabled");
             sh = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
+            urlEnabled.setChecked(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED),false));
+            accessControlEnabled.setChecked(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED),false));
+
 
             urlEnabled.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -81,11 +82,14 @@ public class SettingsActivity extends PreferenceActivity {
         }
     }
 
+
+
     public static class SettingsPreferenceFragment extends PreferenceFragment {
-        CheckBoxPreference urlEnabled;
-        CheckBoxPreference accessControlEnabled;
+        LongTextCheckBoxPreference urlEnabled;
+        LongTextCheckBoxPreference accessControlEnabled;
         SharedPreferences sh;
         //Context context;
+
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -96,8 +100,12 @@ public class SettingsActivity extends PreferenceActivity {
             sh = getActivity().getSharedPreferences(getString
                     (R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
 
-            accessControlEnabled = (CheckBoxPreference)findPreference("deviceAccessEnabled");
-            urlEnabled = (CheckBoxPreference) findPreference("urlEnabled");
+            accessControlEnabled = (LongTextCheckBoxPreference)findPreference("deviceAccessEnabled");
+            urlEnabled = (LongTextCheckBoxPreference) findPreference("urlEnabled");
+
+            urlEnabled.setChecked(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED),false));
+            accessControlEnabled.setChecked(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED),false));
+
             urlEnabled.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -144,4 +152,6 @@ public class SettingsActivity extends PreferenceActivity {
 
         }
     }
+
 }
+

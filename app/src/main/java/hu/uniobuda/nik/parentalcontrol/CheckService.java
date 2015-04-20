@@ -82,13 +82,21 @@ public class CheckService extends Service {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.d("servicebroadcast", intent.getAction());
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mt = new MonitorlogThread();
-                        mt.start();
-                    }
-                }, 3000);
+                if(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED),false)) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mt = new MonitorlogThread();
+                            mt.start();
+                        }
+                    }, 3000);
+                }
+                else
+                {
+                    mt = new MonitorlogThread();
+                    mt.start();
+                }
+
             }
         };
 

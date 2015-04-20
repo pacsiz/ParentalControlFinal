@@ -14,6 +14,8 @@
     <string name="abc_shareactionprovider_share_with_application">Share with %s</string>
     <string name="abc_shareactionprovider_share_with">Share with</string>
 
+    <string name="xmlName">faces.xml</string>
+
     <string name="SHAREDPREFERENCE_SETTINGS">settings</string>
     <string name="SHAREDPREFERENCE_FACE_REG_ENABLED">faceRegEnabled</string>
     <string name="SHAREDPREFERENCE_SERVICE_ENABLED">serviceEnabled</string>
@@ -69,6 +71,10 @@
     <string name="loadingApps">Telepített alkalmazások betöltése...</string>
     <string name="working">Feldolgozás folyamatban...</string>
     <string name="learning">Tanulás folyamatban...</string>
+    <string name="all">minden gyermek</string>
+    <string name="deleting">Törlés...</string>
+
+
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="selectApps">Tiltandó alkalmazások kiválasztása</string>
     <string name="newPersonInfo">Új személy felvételéhez több fényképre van szükség, amely alapján a program meg tudja tanulni az adott személy jellemző vonásait. Ehhez 5 kép fog készülni.</string>
@@ -79,6 +85,7 @@
     <string name="nameLabel">Írja be a nevet:</string>
     <string name="faceNotFound">Nem található arc a képen, kérem készítsen új képet!</string>
     <string name="moreFaces">A képen több arc található, készítsen olyan képet, amelyen csak egy van!</string>
+    <string name="facePredicted">Ez az arc egym ár felvett személyhez tartozik!</string>
     <string name="nameExistMessage">Már van ilyen néven felvett személy!</string>
     <string name="title_activity_check_person">CheckPersonActivity</string>
     <string name="checkLabel">Tartsa az arca előtt a készüléket, néhány másodperc múlva egy fotó készül róla!</string>
@@ -145,4 +152,8 @@
     <string name="title_activity_lock_screen">LockScreenActivity</string>
     <string name="title_activity_child_list_activty">ChildListActivty</string>
     <string name="title_activity_child_preference">ChildPreferenceActivity</string>
+    <string name="title_activity_help">HelpActivity</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

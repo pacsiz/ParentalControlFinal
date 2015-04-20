@@ -3,6 +3,7 @@ package hu.uniobuda.nik.parentalcontrol;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 
@@ -243,6 +244,7 @@ public class SetNewPersonActivity extends Activity {
 
     private class ProcessRawBitmap extends AsyncTask<Object, Object, Void> {
         private byte[] data;
+        int predict;
         ProgressDialog pd = new ProgressDialog(SetNewPersonActivity.this);
 
         public ProcessRawBitmap(byte[] data) {
@@ -269,16 +271,26 @@ public class SetNewPersonActivity extends Activity {
         protected void onPostExecute(Void result) {
             pd.dismiss();
             btnCapture.setEnabled(true);
-            numberOfPhotos++;
-            if (numberOfPhotos == NUMBER_OF_PHOTOS) {
-                camera.stopPreview();
-                camera.release();
-                new Trainer().execute();
+
+            if (predict > -1)
+            {
+                Toast.makeText(SetNewPersonActivity.this,R.string.facePredicted,Toast.LENGTH_SHORT);
+                camera.startPreview();
             }
             else
             {
-                camera.startPreview();
+                numberOfPhotos++;
+                if (numberOfPhotos == NUMBER_OF_PHOTOS) {
+                    camera.stopPreview();
+                    camera.release();
+                    new Trainer().execute();
+                }
+                else
+                {
+                    camera.startPreview();
+                }
             }
+
 
         }
 
@@ -287,9 +299,13 @@ public class SetNewPersonActivity extends Activity {
             if (!isCancelled()) {
                 //
                 Bitmap bitmap = FaceDetection.cropFace(data);
-                //matVector.put(FaceDetection.matForLBPH(bitmap));
-               // blist.add(FaceDetection.cropFace(data));
-                FaceDetection.saveCroppedFace(bitmap,person,personId);
+                predict = FaceDetection.predict(SetNewPersonActivity.this,bitmap);
+                if(predict>-1);
+                {
+                    //matVector.put(FaceDetection.matForLBPH(bitmap));
+                    // blist.add(FaceDetection.cropFace(data));
+                    FaceDetection.saveCroppedFace(SetNewPersonActivity.this, bitmap, person, personId);
+                }
             }
             return null;
         }
@@ -315,7 +331,7 @@ public class SetNewPersonActivity extends Activity {
         @Override
         protected Void doInBackground(Void... params) {
 
-            FaceDetection.learnJPG(personId);
+            FaceDetection.learnJPG(personId, SetNewPersonActivity.this);
             //FaceDetection.learn(blist, personId);
             return null;
         }

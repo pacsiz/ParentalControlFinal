@@ -35,7 +35,7 @@ public class FilterAppsActivity extends Activity {
     AppListAdapter adapter;
     ListView appList;
     Button btnSave;
-    Button btnBack;
+    TextView childName;
     List<AppInfo> list;
     ArrayList<String> checkedValue = new ArrayList<String>();
     ArrayList<String> tempDelete = new ArrayList<String>();
@@ -51,15 +51,20 @@ public class FilterAppsActivity extends Activity {
                 (R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_PRIVATE);
         checkedAppMap = checkedApps.getAll();
         Log.d("map size", checkedAppMap.size()+"");
+        appList = (ListView) findViewById(R.id.appList);
+        btnSave = (Button) findViewById(R.id.btnSave);
+        childName = (TextView)findViewById(R.id.childName);
         personName = getIntent().getStringExtra(getString(R.string.EXTRA_PERSON_NAME));
         if (personName == null)
         {
             personName = "all";
+            childName.setText(getString(R.string.followingPersonSettings)+getString(R.string.all));
+        }
+        else
+        {
+            childName.setText(getString(R.string.followingPersonSettings)+personName);
         }
 
-        appList = (ListView) findViewById(R.id.appList);
-        btnSave = (Button) findViewById(R.id.btnSave);
-        btnBack = (Button) findViewById(R.id.btnBack);
         checkedValue.clear();
         new backgroundLoadAppList().execute();
 
@@ -87,13 +92,6 @@ public class FilterAppsActivity extends Activity {
             }
         });
 
-        btnBack.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                // TODO Auto-generated method stub
-                finish();
-            }
-        });
 
         btnSave.setOnClickListener(new OnClickListener() {
 
@@ -158,8 +156,6 @@ public class FilterAppsActivity extends Activity {
                 e.putString("com.android.packageinstaller","all");
                 BlockerHashTable.setBoolean("com.android.packageinstaller", true);
                 e.apply();
-
-                Toast.makeText(FilterAppsActivity.this, "" + checkedValue, Toast.LENGTH_LONG).show();;
                 finish();
             }
         });
