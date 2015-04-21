@@ -1,8 +1,11 @@
 package hu.uniobuda.nik.parentalcontrol;
 
+import android.util.Log;
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Random;
 
 public class PasswordCreator {
 
@@ -29,6 +32,21 @@ public class PasswordCreator {
             e.printStackTrace();
         }
         return hash;
+    }
+
+
+    public static String randomPassword()
+    {
+        Random rnd = new Random();
+        StringBuilder builder = new StringBuilder();
+        //int randomLength = rnd.nextInt(6);
+        char c;
+        for (int i = 0; i < 6; i++){
+            c = (char) (rnd.nextInt(25) + 97);
+            builder.append(c);
+        }
+        Log.d("newpw",builder.toString());
+        return builder.toString();
     }
 
     private static String bytesToHex( byte[] bytes )

@@ -50,19 +50,20 @@ public class FilterAppsActivity extends Activity {
         checkedApps = getSharedPreferences(getString
                 (R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_PRIVATE);
         checkedAppMap = checkedApps.getAll();
-        Log.d("map size", checkedAppMap.size()+"");
+        for(Map.Entry<String, ?> entry : checkedAppMap.entrySet())
+        {
+            Log.d("pacakage", entry.getKey());
+        }
+        Log.d("map size", checkedAppMap.size() + "");
         appList = (ListView) findViewById(R.id.appList);
         btnSave = (Button) findViewById(R.id.btnSave);
-        childName = (TextView)findViewById(R.id.childName);
+        childName = (TextView) findViewById(R.id.childName);
         personName = getIntent().getStringExtra(getString(R.string.EXTRA_PERSON_NAME));
-        if (personName == null)
-        {
+        if (personName == null) {
             personName = "all";
-            childName.setText(getString(R.string.followingPersonSettings)+getString(R.string.all));
-        }
-        else
-        {
-            childName.setText(getString(R.string.followingPersonSettings)+personName);
+            childName.setText(getString(R.string.followingPersonSettings) + getString(R.string.all));
+        } else {
+            childName.setText(getString(R.string.followingPersonSettings) + personName);
         }
 
         checkedValue.clear();
@@ -78,8 +79,7 @@ public class FilterAppsActivity extends Activity {
 
                     Log.d("esemeny", pName);
                     checkedValue.add(pName);
-                    if(tempDelete.contains(pName))
-                    {
+                    if (tempDelete.contains(pName)) {
                         tempDelete.remove(pName);
                     }
                     //cb.setChecked(false);
@@ -101,61 +101,57 @@ public class FilterAppsActivity extends Activity {
                 Editor e = checkedApps.edit();
                 //e.clear();
                 //BlockerHashTable.clear();
-                for (String pckg : tempDelete)
-                {
+                for (String pckg : tempDelete) {
                     String deniedPersons = "";
-                    if (checkedAppMap.containsKey(pckg))
-                    {
+                    if (checkedAppMap.containsKey(pckg)) {
                         deniedPersons = checkedAppMap.get(pckg).toString();
                     }
-                    Log.d("DELdeniedPersons",deniedPersons);
-                    Log.d("package",pckg);
-                    String[] deniedPerson = deniedPersons.split(":");
-                    if(deniedPerson.length <= 1)
-                    {
-                        Log.d("del","mindent töröl");
+                    Log.d("DELdeniedPersons", deniedPersons);
+                    Log.d("package", pckg);
+                    //String[] deniedPerson = deniedPersons.split(":");
 
+                    deniedPersons = deniedPersons.replace(":" + personName, "");
+                    Log.d("DELdenPersReplaced", deniedPersons);
+
+                    if (deniedPersons.equals("")) {
+                        Log.d("deniedPerson", "ITTJÁR");
                         e.remove(pckg);
-                        BlockerHashTable.deleteBoolean(pckg);
-                    }
-                    else
-                    {
-                        deniedPersons = deniedPersons.replace(":"+personName,"");
-                        Log.d("DELdenPersReplaced",deniedPersons);
-                        e.putString(pckg,deniedPersons);
+                    } else {
+                        e.putString(pckg, deniedPersons);
                     }
                 }
                 for (String pckg : checkedValue) {
                     String deniedPersons = "";
-                    if (checkedAppMap.containsKey(pckg))
-                    {
+                    if (checkedAppMap.containsKey(pckg)) {
                         deniedPersons = checkedAppMap.get(pckg).toString();
                     }
-                    Log.d("ADDdeniedPersons",deniedPersons);
-                    Log.d("package",pckg);
-                    String[] deniedPerson = deniedPersons.split(":");
-                    if(!deniedPersons.contains(personName))
-                    {
-                        deniedPersons = deniedPersons+":"+personName;
-                        Log.d("ADDdenPersReplaced",deniedPersons);
-                        e.putString(pckg,deniedPersons);
+                    Log.d("ADDdeniedPersons", deniedPersons);
+                    Log.d("package", pckg);
+                    //String[] deniedPerson = deniedPersons.split(":");
+                    if (!deniedPersons.contains(personName)) {
+                        deniedPersons = deniedPersons + ":" + personName;
+                        Log.d("ADDdenPersReplaced", deniedPersons);
+                        e.putString(pckg, deniedPersons);
                     }
                     /*else{
 
                         e.putString(pckg,deniedPersons);
                     }*/
                     BlockerHashTable.setBoolean(pckg, true);
-                   // e.putBoolean(pckg, true);
-                   // BlockerHashTable.setBoolean(pckg, true);
+                    // e.putBoolean(pckg, true);
+                    // BlockerHashTable.setBoolean(pckg, true);
                     //Log.d("save", pckg);
                 }
+
+
                 e.putString("hu.uniobuda.nik.parentalcontrol", "all");
-                BlockerHashTable.setBoolean("hu.uniobuda.nik.parentalcontrol", true);
+                //BlockerHashTable.setBoolean("hu.uniobuda.nik.parentalcontrol", true);
                 e.putString("com.android.settings", "all");
-                BlockerHashTable.setBoolean("com.android.settings", true);
-                e.putString("com.android.packageinstaller","all");
-                BlockerHashTable.setBoolean("com.android.packageinstaller", true);
+                //BlockerHashTable.setBoolean("com.android.settings", true);
+                e.putString("com.android.packageinstaller", "all");
+                //BlockerHashTable.setBoolean("com.android.packageinstaller", true);
                 e.apply();
+                BlockerHashTable.refresh(FilterAppsActivity.this);
                 finish();
             }
         });
@@ -200,9 +196,8 @@ public class FilterAppsActivity extends Activity {
                     newInfo.pName = info.activityInfo.packageName;
                     newInfo.appIcon = info.loadIcon(getPackageManager());
                     if (checkedApps.contains(newInfo.pName)) {
-                        if(checkedAppMap.get(newInfo.pName).toString().contains(personName))
-                        {
-                            Log.d("nevek",checkedAppMap.get(newInfo.pName).toString());
+                        if (checkedAppMap.get(newInfo.pName).toString().contains(personName)) {
+                            Log.d("nevek", checkedAppMap.get(newInfo.pName).toString());
                             checkedValue.add(newInfo.pName);
                         }
                     }

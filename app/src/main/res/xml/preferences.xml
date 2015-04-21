@@ -38,10 +38,5 @@
             android:title="@string/deviceAccess_isEnabled"
             android:key="deviceAccessEnabled"
             android:persistent="false"/>
-        <hu.uniobuda.nik.parentalcontrol.LongTextPreference
-            android:title="@string/deviceAccess_persons"
-            android:key="deviceAccessPersons">
-            <intent android:action="parentalcontrol.action.START_DEVICE_ACCESS_ACTIVITY" />
-        </hu.uniobuda.nik.parentalcontrol.LongTextPreference>
     </PreferenceCategory>
 </PreferenceScreen>

@@ -15,7 +15,13 @@
     <string name="abc_shareactionprovider_share_with">Share with</string>
 
     <string name="xmlName">faces.xml</string>
-
+    <string name="email">oeparentalcontrol@gmail.com</string>
+    <string name="email_password">p4r3nt4lc0ntr0l</string>
+    <string name="subject">Elfelejtett jelszó</string>
+    <string name="email_text">Parental Control alkalmazáshoz genereált új jelszava: </string>
+    <string name="email_sent">Új jelszó e-mailben elküldve!</string>
+    <string name="email_send_fail">Nincs internetkapcsolat, az új jelszó nem küldhető el!</string>
+    
     <string name="SHAREDPREFERENCE_SETTINGS">settings</string>
     <string name="SHAREDPREFERENCE_FACE_REG_ENABLED">faceRegEnabled</string>
     <string name="SHAREDPREFERENCE_SERVICE_ENABLED">serviceEnabled</string>
@@ -29,6 +35,7 @@
     <string name="SHAREDPREFERENCE_TIME_FROM">timeFrom</string>
     <string name="SHAREDPREFERENCE_TIME_TO">timeTo</string>
     <string name="SHAREDPREFERENCE_SELECTED_DAYS">selectedDays</string>
+    <string name="SHAREDPREFERENCE_EMAIL">email</string>
 
     <string name="EXTRA_FACE_REG_ENABLED">hu.uniobuda.nik.extra.FACE_REG_ENABLED</string>
     <string name="EXTRA_PACKAGE_NAME">hu.uniobuda.nik.extra.PACKAGE_NAME</string>
@@ -116,7 +123,9 @@
     <string name="newPw">Új jelszó:</string>
     <string name="getPw">Jelszó megadása:</string>
     <string name="pwConfirm">Jelszó megerősítése:</string>
+    <string name="email_address">E-mail cím megadása:</string>
     <string name="passwordFailMessage">A beírt jelszavak nem egyeznek!</string>
+    <string name="emailFailMessage">Hibás e-mail címet adott meg!</string>
     <string name="incorrectPassword">Hibás jelszó, hozzáférés megtagadva!</string>
     <string name="noPassword">Írjon be egy jelszót!</string>
     <string name="passwordChanged">A jelszót sikeresen megváltoztatta</string>
@@ -130,17 +139,19 @@
     <string name="passwordRequest">Az arc azonosítása háromszor nem sikerült, kérem adja meg a mesterjelszót!</string>
     <string name="title_activity_password_request">Feloldás jelszó segítségével</string>
     <string name="OK">Rendben</string>
+    <string name="forgotPassword">Elfelejtett jelszó</string>
     <string name="accessAllowedByPassword">Hozzáférés engedélyezve, jelszó megadásával!</string>
     <string name="serviceTitle">Parental Control Service</string>
     <string name="serviceMessage">A védelem aktív</string>
-    <string name="title_activity_delete_person">DeletePersonActivity</string>
-    <string name="title_activity_filter_apps">FilterAppsActivity</string>
-    <string name="title_activity_set_new_person">SetNewPersonActivity</string>
-    <string name="title_activity_password">PasswordActivity</string>
-    <string name="title_activity_url">URLActivity</string>
-    <string name="title_activity_device_access">DeviceAccessActivity</string>
-    <string name="title_activity_device_access_person_settings">DeviceAccessPersonSettingsActivity</string>
-    <string name="title_deviceAccess">Készülék hozzáférés</string>
+
+    <string name="title_activity_delete_person">Személy törlése</string>
+    <string name="title_activity_filter_apps">Tiltandó alkalmazások</string>
+    <string name="title_activity_set_new_person">Új személy felvétele</string>
+    <string name="title_activity_password">Mesterjelszó beállítása</string>
+    <string name="title_activity_url">Tiltandó URL-ek megadása</string>
+    <string name="title_activity_device_access">Készülék-hozzáférés beállítása</string>
+    <string name="title_activity_device_access_person_settings">Készülék-hozzáférés beállítása</string>
+    <string name="title_deviceAccess">Készülék-hozzáférés</string>
 
     <string name="title_childControl">Gyermekek korlátozása</string>
 
@@ -149,11 +160,66 @@
     <string name="selectDays">Napok kiválasztása</string>
     <string name="selectFromTime">Mettől legyen korlátozás:</string>
     <string name="selectToTime">Meddig legyen korlátozás</string>
-    <string name="title_activity_lock_screen">LockScreenActivity</string>
-    <string name="title_activity_child_list_activty">ChildListActivty</string>
-    <string name="title_activity_child_preference">ChildPreferenceActivity</string>
-    <string name="title_activity_help">HelpActivity</string>
+
+    <string name="title_activity_child_list_activty">Felvett gyermekek</string>
+    <string name="title_activity_child_preference">Gyermek beállításai</string>
+    <string name="title_activity_help">Segítség</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="help_main_screen_text">Köszönöm, hogy kipróbálja az alkalmazásomat!</string>
+    <string name="help_main_screen_text2">A Parental Control applikáció segítségével lehetősége nyílik a kiválasztott alkalmazások elindítását és a készülék
+    feloldását azonosításhoz kötni. Amennyiben a készülék rendelkezik előlapi kamerával, mindez arc alapján történik, ellenkező esetben jelszó segítségével. Ezen felül
+    a program képes megadott URL címek tiltására is - ez a funkció azonban csak root-olt eszközökön működik!</string>
+    <string name="help_main_screen_text3">A program használatához mindenképp meg kell adnia egy mesterjelszót, mely segítségével feloldhatja a blokkolást, abban
+    az esetben is, ha az arc alapú azonosítás nem volt sikeres!</string>
+    <string name="help_main_screen_text4">A védelmi funkciók mindegyike csak akkor működik, ha elindította a szolgáltatást, amelyet a főképernyő
+    ""Szolgáltatás indítása"" gombbal tehet meg, és addig aktív, amíg ugyanezen gomb segítségével le nem állította!</string>
+
+    <string name="help_password_text">Ahhoz, hogy használni tudja a programot először meg kell adnia egy jelszót és egy e-mail címet a Beállítások->
+    Mesterjelszó megadása menüpont alatt. A jelszó legalább 4, maximum 10 karakteres lehet. A program ezt a jelszót fogja kérni, ha
+    az arc azonosítás nem lehetséges vagy sikertelen volt.</string>
+    <string name="help_password_text2">Az arc alapú azonosítással a program háromszor próbálkozik, ezt követően kerül sor a jelszóval való feloldásra.</string>
+    <string name="help_password_text3">Amennyiben elfelejtette jelszavát, a feloldó képernyő bal alsó sarkában kattintson Elfelejtett jelszó gombra, ezután a program
+    egy új jelszót generál, melyet a megadott e-mail címre küld el</string>
+    <string name="help_password_text4">Amennyiben rossz e-mail címet adott meg vagy nincs internetkapcsolat, az új jelszót tartalmazó e-mail nem küldhető el!</string>
+    <string name="help_password_text5">Ha nincs internetkapcsolat, a program automatikusan bekapcsolja a Wi-Fi-t és ezután újra próbálkozhat az új jelszó küldésével!</string>
+
+    <string name="help_apps_text">A Beállítások->Tiltandó alkalmazások kiválasztása menüpont alatt azokat a programokat választhatja ki, melyeket
+    minden gyermek számára letiltana. A Gyermek korlátozása menüpont alatt a felvett gyermek nevére kattintva személyre szabhatja ezt a listát.</string>
+    <string name="help_apps_text2">A minden gyermek számára tiltott alkalmazások értelemszerűen azokra is vonatkoznak, akiknél a személyre szabott listán
+    nincs beállítáva az adott alkalmazás!</string>
+
+    <string name="help_person_text">A Beállítások->Új személy felvétele menüpont alatt lehetséges új személy megadása az arc alapú azonosításhoz.
+    Először meg kell adni a személy nevét (egy nevet csak egyszer lehet felvenni), valamint hogy a felvenni kívánt személy szülő-e.</string>
+    <string name="help_person_text2">Az a személy, aki szülőként lett felvéve, engedélyezett minden korlátozás feloldására!</string>
+    <string name="help_person_text3">Az adatok megadása után az Új személy felvétele gombra kattintva kezdheti meg a fényképek elkészítését. 5 képet kell készíteni, a kép
+    készítése gombra kattintva, ezután a program megtanulja az adott arc vonásait.</string>
+    <string name="help_person_text4">Ajánlott, hogy a hétköznapokban előforduló, különböző mimikákat használjunk (pl. mosoly),
+    hogy az arc alapú azonosítás nagyobb eséllyel legyen sikeres!</string>
+    <string name="help_person_text5">Egy felvett személy törölhető a Beállítások->Felvett személy törlése menüpont alatt, a személy nevére koppintva.</string>
+    <string name="help_person_text6">Az a személy, aki nincs felvéve, nem ismeri program, tehát nem jogosult a tiltások feloldására!</string>
+
+    <string name="help_url_text">Ahhoz, hogy az URL blokkolás működjön, root-olt készülékre van szükség!</string>
+    <string name="help_url_text2">Az URL blokkolás használatához először engedélyeznie kell az opciót a Beállítások->
+    URL blokkolás bekapcsolása lehetőség alatt. Ezután az URL megadása és törlése menüpont alatt adhat meg, illetve
+    törölhet webcímeket</string>
+    <string name="help_url_text3">Az URL címek blokkolása nem személyhez kötött, azaz a megadott címek minden esetben tiltásra kerülnek!</string>
+    
+    <string name="help_deviceAccess_text">A készülék-hozzáférés használatához először engedélyeznie kell az opciót a Beállítások->Készülék-hozzáférés korlátozása lehetőség alatt
+    Ezt követően a készülék feloldásakor a program azonosítást fog kérni. A Gyermekek korlátozása menüpont alatt a kiválasztott személynél megadható, hogy az adott gyermekre érvényes legyen-e
+    a korlátozás, ha igen, mely napokon és mely időpontok között</string>
+    <string name="help_deviceAccess_text2">Az a gyermek, akinél nem lett külön engedélyezve a készülék-hozzáférés korlátozása, feloldhatja a készüléket!</string>
+
+    <string name="help_main_screen_title">Bevezető</string>
+    <string name="help_password_title">Jelszó</string>
+    <string name="help_apps_title">Alkalmazások tiltása</string>
+    <string name="help_childControl_title">Gyermek korlátozása</string>
+    <string name="help_person_title">Személyek kezelése</string>
+    <string name="help_url_title">URL tiltás</string>
+    <string name="help_deviceAccess_title">Készülék-hozzáférés</string>
+
+    <string name="about">Szülői felügyelet támogatása mobil alkalmazással\n
+    Matolcsi Dániel\nOE-NIK\n2015</string>
 </resources>

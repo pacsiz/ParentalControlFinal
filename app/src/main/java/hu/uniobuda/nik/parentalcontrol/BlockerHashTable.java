@@ -50,7 +50,6 @@ public class BlockerHashTable {
         tempAllowedPackages.put("com.android.settings", true);
         tempAllowedPackages.put("com.android.packageinstaller", true);
 
-
     }
 
     public static boolean isEmpty() {

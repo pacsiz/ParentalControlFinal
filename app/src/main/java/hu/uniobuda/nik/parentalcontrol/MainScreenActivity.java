@@ -14,6 +14,8 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,12 +31,13 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-public class MainScreenActivity extends Activity {
+public class MainScreenActivity extends ActionBarActivity {
 
 
     TextView serviceState;
     Button btnSettings;
     Button btnStartService;
+    Button btnHelp;
     boolean isRunning;
     SharedPreferences sh;
 
@@ -47,6 +50,7 @@ public class MainScreenActivity extends Activity {
         serviceState = (TextView) findViewById(R.id.isRunning);
         btnSettings = (Button) findViewById(R.id.btnSettings);
         btnStartService = (Button) findViewById(R.id.btnStartService);
+        btnHelp = (Button)findViewById(R.id.btnHelp);
         isRunning = ServiceInfo.isServiceRunning(CheckService.class, MainScreenActivity.this);
         sh = getSharedPreferences(getString
                 (R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
@@ -95,16 +99,16 @@ public class MainScreenActivity extends Activity {
         btnStartService.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                sh = getSharedPreferences(getString
-                        (R.string.SHAREDPREFERENCE_PASSWORD), Context.MODE_PRIVATE);
+                //sh = getSharedPreferences(getString
+                       // (R.string.SHAREDPREFERENCE_PASSWORD), Context.MODE_PRIVATE);
 
                 PackageManager pm = getPackageManager();
                 ComponentName receiver = new ComponentName(MainScreenActivity.this, CheckServiceStarter.class);
 
                 if (sh.contains(getString
                         (R.string.SHAREDPREFERENCE_PASSWORD))) {
-                    SharedPreferences serviceEnabled = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
-                    Editor e = serviceEnabled.edit();
+                    //SharedPreferences serviceEnabled = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
+                   // Editor e = serviceEnabled.edit();
                     if (!isRunning) {
                         //e.putBoolean(getString(R.string.SHAREDPREFERENCE_SERVICE_ENABLED), true);
 
@@ -132,7 +136,7 @@ public class MainScreenActivity extends Activity {
                         serviceState.setTextColor(Color.RED);
                         isRunning = false;
                     }
-                    e.commit();
+                   // e.commit();
                 } else {
                     AlertDialog.Builder dialog = new AlertDialog.Builder(MainScreenActivity.this);
                     dialog.setTitle(R.string.failTitle);
@@ -145,6 +149,16 @@ public class MainScreenActivity extends Activity {
                     });
                     dialog.show();
                 }
+            }
+        });
+
+        btnHelp.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent;
+                intent = new Intent(MainScreenActivity.this,
+                       HelpActivity.class);
+                startActivity(intent);
             }
         });
     }

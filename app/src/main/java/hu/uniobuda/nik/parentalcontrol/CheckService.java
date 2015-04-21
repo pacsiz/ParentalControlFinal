@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -52,10 +53,12 @@ public class CheckService extends Service {
         notification.setContentText(getString(R.string.serviceMessage));
         notification.setSmallIcon(R.mipmap.ic_launcher);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainScreenActivity.class), 0);
 
-       //notification.setContentIntent(contentIntent);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                    new Intent(this, MainScreenActivity.class), 0);
+           notification.setContentIntent(contentIntent);
+        }
         startForeground(1122, notification.build());
         if (sh.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), false)) {
             IPTablesAPI.blockAllURL(CheckService.this);
@@ -102,6 +105,7 @@ public class CheckService extends Service {
 
         registerReceiver(screenOff, new IntentFilter(Intent.ACTION_SCREEN_OFF));
         registerReceiver(screenOn, new IntentFilter(Intent.ACTION_USER_PRESENT));
+        BlockerHashTable.refresh(CheckService.this);
         return Service.START_STICKY;
     }
 

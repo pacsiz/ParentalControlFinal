@@ -4,11 +4,20 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.*;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import javax.mail.MessagingException;
 
 public class PasswordRequestActivity
         extends Activity {
@@ -16,11 +25,12 @@ public class PasswordRequestActivity
     private static final int ACTION_NEXTSTEP = 2;
     private static final int ACTION_HOME = 3;
     private static final int ACTION_LOCK = 4;
-    int actionCode = 0;
+    int actionCode;
 
     EditText getPassword;
     boolean isCorrect;
     Button ok;
+    Button forgotPassword;
     String packageName;
     SharedPreferences pwSh;
     boolean accessControl;
@@ -28,26 +38,42 @@ public class PasswordRequestActivity
 
     public void onBackPressed() {
 
-        Intent i = new Intent("android.intent.action.MAIN");
-        i.addCategory("android.intent.category.HOME");
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+            Intent i = new Intent("android.intent.action.MAIN");
+            i.addCategory("android.intent.category.HOME");
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+
     }
 
     @Override
-    protected void onStop() {
+    protected void onPause() {
         if (actionCode == 0)
         {
             AccessControl.lock(PasswordRequestActivity.this);
         }
-        super.onStop();
+        super.onPause();
     }
+
+    @Override
+   /* protected void onStop() {
+        if (actionCode == 0)
+        {
+            AccessControl.lock(PasswordRequestActivity.this);
+        }
+        finish();
+        super.onStop();
+    }*/
+
+
 
     protected void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
         setContentView(R.layout.activity_password_request);
+        actionCode = 0;
+        hideKeyboard(findViewById(R.id.pwReqlayout));
         getPassword = ((EditText) findViewById(R.id.getPassword));
-        ok = ((Button) findViewById(R.id.OK));
+        ok = (Button) findViewById(R.id.OK);
+        forgotPassword = (Button)findViewById(R.id.btnForgotPassword);
         packageName = getIntent().getStringExtra(getString
                 (R.string.EXTRA_PACKAGE_NAME));
         if(packageName != null)
@@ -55,9 +81,11 @@ public class PasswordRequestActivity
             actionCode = ACTION_HOME;
         }
         accessControl = getIntent().getBooleanExtra(getString(R.string.EXTRA_ACCESS_CONTROL), false);
+        Log.d("accessControl",accessControl+"");
+        Log.d("actionCode",actionCode+"");
         pwSh = getSharedPreferences(getString
-                (R.string.SHAREDPREFERENCE_PASSWORD), Context.MODE_PRIVATE);
-        this.ok.setOnClickListener(new View.OnClickListener() {
+                (R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
+        ok.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String pw = PasswordCreator.createPassword(getPassword.getText().toString());
                 String savedPw = pwSh.getString(getString
@@ -85,25 +113,60 @@ public class PasswordRequestActivity
                     else {
                         actionCode = ACTION_HOME;
                         AccessControl.block(PasswordRequestActivity.this,null);
-                        //finish();
-                        //ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
-                        //BlockerHashTable.setBoolean(packageName, true);
-
-                        //List<ActivityManager.RunningAppProcessInfo> pids = am.getRunningAppProcesses();
-                    /*for(ActivityManager.RunningAppProcessInfo info : pids)
-                    {
-                        if(info.processName.equals(packageName))
-                        {
-                            android.os.Process.killProcess(info.pid);
-                            break;
-                        }
-                    }*/
-
                     }
                     finish();
                     Toast.makeText(PasswordRequestActivity.this, R.string.incorrectPassword, Toast.LENGTH_LONG).show();
                 }
             }
         });
+
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionCode = ACTION_HOME;
+                ConnectivityManager cm =
+                        (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo net = cm.getActiveNetworkInfo();
+                if (net != null && net.isConnectedOrConnecting()) {
+                    Editor e = pwSh.edit();
+                    String newPw = PasswordCreator.randomPassword();
+                    e.putString(getString(R.string.SHAREDPREFERENCE_PASSWORD), PasswordCreator.createPassword(newPw));
+                    e.apply();
+                    String toAddress = pwSh.getString(getString(R.string.SHAREDPREFERENCE_EMAIL), "");
+                    Log.d("toAddresss", toAddress);
+                    String fromAddress = getString(R.string.email);
+
+                    String fromPassword = getString(R.string.email_password);
+                    String subject = getString(R.string.subject);
+                    String text = getString(R.string.email_text);
+
+                    EmailSender sender = new EmailSender(fromAddress, fromPassword, toAddress, subject, text + newPw);
+                    sender.sendEmail();
+                    Toast.makeText(PasswordRequestActivity.this, R.string.email_sent, Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+                    wifi.setWifiEnabled(true);
+                    Toast.makeText(PasswordRequestActivity.this, R.string.email_send_fail,Toast.LENGTH_LONG).show();
+                }
+                AccessControl.block(PasswordRequestActivity.this,null);
+                finish();
+
+            }
+        });
+    }
+
+    public void hideKeyboard(View view) {
+        if (!(view instanceof EditText)) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View arg0, MotionEvent arg1) {
+                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    return false;
+                }
+            });
+        }
     }
 }

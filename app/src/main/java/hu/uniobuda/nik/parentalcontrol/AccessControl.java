@@ -120,7 +120,6 @@ public class AccessControl {
         {
             allow(context,personName,packageName);
         }
-
     }
 
     public static void lock(Context context) {

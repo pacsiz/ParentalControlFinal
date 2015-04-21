@@ -174,15 +174,11 @@ public class SetNewPersonActivity extends Activity {
     }
 
     public void hideKeyboard(View view) {
-
-        //Set up touch listener for non-text box views to hide keyboard.
         if (!(view instanceof EditText)) {
-
             view.setOnTouchListener(new OnTouchListener() {
 
                 @Override
                 public boolean onTouch(View arg0, MotionEvent arg1) {
-                    // TODO Auto-generated method stub
                     InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                     inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                     return false;

@@ -16,7 +16,11 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="24dp"
-        android:text="@string/startService" />
+        android:text="@string/startService"
+        style="@style/TextAppearance.AppCompat.Button"
+        android:background="#ffd6d6d6"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" />
 
     <TextView
         android:id="@+id/isRunning"
@@ -34,7 +38,11 @@
         android:text="@string/settings"
         android:layout_below="@+id/isRunning"
         android:layout_marginBottom="25dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        style="@style/TextAppearance.AppCompat.Button"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:background="#ffd6d6d6" />
 
     <Button
         android:id="@+id/btnHelp"
@@ -43,6 +51,20 @@
 
         android:text="@string/help"
         android:layout_below="@+id/btnSettings"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        style="TextAppearance.AppCompat.Button"
+        android:background="#ffd6d6d6"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/about"
+        android:id="@+id/about"
+        android:gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="#ffbebebe" />
 
 </RelativeLayout>
