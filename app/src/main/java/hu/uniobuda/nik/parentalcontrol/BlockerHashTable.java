@@ -3,8 +3,6 @@ package hu.uniobuda.nik.parentalcontrol;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -23,7 +21,6 @@ public class BlockerHashTable {
 
     public static void setBoolean(String key, Boolean value) {
         tempAllowedPackages.put(key, value);
-        // Log.d("setBoolean", key+" " + value);
     }
 
     public static boolean containsBoolean(String key) {

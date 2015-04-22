@@ -24,8 +24,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/nameLabel"
-        android:layout_toLeftOf="@+id/personName"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/btnSetNewPerson"
+        android:layout_toStartOf="@+id/btnSetNewPerson" />
 
     <EditText
         android:id="@+id/personName"
@@ -33,20 +34,22 @@
         android:layout_width="150.0dip"
         android:layout_height="30.0dip"
         android:maxLength="10"
+        android:inputType="textPersonName"
         android:layout_centerVertical="true"
-        android:layout_alignRight="@+id/btnSetNewPerson"
-        android:layout_alignEnd="@+id/btnSetNewPerson"
-        android:inputType="textPersonName" />
+        android:layout_alignRight="@+id/newPersonInfo"
+        android:layout_alignEnd="@+id/newPersonInfo" />
 
     <TextView
         android:id="@+id/isParentLabel"
-        android:padding="15.0dip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/isParentLabel"
         android:layout_below="@+id/personName"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp" />
 
     <Button
         android:id="@+id/btnSetNewPerson"
@@ -64,8 +67,8 @@
         android:id="@+id/isParent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="15.0dip"
-        android:layout_alignBottom="@+id/isParentLabel"
-        android:layout_toRightOf="@+id/isParentLabel"
-        android:layout_toEndOf="@+id/isParentLabel" />
+        android:layout_alignTop="@+id/isParentLabel"
+        android:paddingTop="30dp"
+        android:layout_alignLeft="@+id/personName"
+        android:layout_alignStart="@+id/personName" />
 </RelativeLayout>

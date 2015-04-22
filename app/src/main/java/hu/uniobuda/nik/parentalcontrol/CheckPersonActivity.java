@@ -3,11 +3,7 @@ package hu.uniobuda.nik.parentalcontrol;
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.opencv_nonfree;
 
-import static org.bytedeco.javacpp.opencv_contrib.*;
-import static org.bytedeco.javacpp.opencv_core.*;
-
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,13 +15,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-
-import java.text.DateFormatSymbols;
-import java.util.*;
-import java.util.Arrays;
 
 public class CheckPersonActivity extends Activity {
 
@@ -58,16 +49,17 @@ public class CheckPersonActivity extends Activity {
         accessControl = getIntent().getBooleanExtra(getString(R.string.EXTRA_ACCESS_CONTROL), false);
         learnedPersons = getSharedPreferences(getString
                 (R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
-        int frontCameraIndex = CameraSet.getFrontCameraIndex();
-        FrameLayout preview = (FrameLayout) findViewById(R.id.check_preview);
-        camera = Camera.open(frontCameraIndex);
+        camera = CameraSet.initializeCamera(this,(FrameLayout)findViewById(R.id.check_preview));
+        //int frontCameraIndex = CameraSet.getFrontCameraIndex();
+        //FrameLayout preview = (FrameLayout) findViewById(R.id.check_preview);
+        /*camera = Camera.open(frontCameraIndex);
         Camera.Parameters params = camera.getParameters();
         params.setRotation(CameraSet.setCameraRotation(this
                         .getWindowManager().getDefaultDisplay().getRotation(),
                 frontCameraIndex));
         camera.setParameters(params);
         cameraPreview = new CameraView(this, camera);
-        preview.addView(cameraPreview);
+        preview.addView(cameraPreview);*/
 
         new Thread() {
             @Override
@@ -79,7 +71,7 @@ public class CheckPersonActivity extends Activity {
          r = new Runnable() {
             @Override
             public void run() {
-                camera.takePicture(null, null, mPicture);
+                camera.takePicture(null, null, picture);
             }
         };
 
@@ -88,14 +80,14 @@ public class CheckPersonActivity extends Activity {
         /*new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                camera.takePicture(null, null, mPicture);
+                camera.takePicture(null, null, picture);
             }
         }, 5000);*/
 
         // new DelayedPhoto().execute();
     }
 
-    private PictureCallback mPicture = new PictureCallback() {
+    private PictureCallback picture = new PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             Log.d("onClick", "indítsd a feldolgozást");
@@ -125,6 +117,16 @@ public class CheckPersonActivity extends Activity {
         super.onStop();
     }
 
+   /* @Override
+    protected void onPause() {
+        if (actionCode == 0)
+        {
+            AccessControl.lock(CheckPersonActivity.this);
+        }
+        delay.removeCallbacks(r);
+        onDestroy();
+        super.onPause();
+    }*/
 
     @Override
     protected void onDestroy() {
@@ -159,35 +161,35 @@ public class CheckPersonActivity extends Activity {
 
         @Override
         protected void onPostExecute(Void result) {
-            Log.d("result", Integer.toString(pResult));
+            //Log.d("result", Integer.toString(pResult));
             // Log.d("packageName", packageName);
-            Log.d("accessControlEnabled", accessControl + "");
+            //Log.d("accessControlEnabled", accessControl + "");
             if (learnedPersons.contains(Integer.toString(pResult))) {
                 String personName = learnedPersons.getString(Integer.toString(pResult), "");
 
                 if (personName.startsWith("CHILD-")) {
 
                     personName = personName.substring(6, 7).toUpperCase() + personName.substring(7);
-                    Log.d("ChildName", personName);
+              //      Log.d("ChildName", personName);
                     if (accessControl) {
                         if (AccessControl.accessControl(personName, CheckPersonActivity.this)) {
                             actionCode = ACTION_FINISH;
-
                             AccessControl.allow(CheckPersonActivity.this, personName, null);
                             //finish();
                         } else {
                             actionCode = ACTION_LOCK;
-
                             AccessControl.lock(CheckPersonActivity.this);
-                            //finish;
+                            //finish();
                         }
-                        finish();
+                        //finish();
                     } else {
                         actionCode = ACTION_HOME;
 
                         //AccessControl.deny(CheckPersonActivity.this, personName, packageName);
                         AccessControl.personCheck(CheckPersonActivity.this,personName,packageName);
                     }
+
+                    finish();
 
                 } else {
                     actionCode = ACTION_FINISH;
@@ -203,7 +205,7 @@ public class CheckPersonActivity extends Activity {
                     camera.startPreview();
                     /*new Handler().postDelayed(new Runnable() {
                         public void run() {
-                            camera.takePicture(null, null, mPicture);
+                            camera.takePicture(null, null, picture);
                         }
                     }, 3000);*/
                     delay.postDelayed(r,3000);

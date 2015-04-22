@@ -4,22 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import android.support.v7.app.ActionBarActivity;
 import android.widget.AdapterView.OnItemClickListener;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -27,11 +23,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.content.pm.PackageManager;
 
-public class FilterAppsActivity extends Activity {
-    ProgressDialog loading;
+public class FilterAppsActivity extends ActionBarActivity {
     AppListAdapter adapter;
     ListView appList;
     Button btnSave;
@@ -39,31 +32,30 @@ public class FilterAppsActivity extends Activity {
     List<AppInfo> list;
     ArrayList<String> checkedValue = new ArrayList<String>();
     ArrayList<String> tempDelete = new ArrayList<String>();
-    SharedPreferences checkedApps;
+    SharedPreferences shSelectedApps;
     String personName;
-    Map<String, ?> checkedAppMap;
+    Map<String, ?> selectedAppsMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter_apps);
-        checkedApps = getSharedPreferences(getString
+        shSelectedApps = getSharedPreferences(getString
                 (R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_PRIVATE);
-        checkedAppMap = checkedApps.getAll();
-        for(Map.Entry<String, ?> entry : checkedAppMap.entrySet())
-        {
+        selectedAppsMap = shSelectedApps.getAll();
+        for (Map.Entry<String, ?> entry : selectedAppsMap.entrySet()) {
             Log.d("pacakage", entry.getKey());
         }
-        Log.d("map size", checkedAppMap.size() + "");
+
         appList = (ListView) findViewById(R.id.appList);
         btnSave = (Button) findViewById(R.id.btnSave);
         childName = (TextView) findViewById(R.id.childName);
         personName = getIntent().getStringExtra(getString(R.string.EXTRA_PERSON_NAME));
         if (personName == null) {
             personName = "all";
-            childName.setText(getString(R.string.followingPersonSettings) + getString(R.string.all));
+            childName.setText(getString(R.string.followingPersonSettings) +" "+ getString(R.string.all));
         } else {
-            childName.setText(getString(R.string.followingPersonSettings) + personName);
+            childName.setText(getString(R.string.followingPersonSettings) +" "+ personName);
         }
 
         checkedValue.clear();
@@ -82,36 +74,30 @@ public class FilterAppsActivity extends Activity {
                     if (tempDelete.contains(pName)) {
                         tempDelete.remove(pName);
                     }
-                    //cb.setChecked(false);
                 } else {
                     Log.d("esemeny", "checkvizsgaN");
                     checkedValue.remove(pName);
                     tempDelete.add(pName);
-                    //cb.setChecked(true);
                 }
             }
         });
-
 
         btnSave.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-                Editor e = checkedApps.edit();
-                //e.clear();
-                //BlockerHashTable.clear();
+                Editor e = shSelectedApps.edit();
                 for (String pckg : tempDelete) {
                     String deniedPersons = "";
-                    if (checkedAppMap.containsKey(pckg)) {
-                        deniedPersons = checkedAppMap.get(pckg).toString();
+                    if (selectedAppsMap.containsKey(pckg)) {
+                        deniedPersons = selectedAppsMap.get(pckg).toString();
                     }
                     Log.d("DELdeniedPersons", deniedPersons);
                     Log.d("package", pckg);
-                    //String[] deniedPerson = deniedPersons.split(":");
-
                     deniedPersons = deniedPersons.replace(":" + personName, "");
                     Log.d("DELdenPersReplaced", deniedPersons);
+                    BlockerHashTable.deleteBoolean(pckg);
 
                     if (deniedPersons.equals("")) {
                         Log.d("deniedPerson", "ITTJÁR");
@@ -122,25 +108,19 @@ public class FilterAppsActivity extends Activity {
                 }
                 for (String pckg : checkedValue) {
                     String deniedPersons = "";
-                    if (checkedAppMap.containsKey(pckg)) {
-                        deniedPersons = checkedAppMap.get(pckg).toString();
+                    if (selectedAppsMap.containsKey(pckg)) {
+                        deniedPersons = selectedAppsMap.get(pckg).toString();
                     }
                     Log.d("ADDdeniedPersons", deniedPersons);
                     Log.d("package", pckg);
-                    //String[] deniedPerson = deniedPersons.split(":");
+
                     if (!deniedPersons.contains(personName)) {
                         deniedPersons = deniedPersons + ":" + personName;
                         Log.d("ADDdenPersReplaced", deniedPersons);
                         e.putString(pckg, deniedPersons);
                     }
-                    /*else{
 
-                        e.putString(pckg,deniedPersons);
-                    }*/
                     BlockerHashTable.setBoolean(pckg, true);
-                    // e.putBoolean(pckg, true);
-                    // BlockerHashTable.setBoolean(pckg, true);
-                    //Log.d("save", pckg);
                 }
 
 
@@ -151,7 +131,7 @@ public class FilterAppsActivity extends Activity {
                 e.putString("com.android.packageinstaller", "all");
                 //BlockerHashTable.setBoolean("com.android.packageinstaller", true);
                 e.apply();
-                BlockerHashTable.refresh(FilterAppsActivity.this);
+                //BlockerHashTable.refresh(FilterAppsActivity.this);
                 finish();
             }
         });
@@ -185,7 +165,6 @@ public class FilterAppsActivity extends Activity {
             List<ResolveInfo> apps = getPackageManager().queryIntentActivities(intent, 0);
             for (int i = 0; i < apps.size(); i++) {
                 ResolveInfo info = apps.get(i);
-
                 AppInfo newInfo = new AppInfo();
                 newInfo.pName = info.activityInfo.packageName;
                 if (newInfo.pName.equals("hu.uniobuda.nik.parentalcontrol") ||
@@ -195,26 +174,18 @@ public class FilterAppsActivity extends Activity {
                     newInfo.appName = info.loadLabel(getPackageManager()).toString();
                     newInfo.pName = info.activityInfo.packageName;
                     newInfo.appIcon = info.loadIcon(getPackageManager());
-                    if (checkedApps.contains(newInfo.pName)) {
-                        if (checkedAppMap.get(newInfo.pName).toString().contains(personName)) {
-                            Log.d("nevek", checkedAppMap.get(newInfo.pName).toString());
+                    if (shSelectedApps.contains(newInfo.pName)) {
+                        if (selectedAppsMap.get(newInfo.pName).toString().contains(personName)) {
+                            //Log.d("nevek", selectedAppsMap.get(newInfo.pName).toString());
                             checkedValue.add(newInfo.pName);
                         }
                     }
                     res.add(newInfo);
                 }
             }
-
-            /*for (AppInfo info : res) {
-                if (checkedApps.contains(info.packageName)) {
-                    checkedValue.add(info.packageName);
-
-                }
-            }*/
             return res;
         }
     }
-
 
 }
 

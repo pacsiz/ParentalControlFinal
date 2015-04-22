@@ -87,10 +87,7 @@ public class FaceDetection {
 
         faceRecognizer.save(f.getAbsolutePath());
 
-        for (File image : imageFiles)
-        {
-            image.delete();
-        }
+        deleteJPGs(context);
     }
 
 
@@ -129,6 +126,25 @@ public class FaceDetection {
         }
     }
 
+    public static void deleteJPGs(Context context)
+    {
+        File root = context.getCacheDir();
+
+        FilenameFilter imgFilter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                name = name.toLowerCase();
+                return name.endsWith(".jpg");
+            }
+        };
+
+        File[] imageFiles = root.listFiles(imgFilter);
+
+        for (File image : imageFiles)
+        {
+            image.delete();
+        }
+    }
+
     public static Mat matForLBPH (Bitmap face)
     {
         //Bitmap bitmap = getBitmapFromBytes(rawData);
@@ -138,8 +154,7 @@ public class FaceDetection {
         //Bitmap temp = cropFace(bitmap, faceArray);
         //Log.d("temp méret", Integer.toString(face.getByteCount()));
         Bitmap out = face.copy(Config.ARGB_8888, true);
-        face.recycle();
-        face = null;
+       // face.recycle();
         int height = out.getHeight();
         int width = out.getWidth();
         //Log.d("out méret", Integer.toString(out.getByteCount()));
@@ -179,7 +194,7 @@ public class FaceDetection {
         Face[] faces = new Face[2];
         int numOfFaces = fd.findFaces(bitmap,faces);
         bitmap.recycle();
-        bitmap = null;
+        //bitmap = null;
         if (numOfFaces == 1)
         {
             return true;

@@ -22,7 +22,7 @@ import javax.mail.MessagingException;
 public class PasswordRequestActivity
         extends Activity {
     private static final int ACTION_FINISH = 1;
-    private static final int ACTION_NEXTSTEP = 2;
+    private static final int ACTION_PAUSE = 2;
     private static final int ACTION_HOME = 3;
     private static final int ACTION_LOCK = 4;
     int actionCode;
@@ -45,24 +45,33 @@ public class PasswordRequestActivity
 
     }
 
-    @Override
+    /*@Override
     protected void onPause() {
+        Log.d("onPause","ban jár");
         if (actionCode == 0)
         {
+            actionCode = ACTION_PAUSE;
             AccessControl.lock(PasswordRequestActivity.this);
         }
+        finish();
         super.onPause();
+    }*/
+
+    @Override
+    protected void onResume() {
+        Log.d("onResume","ban jár");
+        super.onResume();
     }
 
     @Override
-   /* protected void onStop() {
+    protected void onStop() {
         if (actionCode == 0)
         {
             AccessControl.lock(PasswordRequestActivity.this);
         }
         finish();
         super.onStop();
-    }*/
+    }
 
 
 

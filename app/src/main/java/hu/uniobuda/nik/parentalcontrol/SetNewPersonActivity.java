@@ -1,18 +1,12 @@
 package hu.uniobuda.nik.parentalcontrol;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.opencv_nonfree;
-
-import static org.bytedeco.javacpp.opencv_contrib.*;
-import static org.bytedeco.javacpp.opencv_core.*;
-import static org.bytedeco.javacpp.opencv_highgui.*;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -22,13 +16,12 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.PictureCallback;
+import android.hardware.camera2.CameraManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -49,14 +42,13 @@ public class SetNewPersonActivity extends Activity {
     private Button btnCapture;
     private CheckBox isParent;
     private Camera camera = null;
+    private CameraManager cameraNewApi = null;
     private CameraView cameraPreview;
     private int frontCameraIndex;
     private String person;
-    private boolean isFaceonPicture;
     private int numberOfPhotos;
     private SharedPreferences learnedPersons;
-    CameraInfo info = new CameraInfo();
-    boolean isParentChecked = false;
+
     int personId = 0;
 
     @Override
@@ -74,9 +66,7 @@ public class SetNewPersonActivity extends Activity {
                 (R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
         setContentView(R.layout.activity_set_new_person);
 
-        SharedPreferences password = getSharedPreferences(getString
-                (R.string.SHAREDPREFERENCE_PASSWORD), Context.MODE_PRIVATE);
-        SharedPreferences facRegEnabled = getSharedPreferences(getString
+        SharedPreferences shSettings = getSharedPreferences(getString
                 (R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
 
         btnSetNewPerson = (Button) findViewById(R.id.btnSetNewPerson);
@@ -97,7 +87,7 @@ public class SetNewPersonActivity extends Activity {
             personId = Integer.parseInt((String) entry.getKey());
         }
 
-        if (!facRegEnabled.getBoolean(getString
+        if (!shSettings.getBoolean(getString
                 (R.string.SHAREDPREFERENCE_FACE_REG_ENABLED), false)) {
             dialog.setTitle(R.string.failTitle);
             dialog.setMessage(R.string.cameraFailMessage);
@@ -111,7 +101,7 @@ public class SetNewPersonActivity extends Activity {
             dialog.show();
         }
 
-        if (!password.contains(getString
+        if (!shSettings.contains(getString
                 (R.string.SHAREDPREFERENCE_PASSWORD))) {
             dialog.setTitle(R.string.failTitle);
             dialog.setMessage(R.string.noPasswordSet);
@@ -129,7 +119,7 @@ public class SetNewPersonActivity extends Activity {
             @Override
             public void onClick(View v) {
                 person = personName.getText().toString().toLowerCase();
-                Log.d("benneevan", Boolean.toString((learnedPersons.contains(person))));
+
                 Log.d("név", person);
                 if (person.isEmpty()) {
                     dialog.setTitle(R.string.failTitle);
@@ -161,11 +151,6 @@ public class SetNewPersonActivity extends Activity {
                         person = "CHILD-" + person;
                     }
                     personId++;
-                    //Log.d("pid", Integer.toString(personId));
-                    //isParentChecked = isParent.isChecked();
-//					Editor e = learnedPersons.edit();
-//					e.putString(person, Integer.toString(personId));
-//					e.commit();
                     setCameraView();
                 }
             }
@@ -190,27 +175,17 @@ public class SetNewPersonActivity extends Activity {
 
     private void setCameraView() {
         setContentView(R.layout.activity_create_photo);
-        //Camera.getCameraInfo(frontCameraIndex, info);
-//		int rotation = this.getWindowManager().getDefaultDisplay().getRotation();
-//		int degrees = 0;
-//		switch (rotation) {
-//		    case Surface.ROTATION_0: degrees = 0; break; //Natural orientation
-//		        case Surface.ROTATION_90: degrees = 90; break; //Landscape left
-//		        case Surface.ROTATION_180: degrees = 180; break;//Upside down
-//		        case Surface.ROTATION_270: degrees = 270; break;//Landscape right
-//		    }
-//		int rotate = (info.orientation - degrees + 360) % 360;
+        camera = CameraSet.initializeCamera(this,(FrameLayout)findViewById(R.id.camera_preview));
 
-        //STEP #2: Set the 'rotation' parameter
-        frontCameraIndex = CameraSet.getFrontCameraIndex();
-        camera = Camera.open(frontCameraIndex);
-        Camera.Parameters params = camera.getParameters();
+        //frontCameraIndex = CameraSet.getFrontCameraIndex();
+        //camera = Camera.open(frontCameraIndex);
+        /*Camera.Parameters params = camera.getParameters();
         params.setRotation(CameraSet.setCameraRotation(this.getWindowManager().getDefaultDisplay().getRotation(),
                 frontCameraIndex));
         camera.setParameters(params);
         cameraPreview = new CameraView(this, camera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        preview.addView(cameraPreview);
+        preview.addView(cameraPreview);*/
         btnCapture = (Button) findViewById(R.id.btnCapture);
         btnCapture.setOnClickListener(new OnClickListener() {
 
@@ -219,31 +194,29 @@ public class SetNewPersonActivity extends Activity {
                 btnCapture.setEnabled(false);
                 if (numberOfPhotos < 6) {
                     Log.d("onClick", "csináljfotót");
-                    camera.takePicture(null, null, mPicture);
+                    camera.takePicture(null, null, picture);
                 } else {
                     finish();
-                    Log.d("onClick", "vége");
                 }
             }
         });
-
     }
 
-    private PictureCallback mPicture = new PictureCallback() {
+    private PictureCallback picture = new PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             Log.d("onClick", "indítsd a feldolgozást");
 
-            new ProcessRawBitmap(data).execute();
+            new createFacePhoto(data).execute();
         }
     };
 
-    private class ProcessRawBitmap extends AsyncTask<Object, Object, Void> {
+    private class createFacePhoto extends AsyncTask<Object, Object, Void> {
         private byte[] data;
         int predict;
         ProgressDialog pd = new ProgressDialog(SetNewPersonActivity.this);
 
-        public ProcessRawBitmap(byte[] data) {
+        public createFacePhoto(byte[] data) {
             this.data = data;
         }
 
@@ -253,8 +226,6 @@ public class SetNewPersonActivity extends Activity {
             pd.setTitle(R.string.pleaseWait);
             pd.setMessage(getString(R.string.working));
             pd.show();
-            Log.d("personid", Integer.toString(personId));
-            Log.d("personid", Integer.toString(personId));
             if (!FaceDetection.numberOfFaces(data, SetNewPersonActivity.this)) {
                 cancel(true);
                 pd.dismiss();
@@ -268,35 +239,28 @@ public class SetNewPersonActivity extends Activity {
             pd.dismiss();
             btnCapture.setEnabled(true);
 
-            if (predict > -1)
-            {
-                Toast.makeText(SetNewPersonActivity.this,R.string.facePredicted,Toast.LENGTH_SHORT);
+            if (predict > -1) {
+                Toast.makeText(SetNewPersonActivity.this, R.string.facePredicted, Toast.LENGTH_SHORT).show();
                 camera.startPreview();
-            }
-            else
-            {
+            } else {
                 numberOfPhotos++;
                 if (numberOfPhotos == NUMBER_OF_PHOTOS) {
                     camera.stopPreview();
                     camera.release();
                     new Trainer().execute();
-                }
-                else
-                {
+                } else {
                     camera.startPreview();
                 }
             }
-
-
         }
 
         @Override
         protected Void doInBackground(Object... params) {
             if (!isCancelled()) {
-                //
                 Bitmap bitmap = FaceDetection.cropFace(data);
-                predict = FaceDetection.predict(SetNewPersonActivity.this,bitmap);
-                if(predict>-1);
+                predict = FaceDetection.predict(SetNewPersonActivity.this, bitmap);
+                Log.d("predict",predict+"");
+                if (predict == -1)
                 {
                     //matVector.put(FaceDetection.matForLBPH(bitmap));
                     // blist.add(FaceDetection.cropFace(data));
@@ -341,4 +305,17 @@ public class SetNewPersonActivity extends Activity {
 
     }
 
+    @Override
+    protected void onPause() {
+        onDestroy();
+        super.onPause();
+    }
+
+
+
+    @Override
+    protected void onDestroy() {
+        FaceDetection.deleteJPGs(SetNewPersonActivity.this);
+        super.onDestroy();
+    }
 }

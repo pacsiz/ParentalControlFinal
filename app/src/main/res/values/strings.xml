@@ -82,7 +82,7 @@
     <string name="deleting">Törlés...</string>
 
 
-    <string name="title_activity_settings">SettingsActivity</string>
+
     <string name="selectApps">Tiltandó alkalmazások kiválasztása</string>
     <string name="newPersonInfo">Új személy felvételéhez több fényképre van szükség, amely alapján a program meg tudja tanulni az adott személy jellemző vonásait. Ehhez 5 kép fog készülni.</string>
     <string name="failTitle">Hiba</string>
@@ -97,7 +97,7 @@
     <string name="title_activity_check_person">CheckPersonActivity</string>
     <string name="checkLabel">Tartsa az arca előtt a készüléket, néhány másodperc múlva egy fotó készül róla!</string>
     <string name="URLSettings">URL blokkolás beállítása</string>
-    <string name="title_activity_urlsettings">URLSettingsActivity</string>
+
     <string name="nonRooted">A készülék nincs root-olva!</string>
     <string name="isRooted">A készülék root-olva van!</string>
     <string name="rec_title">Azonosítás</string>
@@ -108,13 +108,14 @@
     <string name="url_isOn">URL blokkolás bekapcsolása</string>
     <string name="urlDisabled">Az URL blokkolás funkció nincs bekapcsolva!</string>
     <string name="rootFailed">Az URL blokkolás csak root-olt készülékeken használható!</string>
+    <string name="usageStatsMustEnabled">A program helyes működéséhez engedélyeznie kell a használati statiszikákta a Parental Control számára!</string>
 
     <string name="childSettings">beállításai</string>
 
+    <string name="adminFailure">Az eszközkezelő funkció nélkül a szolgáltatás nem működik, kérem kapcsolja be!</string>
 
     <string name="deviceAccess_isEnabled">Készülék hozzáférés korlátozása:</string>
     <string name="deviceAccess_persons">Korlátozandó személyek beállításai</string>
-    <string name="title_activity_settings_activity_new_api">Beállítások</string>
     <string name="deletePerson">Felvett személy törlése</string>
     <string name="deleteAlert">Törlés megerősítése</string>
     <string name="deleteMessage">Biztosan törli a személyt?</string>
@@ -137,7 +138,7 @@
     <string name="accessAllowed">Hozzáférés engedélyezve: </string>
     <string name="recognitionFailMessage">Az arc azonosítása nem sikerült, kérem készítsen új képet!</string>
     <string name="passwordRequest">Az arc azonosítása háromszor nem sikerült, kérem adja meg a mesterjelszót!</string>
-    <string name="title_activity_password_request">Feloldás jelszó segítségével</string>
+
     <string name="OK">Rendben</string>
     <string name="forgotPassword">Elfelejtett jelszó</string>
     <string name="accessAllowedByPassword">Hozzáférés engedélyezve, jelszó megadásával!</string>
@@ -152,8 +153,13 @@
     <string name="title_activity_device_access">Készülék-hozzáférés beállítása</string>
     <string name="title_activity_device_access_person_settings">Készülék-hozzáférés beállítása</string>
     <string name="title_deviceAccess">Készülék-hozzáférés</string>
-
+    <string name="title_activity_settings">Beállítások</string>
     <string name="title_childControl">Gyermekek korlátozása</string>
+    <string name="title_activity_urlsettings">URLSettingsActivity</string>
+    <string name="title_activity_password_request">Feloldás jelszó segítségével</string>
+    <string name="title_activity_child_list_activty">Felvett gyermekek</string>
+    <string name="title_activity_child_preference">Gyermek beállításai</string>
+    <string name="title_activity_help">Segítség</string>
 
     <string name="followingPersonSettings">A következő személy beállításai:</string>
     <string name="personAccessControlIsEnabled">Korlátozás bekapcsolva a személy számára:</string>
@@ -161,9 +167,7 @@
     <string name="selectFromTime">Mettől legyen korlátozás:</string>
     <string name="selectToTime">Meddig legyen korlátozás</string>
 
-    <string name="title_activity_child_list_activty">Felvett gyermekek</string>
-    <string name="title_activity_child_preference">Gyermek beállításai</string>
-    <string name="title_activity_help">Segítség</string>
+
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -187,7 +191,8 @@
     <string name="help_password_text5">Ha nincs internetkapcsolat, a program automatikusan bekapcsolja a Wi-Fi-t és ezután újra próbálkozhat az új jelszó küldésével!</string>
 
     <string name="help_apps_text">A Beállítások->Tiltandó alkalmazások kiválasztása menüpont alatt azokat a programokat választhatja ki, melyeket
-    minden gyermek számára letiltana. A Gyermek korlátozása menüpont alatt a felvett gyermek nevére kattintva személyre szabhatja ezt a listát.</string>
+    minden gyermek számára letiltana. A Gyermek korlátozása menüpont alatt a felvett gyermek nevére kattintva személyre szabhatja ezt a listát.\n
+    A készülék beállításai, az alkalmazások uninstallálása és ezen alkalmazás alapértelmezés szerint azonosításhoz vannak kötve.</string>
     <string name="help_apps_text2">A minden gyermek számára tiltott alkalmazások értelemszerűen azokra is vonatkoznak, akiknél a személyre szabott listán
     nincs beállítáva az adott alkalmazás!</string>
 
@@ -196,7 +201,7 @@
     <string name="help_person_text2">Az a személy, aki szülőként lett felvéve, engedélyezett minden korlátozás feloldására!</string>
     <string name="help_person_text3">Az adatok megadása után az Új személy felvétele gombra kattintva kezdheti meg a fényképek elkészítését. 5 képet kell készíteni, a kép
     készítése gombra kattintva, ezután a program megtanulja az adott arc vonásait.</string>
-    <string name="help_person_text4">Ajánlott, hogy a hétköznapokban előforduló, különböző mimikákat használjunk (pl. mosoly),
+    <string name="help_person_text4">Ajánlott, hogy a hétköznapokban előforduló, különböző mimikákat használjunk (pl. mosoly) valamint jó fényviszonyok közt készíteni a képeket,
     hogy az arc alapú azonosítás nagyobb eséllyel legyen sikeres!</string>
     <string name="help_person_text5">Egy felvett személy törölhető a Beállítások->Felvett személy törlése menüpont alatt, a személy nevére koppintva.</string>
     <string name="help_person_text6">Az a személy, aki nincs felvéve, nem ismeri program, tehát nem jogosult a tiltások feloldására!</string>

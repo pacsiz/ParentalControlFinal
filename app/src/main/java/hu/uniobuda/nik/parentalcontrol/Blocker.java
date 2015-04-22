@@ -41,7 +41,7 @@ public class Blocker extends BroadcastReceiver {
                     i = new Intent(context,
                             PasswordRequestActivity.class);
                 }
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 //i.putExtra(context.getResources().getString
                         //(R.string.EXTRA_PACKAGE_NAME), packageName);
                 i.putExtra(context.getResources().getString(R.string.EXTRA_ACCESS_CONTROL),true);

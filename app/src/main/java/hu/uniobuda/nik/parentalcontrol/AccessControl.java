@@ -82,6 +82,7 @@ public class AccessControl {
         String str = context.getString(R.string.accessAllowed);
         Toast.makeText(context, str + personName.substring(0, 1).toUpperCase() +
                 personName.substring(1), Toast.LENGTH_LONG).show();
+
         if (packageName != null && !packageName.equals(("hu.uniobuda.nik.parentalcontrol"))) {
             BlockerHashTable.setBoolean(packageName, false);
         }

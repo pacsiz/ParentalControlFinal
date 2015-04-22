@@ -34,7 +34,7 @@ public class ChildPreferencesActivity extends PreferenceActivity {
             Preference childDeviceAccess = (Preference)findPreference("childDeviceAccess");
             setIntent(ChildPreferencesActivity.this,FilterAppsActivity.class,personName,childSelectApps);
             setIntent(ChildPreferencesActivity.this,DeviceAccessPersonSettingsActivity.class,personName,childDeviceAccess);
-            prefCat.setTitle(personName + getString(R.string.childSettings));
+            prefCat.setTitle(personName +" "+ getString(R.string.childSettings));
             addPreferencesFromResource(R.xml.child_preferences);
 
         } else {
@@ -67,7 +67,7 @@ public class ChildPreferencesActivity extends PreferenceActivity {
             setIntent(getActivity(),FilterAppsActivity.class,personName,childSelectApps);
             setIntent(getActivity(),DeviceAccessPersonSettingsActivity.class,personName,childDeviceAccess);
 
-            prefCat.setTitle(personName + getString(R.string.childSettings));
+            prefCat.setTitle(personName +" "+ getString(R.string.childSettings));
         }
 
         private void setIntent(Context context, Class targetClass, String personName, Preference preference) {

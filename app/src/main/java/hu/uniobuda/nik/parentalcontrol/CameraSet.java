@@ -1,11 +1,29 @@
 package hu.uniobuda.nik.parentalcontrol;
 
+import android.app.Activity;
+import android.content.Context;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.util.Log;
 import android.view.Surface;
+import android.widget.FrameLayout;
 
 public class CameraSet {
+
+
+    public static Camera initializeCamera(Activity activity, FrameLayout preview)
+    {
+
+        int fronCameraIndex = getFrontCameraIndex();
+        Camera camera = Camera.open(fronCameraIndex);
+        Camera.Parameters params = camera.getParameters();
+        params.setRotation(CameraSet.setCameraRotation(activity.getWindowManager().getDefaultDisplay().getRotation(),
+                fronCameraIndex));
+        camera.setParameters(params);
+        CameraView cameraPreview = new CameraView(activity, camera);
+        preview.addView(cameraPreview);
+        return camera;
+    }
 
     public static int getFrontCameraIndex() {
         int cameraNumber = Camera.getNumberOfCameras();
@@ -32,16 +50,16 @@ public class CameraSet {
 
             case Surface.ROTATION_0:
                 degrees = 0;
-                break; //Natural orientation
+                break;
             case Surface.ROTATION_90:
                 degrees = 90;
-                break; //Landscape left
+                break;
             case Surface.ROTATION_180:
                 degrees = 180;
-                break;//Upside down
+                break;
             case Surface.ROTATION_270:
                 degrees = 270;
-                break;//Landscape right
+                break;
         }
         Log.d("camera rotation", Integer.toString(info.orientation));
         int rotate = (info.orientation - degrees + 360) % 360;

@@ -116,7 +116,7 @@ public class PasswordActivity
                         (R.string.SHAREDPREFERENCE_PASSWORD), PasswordCreator.createPassword(pw));
                 e.putString(getString(R.string.SHAREDPREFERENCE_EMAIL),email_address);
 
-                DevicePolicyManager dpm
+                /*DevicePolicyManager dpm
                         = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
                 ComponentName componentName
                         = new ComponentName(PasswordActivity.this, DevAdminReceiver.class);
@@ -129,15 +129,17 @@ public class PasswordActivity
                 else
                 {
                     finish();
-                    Toast.makeText(PasswordActivity.this, R.string.passwordChanged, Toast.LENGTH_LONG).show();
+                    Toast.makeText(PasswordActivity.this, R.string.passwordChanged, Toast.LENGTH_LONG).show();*/
                     e.apply();
-                }
+                    Toast.makeText(PasswordActivity.this, R.string.passwordChanged, Toast.LENGTH_LONG).show();
+                    finish();
+                //}
 
             }
         });
     }
 
-    @Override
+  /*  @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE) {
@@ -152,7 +154,7 @@ public class PasswordActivity
             }
         }
 
-    }
+    }*/
 
     public void hideKeyboard(View view) {
         if (!(view instanceof EditText)) {
