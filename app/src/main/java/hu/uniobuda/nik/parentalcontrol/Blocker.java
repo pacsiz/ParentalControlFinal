@@ -41,7 +41,7 @@ public class Blocker extends BroadcastReceiver {
                     i = new Intent(context,
                             PasswordRequestActivity.class);
                 }
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 //i.putExtra(context.getResources().getString
                         //(R.string.EXTRA_PACKAGE_NAME), packageName);
                 i.putExtra(context.getResources().getString(R.string.EXTRA_ACCESS_CONTROL),true);
@@ -49,16 +49,25 @@ public class Blocker extends BroadcastReceiver {
             }
         }
 
+       // else if(intent.getAction().equals(context.getString(R.string.BROADCAST_REFRESH_MAIN_HASHTABLE)))
+        //{
+          //  BlockerHashTable.refresh(context);
+       // }
         else
         {
+            if (BlockerHashTable.isEmpty())
+            {
+                BlockerHashTable.refresh(context);
+            }
             blockOrNot(context, packageName, faceRecEnabled, map);
         }
     }
 
     private void blockOrNot(Context context, String packageName, boolean faceRecEnabled, Map map) {
-        Log.d("blockornot", "blockornot");
+        Log.d("blockornot", packageName);
+        Log.d("contains", BlockerHashTable.containsBoolean(packageName)+"");
         if (BlockerHashTable.containsBoolean(packageName)) {
-            if (BlockerHashTable.getBoolean(packageName) == false) {
+            if (!BlockerHashTable.getBoolean(packageName)) {
                 Log.d("blockornot", "if-ben");
                 Log.d("hash", "" + BlockerHashTable.containsBoolean(packageName));
                 BlockerHashTable.setBoolean(packageName, true);

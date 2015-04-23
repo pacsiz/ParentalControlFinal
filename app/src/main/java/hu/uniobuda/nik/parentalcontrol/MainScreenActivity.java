@@ -1,5 +1,6 @@
 package hu.uniobuda.nik.parentalcontrol;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AppOpsManager;
 import android.app.admin.DevicePolicyManager;
@@ -31,6 +32,7 @@ public class MainScreenActivity extends ActionBarActivity {
     Button btnHelp;
     boolean isRunning;
     SharedPreferences sh;
+    private static int REQUEST_CODE = 1001;
 
 
     @Override
@@ -107,7 +109,7 @@ public class MainScreenActivity extends ActionBarActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             Intent i = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
                             i.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, new ComponentName(MainScreenActivity.this, DevAdminReceiver.class));
-                            startActivity(i);
+                            startActivityForResult(i, REQUEST_CODE);
                             dialog.dismiss();
                         }
                     });
@@ -187,6 +189,18 @@ public class MainScreenActivity extends ActionBarActivity {
 
         } catch (PackageManager.NameNotFoundException e) {
             return false;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                Toast.makeText(this, R.string.adminSetOK, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, R.string.adminSetFailed, Toast.LENGTH_LONG).show();
+            }
         }
     }
 }

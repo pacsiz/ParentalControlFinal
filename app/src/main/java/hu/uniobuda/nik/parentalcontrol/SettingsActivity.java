@@ -38,7 +38,7 @@ public class SettingsActivity extends PreferenceActivity {
                         Editor e = sh.edit();
                         e.putBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), (boolean) newValue);
                         Log.d("URL_ENABLED", newValue.toString());
-                        e.commit();
+                        e.apply();
                         if (ServiceInfo.isServiceRunning(CheckService.class, SettingsActivity.this)) {
                             if (urlEnabled.isChecked()) {
                                 IPTablesAPI.unblockAllURL(SettingsActivity.this);

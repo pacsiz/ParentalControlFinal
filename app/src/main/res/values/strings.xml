@@ -44,7 +44,8 @@
     <string name="EXTRA_DISABLE_REQUEST">hu.uniobuda.nik.extra.DISABLE_REQUEST</string>
 
     <string name="BROADCAST_NEW_APP_STARTED">hu.uniobuda.nik.parentalcontrol.NEW_APP_STARTED</string>
-    <string name="BROADCAST_REFRESH_HASHTABLE">hu.uniobuda.nik.parentalcontrol.REFRESH_HASHTABLE</string>
+    <string name="BROADCAST_REFRESH_SERVICE_HASHTABLE">hu.uniobuda.nik.parentalcontrol.REFRESH_SERVICE_HASHTABLE</string>
+    <string name="BROADCAST_REFRESH_MAIN_HASHTABLE">hu.uniobuda.nik.parentalcontrol.REFRESH_MAIN_HASHTABLE</string>
     <string name="BROADCAST_SET_PACKAGE_FALSE">hu.uniobuda.nik.parentalcontrol.SET_PACKAGE_FALSE</string>
     <string name="BROADCAST_UNLOCK">hu.uniobuda.nik.extra.UNLOCK</string>
 
@@ -92,7 +93,7 @@
     <string name="nameLabel">Írja be a nevet:</string>
     <string name="faceNotFound">Nem található arc a képen, kérem készítsen új képet!</string>
     <string name="moreFaces">A képen több arc található, készítsen olyan képet, amelyen csak egy van!</string>
-    <string name="facePredicted">Ez az arc egym ár felvett személyhez tartozik!</string>
+    <string name="facePredicted">Ez az arc egy már felvett személyhez tartozik!</string>
     <string name="nameExistMessage">Már van ilyen néven felvett személy!</string>
     <string name="title_activity_check_person">CheckPersonActivity</string>
     <string name="checkLabel">Tartsa az arca előtt a készüléket, néhány másodperc múlva egy fotó készül róla!</string>
@@ -114,7 +115,10 @@
 
     <string name="adminFailure">Az eszközkezelő funkció nélkül a szolgáltatás nem működik, kérem kapcsolja be!</string>
 
-    <string name="deviceAccess_isEnabled">Készülék hozzáférés korlátozása:</string>
+    <string name="askResetPassword">Biztosan új jelszót szeretne generálni?\n
+    Az új jelszó elküldéséhez internetkapcsolat szükséges+</string>
+
+    <string name="deviceAccess_isEnabled">Készülék-hozzáférés korlátozása</string>
     <string name="deviceAccess_persons">Korlátozandó személyek beállításai</string>
     <string name="deletePerson">Felvett személy törlése</string>
     <string name="deleteAlert">Törlés megerősítése</string>
@@ -132,7 +136,9 @@
     <string name="passwordChanged">A jelszót sikeresen megváltoztatta</string>
     <string name="noPasswordSet">Amígy nincs jelszó beállítva, nem használhatja a szolgáltatást!</string>
     <string name="shortPassword">A beírt jelszó túl rövid!</string>
-    <string name="adminNeeded">A eszközkezelő funkció aktiválása szükséges a jelszó mentéséhez!</string>
+    <string name="adminSetFailed">A eszközkezelő aktiválása sikertelen volt!</string>
+    <string name="adminSetOK">A eszközkezelő aktiválása sikeres volt!</string>
+
     <string name="basic_title">Általános beállítások</string>
     <string name="childDenied">Gyermek hozzáférése blokkolva: </string>
     <string name="accessAllowed">Hozzáférés engedélyezve: </string>
@@ -175,7 +181,9 @@
     <string name="help_main_screen_text">Köszönöm, hogy kipróbálja az alkalmazásomat!</string>
     <string name="help_main_screen_text2">A Parental Control applikáció segítségével lehetősége nyílik a kiválasztott alkalmazások elindítását és a készülék
     feloldását azonosításhoz kötni. Amennyiben a készülék rendelkezik előlapi kamerával, mindez arc alapján történik, ellenkező esetben jelszó segítségével. Ezen felül
-    a program képes megadott URL címek tiltására is - ez a funkció azonban csak root-olt eszközökön működik!</string>
+    a program képes megadott URL címek tiltására is.\n
+    A szolgáltatás működéséhez szükséges, hogy a program eszközkezelőként engedélyezve legyen - amennyiben ez még nem történt meg, úgy a szolgáltatás indításakor
+    figyelmeztet a program.</string>
     <string name="help_main_screen_text3">A program használatához mindenképp meg kell adnia egy mesterjelszót, mely segítségével feloldhatja a blokkolást, abban
     az esetben is, ha az arc alapú azonosítás nem volt sikeres!</string>
     <string name="help_main_screen_text4">A védelmi funkciók mindegyike csak akkor működik, ha elindította a szolgáltatást, amelyet a főképernyő

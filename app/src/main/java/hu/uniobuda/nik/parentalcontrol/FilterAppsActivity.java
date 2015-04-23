@@ -97,11 +97,12 @@ public class FilterAppsActivity extends ActionBarActivity {
                     Log.d("package", pckg);
                     deniedPersons = deniedPersons.replace(":" + personName, "");
                     Log.d("DELdenPersReplaced", deniedPersons);
-                    BlockerHashTable.deleteBoolean(pckg);
+
 
                     if (deniedPersons.equals("")) {
                         Log.d("deniedPerson", "ITTJÁR");
                         e.remove(pckg);
+                        BlockerHashTable.deleteBoolean(pckg);
                     } else {
                         e.putString(pckg, deniedPersons);
                     }
@@ -132,6 +133,9 @@ public class FilterAppsActivity extends ActionBarActivity {
                 //BlockerHashTable.setBoolean("com.android.packageinstaller", true);
                 e.apply();
                 //BlockerHashTable.refresh(FilterAppsActivity.this);
+               // Intent i = new Intent();
+               // i.setAction(getString(R.string.BROADCAST_REFRESH_SERVICE_HASHTABLE));
+               // sendBroadcast(i);
                 finish();
             }
         });

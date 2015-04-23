@@ -1,7 +1,9 @@
 package hu.uniobuda.nik.parentalcontrol;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -109,6 +111,7 @@ public class PasswordRequestActivity
                         }
                     }
                     Toast.makeText(PasswordRequestActivity.this, R.string.accessAllowedByPassword, Toast.LENGTH_LONG).show();
+                    //AccessControl.playSound(R.raw.ok,PasswordRequestActivity.this);
                     finish();
 
                 } else {
@@ -132,35 +135,26 @@ public class PasswordRequestActivity
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                actionCode = ACTION_HOME;
-                ConnectivityManager cm =
-                        (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo net = cm.getActiveNetworkInfo();
-                if (net != null && net.isConnectedOrConnecting()) {
-                    Editor e = pwSh.edit();
-                    String newPw = PasswordCreator.randomPassword();
-                    e.putString(getString(R.string.SHAREDPREFERENCE_PASSWORD), PasswordCreator.createPassword(newPw));
-                    e.apply();
-                    String toAddress = pwSh.getString(getString(R.string.SHAREDPREFERENCE_EMAIL), "");
-                    Log.d("toAddresss", toAddress);
-                    String fromAddress = getString(R.string.email);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(PasswordRequestActivity.this);
+                dialog.setTitle(R.string.failTitle);
+                dialog.setMessage(R.string.askResetPassword);
+                dialog.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        arg0.dismiss();
+                    }
+                });
 
-                    String fromPassword = getString(R.string.email_password);
-                    String subject = getString(R.string.subject);
-                    String text = getString(R.string.email_text);
-
-                    EmailSender sender = new EmailSender(fromAddress, fromPassword, toAddress, subject, text + newPw);
-                    sender.sendEmail();
-                    Toast.makeText(PasswordRequestActivity.this, R.string.email_sent, Toast.LENGTH_LONG).show();
-                }
-                else
-                {
-                    WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-                    wifi.setWifiEnabled(true);
-                    Toast.makeText(PasswordRequestActivity.this, R.string.email_send_fail,Toast.LENGTH_LONG).show();
-                }
-                AccessControl.block(PasswordRequestActivity.this,null);
-                finish();
+                dialog.setPositiveButton(getString(R.string.OK),new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        generateNewPassword();
+                        dialogInterface.dismiss();
+                        //finish();
+                    }
+                });
+                dialog.show();
+                //AccessControl.block(PasswordRequestActivity.this,null);
+               // finish();
 
             }
         });
@@ -176,6 +170,37 @@ public class PasswordRequestActivity
                     return false;
                 }
             });
+        }
+    }
+
+    private void generateNewPassword()
+    {
+        //actionCode = ACTION_HOME;
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo net = cm.getActiveNetworkInfo();
+        if (net != null && net.isConnectedOrConnecting()) {
+            Editor e = pwSh.edit();
+            String newPw = PasswordCreator.randomPassword();
+            e.putString(getString(R.string.SHAREDPREFERENCE_PASSWORD), PasswordCreator.createPassword(newPw));
+            e.apply();
+            String toAddress = pwSh.getString(getString(R.string.SHAREDPREFERENCE_EMAIL), "");
+            Log.d("toAddresss", toAddress);
+            String fromAddress = getString(R.string.email);
+
+            String fromPassword = getString(R.string.email_password);
+            String subject = getString(R.string.subject);
+            String text = getString(R.string.email_text);
+
+            EmailSender sender = new EmailSender(fromAddress, fromPassword, toAddress, subject, text + newPw);
+            sender.sendEmail();
+            Toast.makeText(PasswordRequestActivity.this, R.string.email_sent, Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+            wifi.setWifiEnabled(true);
+            Toast.makeText(PasswordRequestActivity.this, R.string.email_send_fail,Toast.LENGTH_LONG).show();
         }
     }
 }

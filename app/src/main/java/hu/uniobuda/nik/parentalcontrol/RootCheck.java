@@ -8,11 +8,11 @@ import java.io.InputStreamReader;
 
 public class RootCheck {
 
-    public static boolean isDeviceRooted() {
+    /*public static boolean isDeviceRooted() {
         return checkRootMethod1() || checkRootMethod2() || checkRootMethod3() || checkRootMethod4();
-    }
+    }*/
 
-    private static boolean checkRootMethod1() {
+    /*private static boolean checkRootMethod1() {
         String buildTags = Build.TAGS;
         return buildTags != null && buildTags.contains("test-keys");
     }
@@ -28,9 +28,9 @@ public class RootCheck {
             if (new File(path).exists()) return true;
         }
         return false;
-    }
+    }*/
 
-    private static boolean checkRootMethod4() {
+    public static boolean isDeviceRooted() {
         Process process = null;
         try {
             process = Runtime.getRuntime().exec(new String[] { "/system/xbin/which", "su" });

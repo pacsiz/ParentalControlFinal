@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -33,6 +34,7 @@ public class CheckService extends Service {
     boolean urlEnabled;
     BroadcastReceiver lock;
     BroadcastReceiver unlock;
+    BroadcastReceiver refreshHashTable;
     int apiLevel;
 
 
@@ -44,7 +46,16 @@ public class CheckService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         final SharedPreferences settings = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
-        SharedPreferences persons = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
+        //SharedPreferences persons = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
+        SharedPreferences apps = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_PRIVATE);
+
+        if (apps.getAll().isEmpty()) {
+            Editor e = apps.edit();
+            e.putString("hu.uniobuda.nik.parentalcontrol", "all");
+            e.putString("com.android.settings", "all");
+            e.putString("com.android.packageinstaller", "all");
+            e.apply();
+        }
         frontCamera = settings.getBoolean(getString
                 (R.string.SHAREDPREFERENCE_FACE_REG_ENABLED), false);
         urlEnabled = settings.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), false);
@@ -68,14 +79,14 @@ public class CheckService extends Service {
             IPTablesAPI.blockAllURL(CheckService.this);
         }
 
-        if (!persons.getAll().isEmpty()) {
+        /*if (!persons.getAll().isEmpty()) {
             new Thread() {
                 @Override
                 public void run() {
                     Loader.load(opencv_nonfree.class);
                 }
             }.start();
-        }
+        }*/
 
         lock = new BroadcastReceiver() {
             @Override
@@ -103,10 +114,10 @@ public class CheckService extends Service {
                 }
             }
         };
+
         registerReceiver(lock, new IntentFilter(Intent.ACTION_SCREEN_OFF));
         registerReceiver(unlock, new IntentFilter(Intent.ACTION_USER_PRESENT));
 
-        BlockerHashTable.refresh(CheckService.this);
         mt.start();
         return Service.START_STICKY;
     }
@@ -137,7 +148,7 @@ public class CheckService extends Service {
             while (!this.isInterrupted()) {
 
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(100);
                     String foregroundTaskPackageName;
                     //Log.d("Apilevel",apiLevel+"");
                     // if (apiLevel < Build.VERSION_CODES.LOLLIPOP) {
@@ -151,10 +162,14 @@ public class CheckService extends Service {
                     if (!(foregroundTaskPackageName.equals(previousPackage))
                             && !previousPackage.equals("")) {
                         Log.d("BHT_EMPTY", Boolean.toString(BlockerHashTable.isEmpty()));
-                        if (BlockerHashTable.isEmpty()) {
+                        /*if (BlockerHashTable.isEmpty()) {
+                            Intent i = new Intent();
+                            i.setAction(getString(R.string.BROADCAST_REFRESH_MAIN_HASHTABLE));
+                            sendBroadcast(i);
+                            Log.d("SERVICE","refreshsent");
                             BlockerHashTable.refresh(CheckService.this);
 
-                        }
+                        }*/
                         Intent packageChanged = new Intent();
                         packageChanged
                                 .setAction(getString(R.string.BROADCAST_NEW_APP_STARTED));

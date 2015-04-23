@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.util.Log;
 import android.util.Patterns;
@@ -23,7 +24,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class PasswordActivity
-        extends Activity
+        extends ActionBarActivity
 {
     EditText confirmPw;
     EditText newPw;
@@ -31,7 +32,7 @@ public class PasswordActivity
     SharedPreferences pwSh;
     Button save;
     private static final int PW_MIN_LENGTH = 4;
-    private static int REQUEST_CODE = 1001;
+
     Editor e;
 
 

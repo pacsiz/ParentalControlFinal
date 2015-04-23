@@ -5,6 +5,11 @@ import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 import android.os.Process;
@@ -86,6 +91,7 @@ public class AccessControl {
         if (packageName != null && !packageName.equals(("hu.uniobuda.nik.parentalcontrol"))) {
             BlockerHashTable.setBoolean(packageName, false);
         }
+        //playSound(R.raw.ok, context);
     }
 
     public static void block(Context context, String packageName) {
@@ -98,6 +104,7 @@ public class AccessControl {
         {
             BlockerHashTable.setBoolean(packageName, true);
         }
+        //playSound(R.raw.fail, context);
     }
 
     public static void deny(Context context, String personName, String packageName) {
@@ -110,6 +117,8 @@ public class AccessControl {
 
     public static void personCheck(Context context,String personName, String packageName)
     {
+        Log.d("personname", personName);
+        Log.d("packageNaem", packageName);
         SharedPreferences apps = context.getSharedPreferences(context.getString(R.string.SHAREDPREFERENCE_PACKAGES),Context.MODE_PRIVATE);
         Map<String, ?> map = apps.getAll();
         String blockedPerson = map.get(packageName).toString();
@@ -124,8 +133,39 @@ public class AccessControl {
     }
 
     public static void lock(Context context) {
+        //playSound(R.raw.fail, context);
         DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
         dpm.lockNow();
     }
+
+    public static void playSound(int soundId, Context context) {
+
+        MediaPlayer mp = MediaPlayer.create(context, soundId);
+        mp.start();
+        /*SoundPool soundPool;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build();
+
+            soundPool = new SoundPool.Builder()
+                    .setMaxStreams(1)
+                    .setAudioAttributes(audioAttributes)
+                    .build();
+        } else {
+            soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
+        }
+
+        final int id = soundPool.load(context,soundId,1);
+
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int i, int i2) {
+                soundPool.play(id,0.7f,0.7f,1,0,1f);
+            }
+        });*/
+    }
+
 
 }
