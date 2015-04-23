@@ -176,7 +176,7 @@ public class FaceDetection {
         if (file.exists())
         {
             fr.load(file.getAbsolutePath());
-            fr.set("threshold", 90);
+            fr.set("threshold", 82);
             Mat mat = matForLBPH(bitmap);
             return fr.predict(mat);
         }

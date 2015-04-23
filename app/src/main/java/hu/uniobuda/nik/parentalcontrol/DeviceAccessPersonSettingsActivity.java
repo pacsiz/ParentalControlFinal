@@ -60,7 +60,7 @@ public class DeviceAccessPersonSettingsActivity extends Activity {
         for (int i = 0; i < weekdays.length-2; i++)
         {
             orderedwd[i] = weekdays[i+2].toLowerCase();
-            Log.d("ordwd",orderedwd[i]+"<->"+weekdays[i+2]);
+            //Log.d("ordwd",orderedwd[i]+"<->"+weekdays[i+2]);
         }
         orderedwd[6] = weekdays[1].toLowerCase();
 
@@ -69,16 +69,21 @@ public class DeviceAccessPersonSettingsActivity extends Activity {
 
         SharedPreferences sh = getSharedPreferences(name, Context.MODE_PRIVATE);
         final Editor e = sh.edit();
-        String personDays = sh.getString(getString(R.string.SHAREDPREFERENCE_SELECTED_DAYS),"");
-        String[] daysArray = personDays.split(":");
-        for (String day : daysArray)
+        //String personDays = sh.getString(getString(R.string.SHAREDPREFERENCE_SELECTED_DAYS),"");
+        //String[] daysArray = personDays.split(":");
+        /*for (String day : daysArray)
         {
             selectedDays.add(day);
             Log.d("nap", day);
-        }
+        }*/
 
-        from.setText(sh.getString(getString(R.string.SHAREDPREFERENCE_TIME_FROM),""));
-        to.setText(sh.getString(getString(R.string.SHAREDPREFERENCE_TIME_TO), ""));
+        String[] fromArr = sh.getString(getString(R.string.SHAREDPREFERENCE_TIME_FROM),"").split(":");
+        String[] toArr = sh.getString(getString(R.string.SHAREDPREFERENCE_TIME_TO), "").split(":");
+
+        //from.setText(sh.getString(getString(R.string.SHAREDPREFERENCE_TIME_FROM),""));
+        //to.setText(sh.getString(getString(R.string.SHAREDPREFERENCE_TIME_TO), ""));
+        from.setText(fromArr[0]+":"+(Integer.parseInt(fromArr[1])<10 ?"0"+fromArr[1]:fromArr[0]));
+        to.setText(toArr[0]+":"+(Integer.parseInt(toArr[1])<10 ?"0"+toArr[1]:toArr[0]));
         isAccessEnabled.setChecked(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_FOR_PERSON), false));
 
         isAccessEnabled.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +105,7 @@ public class DeviceAccessPersonSettingsActivity extends Activity {
 
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                from.setText(hourOfDay + ":" + minute);
+                                from.setText(hourOfDay + ":" + (minute<10 ?"0"+minute:minute));
                                 e.putString(getString(R.string.SHAREDPREFERENCE_TIME_FROM),
                                         hourOfDay + ":" + minute);
                             }
@@ -122,7 +127,8 @@ public class DeviceAccessPersonSettingsActivity extends Activity {
 
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                to.setText(hourOfDay + ":" + minute);
+
+                                to.setText(hourOfDay + ":" + (minute<10 ?"0"+minute:minute));
                                 e.putString(getString(R.string.SHAREDPREFERENCE_TIME_TO),
                                         hourOfDay + ":" + minute);
                             }
@@ -204,7 +210,7 @@ public class DeviceAccessPersonSettingsActivity extends Activity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                e.commit();
+                e.apply();
                 finish();
             }
         });

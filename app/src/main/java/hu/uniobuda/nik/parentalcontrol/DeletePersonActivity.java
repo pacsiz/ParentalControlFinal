@@ -122,7 +122,7 @@ public class DeletePersonActivity extends ListActivity {
                                 }*/
                                // Arrays.asList(labels).remove(index);
                                // Arrays.asList(names).remove(index);
-
+                                deletePersonPackages(nn.get(index));
                                 Editor e = persons.edit();
                                 e.remove(ll.get(index));
                                 Log.d("name", nn.get(index));
@@ -142,6 +142,27 @@ public class DeletePersonActivity extends ListActivity {
 
             }
         });
+    }
+
+    private void deletePersonPackages(String deletedPerson)
+    {
+        SharedPreferences packages = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_PRIVATE);
+        Editor e = packages.edit();
+        for (Map.Entry entry : packages.getAll().entrySet())
+        {
+            String packageName = entry.getKey().toString();
+            String personName = entry.getValue().toString();
+            if(personName.contains(deletedPerson)) {
+                personName = personName.replace(":" + deletedPerson, "");
+                if (personName.equals("")) {
+                    e.remove(packageName);
+                    BlockerHashTable.deleteBoolean(packageName);
+                } else {
+                    e.putString(packageName, personName);
+                }
+            }
+        }
+        e.apply();
     }
 
     private class Remover extends AsyncTask<Void, Void, Void> {

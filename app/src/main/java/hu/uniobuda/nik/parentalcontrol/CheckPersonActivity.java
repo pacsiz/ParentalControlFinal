@@ -199,7 +199,7 @@ public class CheckPersonActivity extends Activity {
                 }
             } else {
                 fails += 1;
-                if (fails <= 3) {
+                if (fails < 3) {
                     Toast.makeText(CheckPersonActivity.this,
                             R.string.recognitionFailMessage, Toast.LENGTH_SHORT).show();
                     camera.startPreview();
