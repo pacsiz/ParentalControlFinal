@@ -1,5 +1,6 @@
 package hu.uniobuda.nik.parentalcontrol;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,10 +36,7 @@ public class SettingsActivity extends PreferenceActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     if (RootCheck.isDeviceRooted()) {
-                        Editor e = sh.edit();
-                        e.putBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), (boolean) newValue);
-                        Log.d("URL_ENABLED", newValue.toString());
-                        e.apply();
+
                         if (ServiceInfo.isServiceRunning(CheckService.class, SettingsActivity.this)) {
                             if (urlEnabled.isChecked()) {
                                 IPTablesAPI.unblockAllURL(SettingsActivity.this);
@@ -54,12 +52,16 @@ public class SettingsActivity extends PreferenceActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                urlEnabled.setChecked(false);
+                                //urlEnabled.setChecked(false);
                             }
                         });
                         dialog.show();
 
                     }
+                    Editor e = sh.edit();
+                    e.putBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), (boolean) newValue);
+                    Log.d("URL_ENABLED", newValue.toString());
+                    e.apply();
                     return true;
                 }
             });
@@ -69,7 +71,7 @@ public class SettingsActivity extends PreferenceActivity {
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     Editor e = sh.edit();
                     e.putBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED),(boolean) newValue);
-                    e.commit();
+                    e.apply();
                     return true;
                 }
             });
@@ -84,6 +86,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class SettingsPreferenceFragment extends PreferenceFragment {
         LongTextCheckBoxPreference urlEnabled;
         LongTextCheckBoxPreference accessControlEnabled;
@@ -110,10 +113,7 @@ public class SettingsActivity extends PreferenceActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     if (RootCheck.isDeviceRooted()) {
-                        Editor e = sh.edit();
-                        e.putBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), (boolean) newValue);
-                        Log.d("URL_ENABLED", newValue.toString());
-                        e.commit();
+
                         if (ServiceInfo.isServiceRunning(CheckService.class, getActivity())) {
                             if (urlEnabled.isChecked()) {
                                 IPTablesAPI.unblockAllURL(getActivity());
@@ -129,13 +129,16 @@ public class SettingsActivity extends PreferenceActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                urlEnabled.setChecked(false);
+                                //urlEnabled.setChecked(false);
                             }
                         });
                         dialog.show();
 
                     }
-
+                    Editor e = sh.edit();
+                    e.putBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), (boolean) newValue);
+                    Log.d("URL_ENABLED", newValue.toString());
+                    e.apply();
                     return true;
                 }
             });
@@ -145,7 +148,7 @@ public class SettingsActivity extends PreferenceActivity {
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     Editor e = sh.edit();
                     e.putBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED),(boolean) newValue);
-                    e.commit();
+                    e.apply();
                     return true;
                 }
             });

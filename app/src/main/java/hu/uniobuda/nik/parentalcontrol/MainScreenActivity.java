@@ -118,7 +118,7 @@ public class MainScreenActivity extends ActionBarActivity {
 
                 } else {
                     if (!isRunning) {
-                       /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                         {
                             if(!isUsageStatsEnabled())
                             {
@@ -128,7 +128,7 @@ public class MainScreenActivity extends ActionBarActivity {
                                 Log.d("return", "return");
                                 return;
                             }
-                        }*/
+                        }
                         Log.d("startservice", "enabledservice");
                         enableService();
                     } else {

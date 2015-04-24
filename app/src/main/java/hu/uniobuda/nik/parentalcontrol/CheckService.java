@@ -148,20 +148,20 @@ public class CheckService extends Service {
             while (!this.isInterrupted()) {
 
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(150);
                     String foregroundTaskPackageName;
                     //Log.d("Apilevel",apiLevel+"");
-                    // if (apiLevel < Build.VERSION_CODES.LOLLIPOP) {
-                    foregroundTaskPackageName = getPackageNameOldApi();
-                    // Log.d("Service","OldApi");
-                    //} else {
-                    //Log.d("Service","NewApi");
-                    //  foregroundTaskPackageName = getPackageNameNewApi();
-                    // }
+                    if (apiLevel < Build.VERSION_CODES.LOLLIPOP) {
+                        foregroundTaskPackageName = getPackageNameOldApi();
+                        // Log.d("Service","OldApi");
+                    } else {
+                        //Log.d("Service","NewApi");
+                        foregroundTaskPackageName = getPackageNameNewApi();
+                    }
 
                     if (!(foregroundTaskPackageName.equals(previousPackage))
                             && !previousPackage.equals("")) {
-                        Log.d("BHT_EMPTY", Boolean.toString(BlockerHashTable.isEmpty()));
+                        //Log.d("BHT_EMPTY", Boolean.toString(BlockerHashTable.isEmpty()));
                         /*if (BlockerHashTable.isEmpty()) {
                             Intent i = new Intent();
                             i.setAction(getString(R.string.BROADCAST_REFRESH_MAIN_HASHTABLE));
@@ -197,12 +197,13 @@ public class CheckService extends Service {
             return foregroundTaskInfo.topActivity
                     .getPackageName();
         }
-        /*private String getPackageNameNewApi() {
+
+        private String getPackageNameNewApi() {
             UsageStatsManager usm = (UsageStatsManager) getSystemService("usagestats");
             long time = System.currentTimeMillis();
             String packageName = "";
             // We get usage stats for the last 1 seconds
-            List<UsageStats> stats = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000, time);
+            List<UsageStats> stats = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 5000, time);
             // Sort the stats by the last time used
             if (stats != null) {
                 SortedMap<Long, UsageStats> sortedMap = new TreeMap<Long, UsageStats>();
@@ -213,8 +214,8 @@ public class CheckService extends Service {
                     packageName = sortedMap.get(sortedMap.lastKey()).getPackageName();
                 }
             }
-            Log.d("newapi", packageName);
+            //Log.d("newapi", packageName);
             return packageName;
-        }*/
+        }
     }
 }

@@ -31,16 +31,29 @@ public class RootCheck {
     }*/
 
     public static boolean isDeviceRooted() {
-        Process process = null;
-        try {
-            process = Runtime.getRuntime().exec(new String[] { "/system/xbin/which", "su" });
-            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            if (in.readLine() != null) return true;
+        if(execSu())
+        {
             return false;
-        } catch (Throwable t) {
-            return false;
-        } finally {
-            if (process != null) process.destroy();
         }
+        else
+        {
+            return new File("/system/app/Superuser.apk").exists();
+        }
+
+    }
+
+    private static boolean execSu()
+    {
+        Process process = null;
+            try {
+                process = Runtime.getRuntime().exec(new String[] { "/system/xbin/which", "su" });
+                BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                if (in.readLine() != null) return true;
+                return false;
+            } catch (Throwable t) {
+                return false;
+            } finally {
+                if (process != null) process.destroy();
+            }
     }
 }

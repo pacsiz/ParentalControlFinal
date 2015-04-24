@@ -49,6 +49,8 @@
     <string name="BROADCAST_SET_PACKAGE_FALSE">hu.uniobuda.nik.parentalcontrol.SET_PACKAGE_FALSE</string>
     <string name="BROADCAST_UNLOCK">hu.uniobuda.nik.extra.UNLOCK</string>
 
+    <string name="noFrontCamera">NO_FRONT_CAMREA_AVAILABLE</string>
+
     <string name="monday">hétfő</string>
     <string name="tuesday">kedd</string>
     <string name="wednesday">szerda</string>
@@ -108,7 +110,7 @@
     <string name="url_custom_title">URL megadása és törlése</string>
     <string name="url_isOn">URL blokkolás bekapcsolása</string>
     <string name="urlDisabled">Az URL blokkolás funkció nincs bekapcsolva!</string>
-    <string name="rootFailed">Az URL blokkolás csak root-olt készülékeken használható!</string>
+    <string name="rootFailed">Az Ön készüléke valószínűleg nem root-olt, az URL blokkolás csak root-olt készülékeken használható!</string>
     <string name="usageStatsMustEnabled">A program helyes működéséhez engedélyeznie kell a használati statiszikákta a Parental Control számára!</string>
 
     <string name="childSettings">beállításai</string>

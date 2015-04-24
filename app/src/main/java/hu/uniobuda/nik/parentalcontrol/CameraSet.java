@@ -32,7 +32,7 @@ public class CameraSet {
         for (int i = 0; i < cameraNumber; i++) {
             Camera.getCameraInfo(i, info);
             if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
-                frontCameraIndex = i;
+                frontCameraIndex = CameraInfo.CAMERA_FACING_FRONT;
                 // Log.d("FCI", Integer.toString(frontCameraIndex));
                 break;
             }
