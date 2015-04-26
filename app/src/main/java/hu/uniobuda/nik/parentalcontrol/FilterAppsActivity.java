@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.widget.AdapterView.OnItemClickListener;
 import android.app.ProgressDialog;
@@ -40,12 +43,12 @@ public class FilterAppsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter_apps);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffd6d6d6")));
+
         shSelectedApps = getSharedPreferences(getString
                 (R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_PRIVATE);
         selectedAppsMap = shSelectedApps.getAll();
-        for (Map.Entry<String, ?> entry : selectedAppsMap.entrySet()) {
-            Log.d("pacakage", entry.getKey());
-        }
 
         appList = (ListView) findViewById(R.id.appList);
         btnSave = (Button) findViewById(R.id.btnSave);
@@ -59,6 +62,7 @@ public class FilterAppsActivity extends ActionBarActivity {
         }
 
         checkedValue.clear();
+
         new backgroundLoadAppList().execute();
 
         appList.setOnItemClickListener(new OnItemClickListener() {
@@ -68,14 +72,11 @@ public class FilterAppsActivity extends ActionBarActivity {
                 cb.performClick();
                 String pName = list.get(position).pName;
                 if (cb.isChecked()) {
-
-                    Log.d("esemeny", pName);
                     checkedValue.add(pName);
                     if (tempDelete.contains(pName)) {
                         tempDelete.remove(pName);
                     }
                 } else {
-                    Log.d("esemeny", "checkvizsgaN");
                     checkedValue.remove(pName);
                     tempDelete.add(pName);
                 }
@@ -93,14 +94,12 @@ public class FilterAppsActivity extends ActionBarActivity {
                     if (selectedAppsMap.containsKey(pckg)) {
                         deniedPersons = selectedAppsMap.get(pckg).toString();
                     }
-                    Log.d("DELdeniedPersons", deniedPersons);
-                    Log.d("package", pckg);
-                    deniedPersons = deniedPersons.replace(":" + personName, "");
-                    Log.d("DELdenPersReplaced", deniedPersons);
+                    //Log.d("FilterAppsActivity", "Denied persons: "+deniedPersons);
 
+                    deniedPersons = deniedPersons.replace(":" + personName, "");
+                    //Log.d("FilterAppsActivity", "Person removed from denied persons: "+deniedPersons);
 
                     if (deniedPersons.equals("")) {
-                        Log.d("deniedPerson", "ITTJÁR");
                         e.remove(pckg);
                         BlockerHashTable.deleteBoolean(pckg);
                     } else {
@@ -112,31 +111,21 @@ public class FilterAppsActivity extends ActionBarActivity {
                     if (selectedAppsMap.containsKey(pckg)) {
                         deniedPersons = selectedAppsMap.get(pckg).toString();
                     }
-                    Log.d("ADDdeniedPersons", deniedPersons);
-                    Log.d("package", pckg);
+                    //Log.d("FilterAppsActivity", "Denied persons: "+deniedPersons);
 
                     if (!deniedPersons.contains(personName)) {
                         deniedPersons = deniedPersons + ":" + personName;
-                        Log.d("ADDdenPersReplaced", deniedPersons);
+                        //Log.d("FilterAppsActivity","Person added to denied persosns: "+deniedPersons);
                         e.putString(pckg, deniedPersons);
                     }
-
                     BlockerHashTable.setBoolean(pckg, true);
                 }
 
-
                 e.putString("hu.uniobuda.nik.parentalcontrol", "all");
-                //BlockerHashTable.setBoolean("hu.uniobuda.nik.parentalcontrol", true);
                 e.putString("com.android.settings", "all");
-                //BlockerHashTable.setBoolean("com.android.settings", true);
                 e.putString("com.android.packageinstaller", "all");
-                //BlockerHashTable.setBoolean("com.android.packageinstaller", true);
-                e.apply();
-                //BlockerHashTable.refresh(FilterAppsActivity.this);
-               // Intent i = new Intent();
-               // i.setAction(getString(R.string.BROADCAST_REFRESH_SERVICE_HASHTABLE));
-               // sendBroadcast(i);
-                finish();
+                e.commit();
+                 finish();
             }
         });
     }
@@ -163,7 +152,7 @@ public class FilterAppsActivity extends ActionBarActivity {
         @Override
         protected List<AppInfo> doInBackground(Void... arg0) {
 
-            ArrayList<AppInfo> res = new ArrayList<AppInfo>();
+            ArrayList<AppInfo> selectedApps = new ArrayList<AppInfo>();
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
             List<ResolveInfo> apps = getPackageManager().queryIntentActivities(intent, 0);
@@ -180,14 +169,13 @@ public class FilterAppsActivity extends ActionBarActivity {
                     newInfo.appIcon = info.loadIcon(getPackageManager());
                     if (shSelectedApps.contains(newInfo.pName)) {
                         if (selectedAppsMap.get(newInfo.pName).toString().contains(personName)) {
-                            //Log.d("nevek", selectedAppsMap.get(newInfo.pName).toString());
                             checkedValue.add(newInfo.pName);
                         }
                     }
-                    res.add(newInfo);
+                    selectedApps.add(newInfo);
                 }
             }
-            return res;
+            return selectedApps;
         }
     }
 

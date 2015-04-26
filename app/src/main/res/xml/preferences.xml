@@ -19,6 +19,15 @@
         <hu.uniobuda.nik.parentalcontrol.LongTextPreference android:title="@string/deletePerson">
             <intent android:action="parentalcontrol.action.START_DELETEPERSON_ACTIVITY" />
         </hu.uniobuda.nik.parentalcontrol.LongTextPreference>
+        <hu.uniobuda.nik.parentalcontrol.SeekBarPreference
+            android:key="predictValuePreference"
+            android:title="@string/predictValue_title"
+            android:dialogTitle="@string/predictValue_dialog"
+            android:summary="@string/predictValue_summary"
+            android:persistent="false"
+            android:defaultValue="82">
+        </hu.uniobuda.nik.parentalcontrol.SeekBarPreference>
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/url_title">

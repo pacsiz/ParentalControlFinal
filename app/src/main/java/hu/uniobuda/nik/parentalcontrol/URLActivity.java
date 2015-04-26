@@ -18,9 +18,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 
@@ -40,12 +38,13 @@ public class URLActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_url);
+
         sh = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
         if (!sh.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), false)) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setTitle(R.string.failTitle);
             dialog.setMessage(getString(R.string.urlDisabled));
-            dialog.setPositiveButton("OK",
+            dialog.setPositiveButton(R.string.OK,
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
@@ -54,12 +53,14 @@ public class URLActivity extends Activity {
                     });
             dialog.show();
         }
+
         sh = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_URLS), Context.MODE_PRIVATE);
         addUrl = (Button) findViewById(R.id.btnUrlAdd);
         deleteUrl = (Button) findViewById(R.id.btnUrlDelete);
         saveUrl = (Button) findViewById(R.id.btnUrlSave);
         urlListView = (ListView) findViewById(R.id.urlListView);
         e = sh.edit();
+
         new backgroundLoadURLS().execute();
         tempDeletedUrls = new ArrayList<>();
 
@@ -69,9 +70,6 @@ public class URLActivity extends Activity {
                 CheckBox checkBox = (CheckBox) view.findViewById(R.id.urlCheckBox);
                 checkBox.performClick();
                 if (checkBox.isChecked()) {
-                    Log.d("position", Integer.toString(position));
-                    Log.d("url_meret_onclick", Integer.toString(urls.size()));
-                    Log.d("url", urls.get(position));
                     tempDeletedUrls.add(urls.get(position));
                 } else {
                     tempDeletedUrls.remove(urls.get(position));
@@ -161,10 +159,9 @@ public class URLActivity extends Activity {
 
         @Override
         protected void onPostExecute(ArrayList<String> result) {
-            adapter = new URLLIstAdapter(URLActivity.this, R.layout.urllist_layout, result);
+            adapter = new URLLIstAdapter(URLActivity.this, R.layout.checkboxlist_layout, result);
             urlListView.setAdapter(adapter);
             urls = result;
-            Log.d("url_meret", Integer.toString(urls.size()));
             pd.dismiss();
         }
 
@@ -172,8 +169,6 @@ public class URLActivity extends Activity {
         protected ArrayList<String> doInBackground(Void... params) {
             ArrayList<String> temp = new ArrayList<>();
             Map<String, ?> map = sh.getAll();
-            //Map sortedMap = new TreeMap(new ValueComparator(map));
-            //sortedMap.putAll(map);
             for (Map.Entry entry : map.entrySet()) {
                 temp.add(entry.getKey().toString());
             }

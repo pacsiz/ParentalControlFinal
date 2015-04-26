@@ -3,7 +3,7 @@ package hu.uniobuda.nik.parentalcontrol;
 import java.util.Comparator;
 import java.util.Map;
 
-class ValueComparatorInc implements Comparator {
+public class ValueComparatorInc implements Comparator {
 
    Map map;
 

@@ -20,23 +20,23 @@ public class SettingsActivity extends PreferenceActivity {
     LongTextCheckBoxPreference accessControlEnabled;
     SharedPreferences sh;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             addPreferencesFromResource(R.xml.preferences);
             urlEnabled = (LongTextCheckBoxPreference) findPreference("urlEnabled");
-            accessControlEnabled = (LongTextCheckBoxPreference)findPreference("deviceAccessEnabled");
+            accessControlEnabled = (LongTextCheckBoxPreference) findPreference("deviceAccessEnabled");
             sh = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
-            urlEnabled.setChecked(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED),false));
-            accessControlEnabled.setChecked(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED),false));
 
+            urlEnabled.setChecked(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), false));
+            accessControlEnabled.setChecked(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED), false));
 
             urlEnabled.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    if (RootCheck.isDeviceRooted()) {
-
+                    if (RootCheck.isDeviceRooted() && !urlEnabled.isChecked()) {
                         if (ServiceInfo.isServiceRunning(CheckService.class, SettingsActivity.this)) {
                             if (urlEnabled.isChecked()) {
                                 IPTablesAPI.unblockAllURL(SettingsActivity.this);
@@ -48,20 +48,17 @@ public class SettingsActivity extends PreferenceActivity {
                         AlertDialog.Builder dialog = new AlertDialog.Builder(SettingsActivity.this);
                         dialog.setTitle(R.string.failTitle);
                         dialog.setMessage(getString(R.string.rootFailed));
-                        dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        dialog.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                //urlEnabled.setChecked(false);
                             }
                         });
                         dialog.show();
-
                     }
                     Editor e = sh.edit();
                     e.putBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), (boolean) newValue);
-                    Log.d("URL_ENABLED", newValue.toString());
-                    e.apply();
+                    e.commit();
                     return true;
                 }
             });
@@ -70,8 +67,8 @@ public class SettingsActivity extends PreferenceActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     Editor e = sh.edit();
-                    e.putBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED),(boolean) newValue);
-                    e.apply();
+                    e.putBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED), (boolean) newValue);
+                    e.commit();
                     return true;
                 }
             });
@@ -84,35 +81,30 @@ public class SettingsActivity extends PreferenceActivity {
         }
     }
 
-
-
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class SettingsPreferenceFragment extends PreferenceFragment {
         LongTextCheckBoxPreference urlEnabled;
         LongTextCheckBoxPreference accessControlEnabled;
         SharedPreferences sh;
-        //Context context;
-
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
-            // TODO Auto-generated method stub
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
 
             sh = getActivity().getSharedPreferences(getString
                     (R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
 
-            accessControlEnabled = (LongTextCheckBoxPreference)findPreference("deviceAccessEnabled");
+            accessControlEnabled = (LongTextCheckBoxPreference) findPreference("deviceAccessEnabled");
             urlEnabled = (LongTextCheckBoxPreference) findPreference("urlEnabled");
 
-            urlEnabled.setChecked(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED),false));
-            accessControlEnabled.setChecked(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED),false));
+            urlEnabled.setChecked(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), false));
+            accessControlEnabled.setChecked(sh.getBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED), false));
 
             urlEnabled.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    if (RootCheck.isDeviceRooted()) {
+                    if (RootCheck.isDeviceRooted() && !urlEnabled.isChecked()) {
 
                         if (ServiceInfo.isServiceRunning(CheckService.class, getActivity())) {
                             if (urlEnabled.isChecked()) {
@@ -125,11 +117,10 @@ public class SettingsActivity extends PreferenceActivity {
                         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
                         dialog.setTitle(R.string.failTitle);
                         dialog.setMessage(getString(R.string.rootFailed));
-                        dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        dialog.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                //urlEnabled.setChecked(false);
                             }
                         });
                         dialog.show();
@@ -137,8 +128,7 @@ public class SettingsActivity extends PreferenceActivity {
                     }
                     Editor e = sh.edit();
                     e.putBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), (boolean) newValue);
-                    Log.d("URL_ENABLED", newValue.toString());
-                    e.apply();
+                    e.commit();
                     return true;
                 }
             });
@@ -147,12 +137,11 @@ public class SettingsActivity extends PreferenceActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     Editor e = sh.edit();
-                    e.putBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED),(boolean) newValue);
-                    e.apply();
+                    e.putBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED), (boolean) newValue);
+                    e.commit();
                     return true;
                 }
             });
-
         }
     }
 

@@ -11,24 +11,20 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class DeviceAccessActivity extends ListActivity{
 
-    SharedPreferences persons;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_device_access);
-        persons = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
+
+        SharedPreferences persons = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
         Map map = persons.getAll();
         TreeMap<String, ?> sortedMap = new TreeMap(new ValueComparatorInc(map));
         sortedMap.putAll(map);
         ArrayList<String> list = new ArrayList<>();
-        String[] names = new String[sortedMap.size()];
 
         for (Map.Entry<String, ?> entry : sortedMap.entrySet())
         {
@@ -46,7 +42,7 @@ public class DeviceAccessActivity extends ListActivity{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String name = listView.getItemAtPosition(position).toString();
                 Intent i = new Intent(DeviceAccessActivity.this,
-                        DeviceAccessPersonSettingsActivity.class);
+                        DeviceAccessSettingsActivity.class);
                 i.putExtra(getString(R.string.EXTRA_PERSON_NAME),name);
                 startActivity(i);
             }

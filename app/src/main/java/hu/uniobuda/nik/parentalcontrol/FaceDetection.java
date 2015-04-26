@@ -32,13 +32,8 @@ import android.widget.Toast;
 public class FaceDetection {
 
     private static final int NUMBER_OF_PHOTOS = 5;
-    //private static final String XML_PATH = Environment.getExternalStorageDirectory().toString() + "/teszt.xml";
 
-
-
-    public static void learnJPG(int personId, Context context)
-    {
-        //File root = Environment.getExternalStorageDirectory();
+    public static void learnJPG(int personId, Context context) {
         File root = context.getCacheDir();
 
         FilenameFilter imgFilter = new FilenameFilter() {
@@ -51,9 +46,7 @@ public class FaceDetection {
         File[] imageFiles = root.listFiles(imgFilter);
 
         MatVector images = new MatVector(imageFiles.length);
-
         Mat labels = new Mat(imageFiles.length, 1, CV_32SC1);
-
         IntBuffer labelsBuf = labels.getIntBuffer();
 
         int counter = 0;
@@ -62,72 +55,53 @@ public class FaceDetection {
             Mat img = imread(image.getAbsolutePath(), CV_LOAD_IMAGE_GRAYSCALE);
 
             int label = Integer.parseInt(image.getName().split("\\-")[0]);
-
             images.put(counter, img);
-
             labelsBuf.put(counter, label);
-
             counter++;
         }
-        Log.d("KÉPEK", Long.toString(images.size()));
-        FaceRecognizer faceRecognizer = createLBPHFaceRecognizer();
-        File f = new File(context.getFilesDir(),context.getString(R.string.xmlName));
 
-        //Log.d("path",path);
-        if(f.exists())
-        {
+
+        FaceRecognizer faceRecognizer = createLBPHFaceRecognizer();
+        File f = new File(context.getFilesDir(), context.getString(R.string.xmlName));
+
+        if (f.exists()) {
 
             faceRecognizer.load(f.getAbsolutePath());
             faceRecognizer.update(images, labels);
-        }
-        else
-        {
+        } else {
             faceRecognizer.train(images, labels);
         }
 
         faceRecognizer.save(f.getAbsolutePath());
-
         deleteJPGs(context);
     }
 
 
-    public static void learn(Context context, ArrayList<Bitmap> faces, int label)
-    {
+    public static void learn(Context context, ArrayList<Bitmap> faces, int label) {
 
-        //Log.d("tömbméret", Integer.toString(faces.size()));
         Mat labels = new Mat(NUMBER_OF_PHOTOS, 1, CV_32SC1);
         MatVector matVector = new MatVector(NUMBER_OF_PHOTOS);
-        for(Bitmap face : faces)
-        {
+        for (Bitmap face : faces) {
             matVector.put(matForLBPH(face));
         }
         faces.clear();
         IntBuffer intBuff = labels.getIntBuffer();
-        //IntBuffer intBuff = IntBuffer.allocate(NUMBER_OF_PHOTOS);
-        int index = 0;
         FaceRecognizer fr = createLBPHFaceRecognizer();
-        for (int i = 0; i < NUMBER_OF_PHOTOS; i++)
-        {
+        for (int i = 0; i < NUMBER_OF_PHOTOS; i++) {
             intBuff.put(i, label);
         }
 
-        //labels.create(NUMBER_OF_PHOTOS,intBuff,CV_32SC1);
-
         File file = new File(context.getFilesDir(), context.getString(R.string.xmlName));
-        if(file.exists())
-        {
+        if (file.exists()) {
             fr.load(file.getAbsolutePath());
-            fr.update(matVector,labels);
-        }
-        else
-        {
-            fr.train(matVector,labels);
+            fr.update(matVector, labels);
+        } else {
+            fr.train(matVector, labels);
             fr.save(file.getAbsolutePath());
         }
     }
 
-    public static void deleteJPGs(Context context)
-    {
+    public static void deleteJPGs(Context context) {
         File root = context.getCacheDir();
 
         FilenameFilter imgFilter = new FilenameFilter() {
@@ -138,122 +112,83 @@ public class FaceDetection {
         };
 
         File[] imageFiles = root.listFiles(imgFilter);
-
-        for (File image : imageFiles)
-        {
+        for (File image : imageFiles) {
             image.delete();
         }
     }
 
-    public static Mat matForLBPH (Bitmap face)
-    {
-        //Bitmap bitmap = getBitmapFromBytes(rawData);
-        //FaceDetector fd = new FaceDetector(bitmap.getWidth(), bitmap.getHeight(), 2);
-        //Face[] faceArray = new Face[2];
-        //fd.findFaces(bitmap, faceArray);
-        //Bitmap temp = cropFace(bitmap, faceArray);
-        //Log.d("temp méret", Integer.toString(face.getByteCount()));
+    public static Mat matForLBPH(Bitmap face) {
         Bitmap out = face.copy(Config.ARGB_8888, true);
-       // face.recycle();
         int height = out.getHeight();
         int width = out.getWidth();
-        //Log.d("out méret", Integer.toString(out.getByteCount()));
+
         IplImage iplTemp = IplImage.create(width, height, IPL_DEPTH_8U, 4);
-        IplImage grayImg = IplImage.create(width,height,IPL_DEPTH_8U,1);
+        IplImage grayImg = IplImage.create(width, height, IPL_DEPTH_8U, 1);
         out.copyPixelsToBuffer(iplTemp.createBuffer());
         out.recycle();
-        out = null;
-        cvCvtColor(iplTemp,grayImg,CV_BGR2GRAY);
-        Mat mat = new Mat(grayImg);
-        Log.d("matméret", Boolean.toString(mat.isNull()));
-        return mat;
+        cvCvtColor(iplTemp, grayImg, CV_BGR2GRAY);
+
+        return new Mat(grayImg);
     }
 
-    public static int predict (Context context, Bitmap bitmap)
-    {
+    public static int predict(Context context, Bitmap bitmap, int threshold) {
         FaceRecognizer fr = createLBPHFaceRecognizer();
-        File file = new File(context.getFilesDir(),context.getString(R.string.xmlName));
-        if (file.exists())
-        {
+        Log.d("FaceDetection", "Threshold: "+threshold);
+        File file = new File(context.getFilesDir(), context.getString(R.string.xmlName));
+        if (file.exists()) {
             fr.load(file.getAbsolutePath());
-            fr.set("threshold", 82);
+            fr.set("threshold", threshold);
             Mat mat = matForLBPH(bitmap);
             return fr.predict(mat);
-        }
-        else
-        {
+        } else {
             return -1;
         }
     }
 
-    public static boolean numberOfFaces(byte[] rawData, Context context)
-    {
+    public static boolean numberOfFaces(byte[] rawData, Context context) {
         Bitmap bitmap = getBitmapFromBytes(rawData);
-        //Bitmap out = bitmap.copy(Config.RGB_565, true);
         FaceDetector fd = new FaceDetector(bitmap.getWidth(), bitmap.getHeight(), 2);
         Face[] faces = new Face[2];
-        int numOfFaces = fd.findFaces(bitmap,faces);
+        int numOfFaces = fd.findFaces(bitmap, faces);
         bitmap.recycle();
-        //bitmap = null;
-        if (numOfFaces == 1)
-        {
+
+        if (numOfFaces == 1) {
             return true;
-        }
-        else if (numOfFaces == 0)
-        {
+        } else if (numOfFaces == 0) {
             Toast.makeText(context, R.string.faceNotFound, Toast.LENGTH_SHORT).show();
             return false;
-        }
-        else
-        {
+        } else {
             Toast.makeText(context, R.string.moreFaces, Toast.LENGTH_SHORT).show();
             return false;
         }
     }
 
     public static boolean saveCroppedFace(Context context, Bitmap croppedFace, String person, int personId) {
-        //int numberOfFaces = 0;
-        //Bitmap bit = getBitmapFromBytes(data);
-        // Bitmap out = bit.copy(Config.ARGB_8888, true);
-        //Bitmap out = bit.copy(Config.RGB_565, true);
-        //FaceDetector fD = new FaceDetector(out.getWidth(), out.getHeight(), 2);
-        //Face[] faces = new Face[2];
-        //numberOfFaces = fD.findFaces(out, faces);
-        //Log.d("doinback", Integer.toString(numberOfFaces));
+        try {
+            File jpg = new File(context.getCacheDir(), personId
+                    + "-"
+                    + person
+                    + "-"
+                    + System.currentTimeMillis() + ".jpg");
+            FileOutputStream fos = new FileOutputStream(jpg);
 
-       // if (numberOfFaces == 0) {
-         //   return false;
-        //} else {
-          //  Log.d("doinback", "else");
-            //Bitmap b = cropFace(out, faces);
+            croppedFace.compress(CompressFormat.JPEG, 90, fos);
 
-            try {
-                File jpg = new File(context.getCacheDir(), personId
-                        + "-"
-                        + person
-                        + "-"
-                        + System.currentTimeMillis() + ".jpg");
-                FileOutputStream fos = new FileOutputStream(jpg);
-
-                croppedFace.compress(CompressFormat.JPEG, 90, fos);
-
-                fos.flush();
-                fos.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return true;
-        //}
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
-    public static Bitmap cropFace(byte[] data)
-    {
+    public static Bitmap cropFace(byte[] data) {
         Bitmap bitmap = getBitmapFromBytes(data);
         FaceDetector fd = new FaceDetector(bitmap.getWidth(), bitmap.getHeight(), 2);
         Face[] faces = new Face[2];
-        fd.findFaces(bitmap,faces);
+        fd.findFaces(bitmap, faces);
         int faceSize = (int) (faces[0].eyesDistance() * 2);
         PointF centerFace = new PointF();
         faces[0].getMidPoint(centerFace);
@@ -291,7 +226,7 @@ public class FaceDetection {
         Bitmap croppedBitmap = Bitmap.createBitmap(bitmap, initX, initY,
                 sizeX, sizeY);
         bitmap.recycle();
-        bitmap = null;
+
         Bitmap b = Bitmap
                 .createScaledBitmap(croppedBitmap, 100, 150, false);
         return b;
@@ -299,10 +234,10 @@ public class FaceDetection {
 
     public static Bitmap getBitmapFromBytes(byte[] imageContent) {
         try {
-            Bitmap bitmap =  BitmapFactory.decodeByteArray(imageContent, 0,
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageContent, 0,
                     imageContent.length);
 
-            return (bitmap.copy(Config.RGB_565,true));
+            return (bitmap.copy(Config.RGB_565, true));
 
         } catch (Exception e) {
             e.printStackTrace();

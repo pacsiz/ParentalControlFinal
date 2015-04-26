@@ -1,10 +1,8 @@
 package hu.uniobuda.nik.parentalcontrol;
 
 import android.app.Activity;
-import android.content.Context;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
-import android.util.Log;
 import android.view.Surface;
 import android.widget.FrameLayout;
 
@@ -32,21 +30,21 @@ public class CameraSet {
         for (int i = 0; i < cameraNumber; i++) {
             Camera.getCameraInfo(i, info);
             if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
-                frontCameraIndex = CameraInfo.CAMERA_FACING_FRONT;
-                // Log.d("FCI", Integer.toString(frontCameraIndex));
+                frontCameraIndex = i;
+                // Log.d("CameraSet", "frontCamereaIndex :"+frontCameraIndex);
                 break;
             }
         }
         return frontCameraIndex;
     }
 
-    public static int setCameraRotation(int windowRotation, int cameraId) {
+    public static int setCameraRotation(int rotation, int cameraId) {
         int degrees = 0;
         CameraInfo info = new CameraInfo();
         Camera.getCameraInfo(cameraId, info);
-        Log.d("window rotation", Integer.toString(windowRotation));
+        //Log.d("CameraSet", "Rotation: "+rotation);
 
-        switch (windowRotation) {
+        switch (rotation) {
 
             case Surface.ROTATION_0:
                 degrees = 0;
@@ -61,9 +59,8 @@ public class CameraSet {
                 degrees = 270;
                 break;
         }
-        Log.d("camera rotation", Integer.toString(info.orientation));
-        int rotate = (info.orientation - degrees + 360) % 360;
-        Log.d("return", Integer.toString(rotate));
-        return rotate;
+
+        return (info.orientation - degrees + 360) % 360;
+        //Log.d("CameraSet", "Rotate: "+((info.orientation - degrees + 360) % 360));
     }
 }

@@ -7,11 +7,9 @@ import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -26,7 +24,6 @@ public class FaceDataEditor {
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        //Document document = builder.parse(ClassLoader.getSystemResourceAsStream(file));
         Document document;
         InputStream stream = new FileInputStream(file);
         document = builder.parse(stream);
@@ -36,14 +33,14 @@ public class FaceDataEditor {
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
 
-            //System.out.println("---- " + node.getNodeName() + " ----");
+            //Log.d("FaceDataEditor", "---- " + node.getNodeName() + " ----");
             if (node.getNodeName().equals("labels")) {
                 NodeList childNodes = node.getChildNodes();
 
                 for (int j = 0; j < childNodes.getLength(); j++) {
-                    //System.out.println("---- " + childNodes.item(j).getNodeName() + " ----");
+                    //Log.d("FaceDataEditor","---- " + childNodes.item(j).getNodeName() + " ----");
                     if (childNodes.item(j).getNodeName().equals("data")) {
-                        //System.out.println("---- " + childNodes.item(j).getTextContent() + " ----");
+                        //Log.d("FaceDataEditor","---- " + childNodes.item(j).getTextContent() + " ----");
                         String[] l = childNodes.item(j).getTextContent().trim().split(" ");
                         for (String s : l) {
                             ids.add(Integer.parseInt(s));
@@ -60,56 +57,50 @@ public class FaceDataEditor {
 
     public static void loadXML(String file) throws ParserConfigurationException, IOException, SAXException {
         int[] ids = loadXMLforIDs(file);
-        //for (int i : ids) System.out.print(i + ", ");
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        //Document document = builder.parse(ClassLoader.getSystemResourceAsStream(file));
         Document document;
         InputStream stream = new FileInputStream(file);
         document = builder.parse(stream);
         NodeList nodeList = document.getDocumentElement().getChildNodes();
 
-        //System.out.println("---- READING ---- " + nodeList.getLength());
-
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
 
-            //System.out.println("---- " + node.getNodeName() + " ----");
+            //Log.d("FaceDataEditor","---- " + node.getNodeName() + " ----");
             if (node.getNodeName().equals("histograms")) {
                 NodeList childNodes = node.getChildNodes();
 
                 for (int j = 0; j < childNodes.getLength(); j++) {
-                    //System.out.println("---- " + childNodes.item(j).getNodeName() + " ----");
+                    //Log.d("FaceDataEditor","---- " + childNodes.item(j).getNodeName() + " ----");
                     if (childNodes.item(j).getNodeName().equals("_")) {
                         NodeList dataNodes = childNodes.item(j).getChildNodes();
                         FaceData data = new FaceData();
 
                         for (int h = 0; h < dataNodes.getLength(); h++) {
-                            //System.out.println("---- " + dataNodes.item(h).getNodeName() + " ----");
+                            //Log.d("FaceDataEditor","---- " + dataNodes.item(h).getNodeName() + " ----");
 
                             if (dataNodes.item(h).getNodeName().equals("rows")) {
                                 data.rows = dataNodes.item(h).getTextContent();
-                                //System.out.println("---- Rows: " + dataNodes.item(h).getTextContent() + " ----");
+                                //Log.d("FaceDataEditor","---- Rows: " + dataNodes.item(h).getTextContent() + " ----");
                             } else if (dataNodes.item(h).getNodeName().equals("cols")) {
                                 data.cols = dataNodes.item(h).getTextContent();
-                                //System.out.println("---- Cols: " + dataNodes.item(h).getTextContent() + " ----");
+                                //Log.d("FaceDataEditor","---- Cols: " + dataNodes.item(h).getTextContent() + " ----");
                             } else if (dataNodes.item(h).getNodeName().equals("dt")) {
                                 data.dt = dataNodes.item(h).getTextContent();
-                                //System.out.println("---- DT: " + dataNodes.item(h).getTextContent() + " ----");
+                                //Log.d("FaceDataEditor","---- DT: " + dataNodes.item(h).getTextContent() + " ----");
                             } else if (dataNodes.item(h).getNodeName().equals("data")) {
                                 data.data = dataNodes.item(h).getTextContent();
-                                //System.out.println("---- Data: " + dataNodes.item(h).getTextContent().substring(0, 12) + "... ----");
+                                //Log.d("FaceDataEditor","---- Data: " + dataNodes.item(h).getTextContent().substring(0, 12) + "... ----");
                             }
                         }
-
                         data.id = ids[faceData.size()];
                         faceData.add(data);
                     }
                 }
             }
         }
-
         for (FaceData d : faceData) {
             System.out.println(d.rows + " : " + d.cols + " : " + d.dt + " : " + d.id + " : " + d.data.trim().substring(0, 10) + "...");
         }

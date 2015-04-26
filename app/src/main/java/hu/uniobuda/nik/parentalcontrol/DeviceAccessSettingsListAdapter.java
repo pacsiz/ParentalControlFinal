@@ -11,32 +11,32 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class URLLIstAdapter extends ArrayAdapter<String>
-{
+public class DeviceAccessSettingsListAdapter extends ArrayAdapter<String> {
     Context context;
-    ArrayList<String> urls;
+    String[] days;
+    ArrayList<String> foreignDays;
     boolean[] itemChecked;
 
-    public URLLIstAdapter(Context context, int resource, ArrayList<String> urls) {
-        super(context, resource, urls);
+    public DeviceAccessSettingsListAdapter(Context context, int resource, String[] days, ArrayList<String> foreignDays, ArrayList<String> checkedDays) {
+        super(context, resource, days);
         this.context = context;
-        this.urls = urls;
-        itemChecked = new boolean[urls.size()];
+        this.days = days;
+        this.foreignDays = foreignDays;
+        itemChecked = new boolean[days.length];
 
-    }
-
-    public void updateItemCheckedSize(int size)
-    {
-        itemChecked = new boolean[size];
+        for (int i = 0; i < days.length; i++) {
+            if (checkedDays.contains(days[i]))
+                itemChecked[i] = true;
+        }
     }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View v = convertView;
-        final URLInfoHolder holder;
+        final InfoHolder holder;
 
         if (convertView == null) {
-            holder = new URLInfoHolder();
+            holder = new InfoHolder();
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(R.layout.checkboxlist_layout, parent, false);
 
@@ -48,10 +48,10 @@ public class URLLIstAdapter extends ArrayAdapter<String>
 
             v.setTag(holder);
         } else {
-            holder = (URLInfoHolder) v.getTag();
+            holder = (InfoHolder) v.getTag();
         }
 
-        holder.url.setText(urls.get(position));
+        holder.url.setText(foreignDays.get(position));
 
         if (itemChecked[position]) {
             holder.checkBox.setChecked(true);
@@ -62,18 +62,18 @@ public class URLLIstAdapter extends ArrayAdapter<String>
         holder.checkBox.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(holder.checkBox.isChecked()){
+                if (holder.checkBox.isChecked()) {
                     itemChecked[position] = true;
-                }
-                else{
+                } else {
                     itemChecked[position] = false;
                 }
             }
         });
+
         return v;
     }
 
-    private static class URLInfoHolder {
+    private static class InfoHolder {
         public TextView url;
         public CheckBox checkBox;
     }

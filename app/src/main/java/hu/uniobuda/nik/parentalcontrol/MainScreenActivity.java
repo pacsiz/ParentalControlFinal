@@ -1,5 +1,6 @@
 package hu.uniobuda.nik.parentalcontrol;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AppOpsManager;
@@ -13,9 +14,11 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
@@ -39,22 +42,26 @@ public class MainScreenActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffd6d6d6")));
+
 
         serviceState = (TextView) findViewById(R.id.isRunning);
         btnSettings = (Button) findViewById(R.id.btnSettings);
         btnStartService = (Button) findViewById(R.id.btnStartService);
         btnHelp = (Button) findViewById(R.id.btnHelp);
         isRunning = ServiceInfo.isServiceRunning(CheckService.class, MainScreenActivity.this);
+
         sh = getSharedPreferences(getString
                 (R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
         if (!sh.contains(getString(R.string.SHAREDPREFERENCE_FACE_REG_ENABLED))) {
-            Editor e = e = sh.edit();
+            Editor e = sh.edit();
             if (CameraSet.getFrontCameraIndex() == -1) {
                 e.putBoolean(getString(R.string.SHAREDPREFERENCE_FACE_REG_ENABLED), false);
             } else {
                 e.putBoolean(getString(R.string.SHAREDPREFERENCE_FACE_REG_ENABLED), true);
             }
-            e.apply();
+            e.commit();
         }
 
         if (isRunning) {
@@ -85,11 +92,9 @@ public class MainScreenActivity extends ActionBarActivity {
                         = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
                 ComponentName componentName
                         = new ComponentName(MainScreenActivity.this, DevAdminReceiver.class);
-                ;
 
                 if (!sh.contains(getString
                         (R.string.SHAREDPREFERENCE_PASSWORD))) {
-
                     AlertDialog.Builder dialog = new AlertDialog.Builder(MainScreenActivity.this);
                     dialog.setTitle(R.string.failTitle);
                     dialog.setMessage(R.string.noPasswordSet);
@@ -104,7 +109,7 @@ public class MainScreenActivity extends ActionBarActivity {
                     AlertDialog.Builder dialog = new AlertDialog.Builder(MainScreenActivity.this);
                     dialog.setTitle(R.string.failTitle);
                     dialog.setMessage(R.string.adminFailure);
-                    dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    dialog.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Intent i = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
@@ -115,21 +120,17 @@ public class MainScreenActivity extends ActionBarActivity {
                     });
                     dialog.show();
 
-
                 } else {
                     if (!isRunning) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                        {
-                            if(!isUsageStatsEnabled())
-                            {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            if (!isUsageStatsEnabled()) {
                                 Intent i = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
                                 startActivity(i);
-                                Toast.makeText(MainScreenActivity.this,R.string.usageStatsMustEnabled,Toast.LENGTH_LONG).show();
-                                Log.d("return", "return");
+                                Toast.makeText(MainScreenActivity.this, R.string.usageStatsMustEnabled, Toast.LENGTH_LONG).show();
+                                //Log.d("MainScreenActivity", "UsageStats must enabled on Lollipop");
                                 return;
                             }
                         }
-                        Log.d("startservice", "enabledservice");
                         enableService();
                     } else {
                         disableService();
@@ -170,6 +171,7 @@ public class MainScreenActivity extends ActionBarActivity {
         pm.setComponentEnabledSetting(new ComponentName(MainScreenActivity.this, CheckServiceStarter.class),
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                 PackageManager.DONT_KILL_APP);
+
         Intent i = new Intent(MainScreenActivity.this,
                 CheckService.class);
         stopService(i);
@@ -179,6 +181,7 @@ public class MainScreenActivity extends ActionBarActivity {
         isRunning = false;
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private boolean isUsageStatsEnabled() {
         try {
             PackageManager pm = getPackageManager();

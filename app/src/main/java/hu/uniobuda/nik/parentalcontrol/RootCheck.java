@@ -8,52 +8,22 @@ import java.io.InputStreamReader;
 
 public class RootCheck {
 
-    /*public static boolean isDeviceRooted() {
-        return checkRootMethod1() || checkRootMethod2() || checkRootMethod3() || checkRootMethod4();
-    }*/
-
-    /*private static boolean checkRootMethod1() {
-        String buildTags = Build.TAGS;
-        return buildTags != null && buildTags.contains("test-keys");
-    }
-
-    private static boolean checkRootMethod2() {
-        return new File("/system/app/Superuser.apk").exists();
-    }
-
-    private static boolean checkRootMethod3() {
-        String[] paths = { "/sbin/su", "/system/bin/su", "/system/xbin/su", "/data/local/xbin/su", "/data/local/bin/su", "/system/sd/xbin/su",
-                "/system/bin/failsafe/su", "/data/local/su" };
-        for (String path : paths) {
-            if (new File(path).exists()) return true;
-        }
-        return false;
-    }*/
-
     public static boolean isDeviceRooted() {
-        if(execSu())
-        {
-            return false;
-        }
-        else
-        {
-            return new File("/system/app/Superuser.apk").exists();
-        }
-
+        return (execSu() || new File("/system/app/Superuser.apk").exists());
     }
 
-    private static boolean execSu()
-    {
+    private static boolean execSu() {
         Process process = null;
-            try {
-                process = Runtime.getRuntime().exec(new String[] { "/system/xbin/which", "su" });
-                BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                if (in.readLine() != null) return true;
-                return false;
-            } catch (Throwable t) {
-                return false;
-            } finally {
-                if (process != null) process.destroy();
+        try {
+            process = Runtime.getRuntime().exec(new String[]{"/system/xbin/which", "su"});
+            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            return (in.readLine() != null);
+        } catch (Throwable t) {
+            return false;
+        } finally {
+            if (process != null) {
+                process.destroy();
             }
+        }
     }
 }

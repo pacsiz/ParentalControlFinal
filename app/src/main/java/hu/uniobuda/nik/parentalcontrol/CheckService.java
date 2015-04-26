@@ -1,5 +1,6 @@
 package hu.uniobuda.nik.parentalcontrol;
 
+import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -16,10 +17,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
-
-import org.bytedeco.javacpp.Loader;
-import org.bytedeco.javacpp.opencv_nonfree;
 
 import java.util.List;
 import java.util.SortedMap;
@@ -28,8 +25,6 @@ import java.util.TreeMap;
 public class CheckService extends Service {
 
     MonitorlogThread mt = new MonitorlogThread();
-    //static Context context;
-    // SharedPreferences sh;
     boolean frontCamera;
     boolean urlEnabled;
     BroadcastReceiver lock;
@@ -37,16 +32,10 @@ public class CheckService extends Service {
     BroadcastReceiver refreshHashTable;
     int apiLevel;
 
-
-    // public static Context getContext() {
-    //    return context;
-    //}
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         final SharedPreferences settings = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
-        //SharedPreferences persons = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
         SharedPreferences apps = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_PRIVATE);
 
         if (apps.getAll().isEmpty()) {
@@ -54,10 +43,11 @@ public class CheckService extends Service {
             e.putString("hu.uniobuda.nik.parentalcontrol", "all");
             e.putString("com.android.settings", "all");
             e.putString("com.android.packageinstaller", "all");
-            e.apply();
+            e.commit();
         }
-        frontCamera = settings.getBoolean(getString
-                (R.string.SHAREDPREFERENCE_FACE_REG_ENABLED), false);
+        // TODO FrontCamera itt felesleges, mindig adott helyen lekérem
+        //frontCamera = settings.getBoolean(getString
+                //(R.string.SHAREDPREFERENCE_FACE_REG_ENABLED), false);
         urlEnabled = settings.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), false);
 
         apiLevel = Build.VERSION.SDK_INT;
@@ -79,19 +69,10 @@ public class CheckService extends Service {
             IPTablesAPI.blockAllURL(CheckService.this);
         }
 
-        /*if (!persons.getAll().isEmpty()) {
-            new Thread() {
-                @Override
-                public void run() {
-                    Loader.load(opencv_nonfree.class);
-                }
-            }.start();
-        }*/
-
         lock = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                //Log.d("servicebroadcast", intent.getAction());
+                //Log.d("CheckServiceBroadcast", "unlock: "+intent.getAction());
                 mt.interrupt();
             }
         };
@@ -99,7 +80,7 @@ public class CheckService extends Service {
         unlock = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                //Log.d("servicebroadcast", intent.getAction());
+                //Log.d("CheckServiceBroadcast", "unlock: "+intent.getAction());
                 if (settings.getBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED), false)) {
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -124,7 +105,7 @@ public class CheckService extends Service {
 
     @Override
     public IBinder onBind(Intent arg0) {
-        // TODO Auto-generated method stub
+
         return null;
     }
 
@@ -150,36 +131,27 @@ public class CheckService extends Service {
                 try {
                     Thread.sleep(150);
                     String foregroundTaskPackageName;
-                    //Log.d("Apilevel",apiLevel+"");
+                    //Log.d("CheckService","apilevel: "+apiLevel);
                     if (apiLevel < Build.VERSION_CODES.LOLLIPOP) {
                         foregroundTaskPackageName = getPackageNameOldApi();
-                        // Log.d("Service","OldApi");
+                        // Log.d("CheckService","getPackageNameOldApi");
                     } else {
-                        //Log.d("Service","NewApi");
+                        //Log.d("CheckService","getPackageNameOldApi");
                         foregroundTaskPackageName = getPackageNameNewApi();
                     }
 
                     if (!(foregroundTaskPackageName.equals(previousPackage))
                             && !previousPackage.equals("")) {
-                        //Log.d("BHT_EMPTY", Boolean.toString(BlockerHashTable.isEmpty()));
-                        /*if (BlockerHashTable.isEmpty()) {
-                            Intent i = new Intent();
-                            i.setAction(getString(R.string.BROADCAST_REFRESH_MAIN_HASHTABLE));
-                            sendBroadcast(i);
-                            Log.d("SERVICE","refreshsent");
-                            BlockerHashTable.refresh(CheckService.this);
 
-                        }*/
                         Intent packageChanged = new Intent();
                         packageChanged
                                 .setAction(getString(R.string.BROADCAST_NEW_APP_STARTED));
                         packageChanged.putExtra(getString(R.string.EXTRA_PACKAGE_NAME),
                                 foregroundTaskPackageName);
-                        packageChanged.putExtra(getString(R.string.EXTRA_FACE_REG_ENABLED), frontCamera);
+                        //packageChanged.putExtra(getString(R.string.EXTRA_FACE_REG_ENABLED), frontCamera);
                         sendBroadcast(packageChanged);
-                        Log.d("Elso", foregroundTaskPackageName);
+                        //Log.d("CheckService", "foregroundTaskPackageName: "+foregroundTaskPackageName);
                     }
-
                     previousPackage = foregroundTaskPackageName;
 
                 } catch (InterruptedException e) {
@@ -198,13 +170,12 @@ public class CheckService extends Service {
                     .getPackageName();
         }
 
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         private String getPackageNameNewApi() {
-            UsageStatsManager usm = (UsageStatsManager) getSystemService("usagestats");
+            UsageStatsManager usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);//"usagestats"
             long time = System.currentTimeMillis();
             String packageName = "";
-            // We get usage stats for the last 1 seconds
             List<UsageStats> stats = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 5000, time);
-            // Sort the stats by the last time used
             if (stats != null) {
                 SortedMap<Long, UsageStats> sortedMap = new TreeMap<Long, UsageStats>();
                 for (UsageStats usageStats : stats) {
@@ -214,7 +185,6 @@ public class CheckService extends Service {
                     packageName = sortedMap.get(sortedMap.lastKey()).getPackageName();
                 }
             }
-            //Log.d("newapi", packageName);
             return packageName;
         }
     }

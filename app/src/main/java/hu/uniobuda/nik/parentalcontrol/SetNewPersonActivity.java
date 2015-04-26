@@ -42,32 +42,25 @@ public class SetNewPersonActivity extends Activity {
     private Button btnCapture;
     private CheckBox isParent;
     private Camera camera = null;
-    private CameraManager cameraNewApi = null;
     private CameraView cameraPreview;
-    private int frontCameraIndex;
     private String person;
     private int numberOfPhotos;
     private SharedPreferences learnedPersons;
+    Map sortedMap;
+    int predictValue;
 
     int personId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new Thread() {
-            @Override
-            public void run() {
-                Loader.load(opencv_nonfree.class);
-            }
-        }.start();
-
-        numberOfPhotos = 0;
-        learnedPersons = getSharedPreferences(getString
-                (R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
         setContentView(R.layout.activity_set_new_person);
 
+        numberOfPhotos = 0;
         SharedPreferences shSettings = getSharedPreferences(getString
                 (R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
+        predictValue = shSettings.getInt(getString(R.string.SHAREDPREFERENCE_PREDICT_VALUE),82);
+
 
         btnSetNewPerson = (Button) findViewById(R.id.btnSetNewPerson);
         personName = (EditText) findViewById(R.id.personName);
@@ -76,22 +69,12 @@ public class SetNewPersonActivity extends Activity {
 
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 
-        Map<String, ?> map = learnedPersons.getAll();
-        final Map sortedMap = new TreeMap(new ValueComparatorDec(map));
-        sortedMap.putAll(map);
-
-
-        if (sortedMap.size() > 0) {
-            Iterator it = sortedMap.entrySet().iterator();
-            Map.Entry entry = (Map.Entry) it.next();
-            personId = Integer.parseInt((String) entry.getKey());
-        }
 
         if (!shSettings.getBoolean(getString
                 (R.string.SHAREDPREFERENCE_FACE_REG_ENABLED), false)) {
             dialog.setTitle(R.string.failTitle);
             dialog.setMessage(R.string.cameraFailMessage);
-            dialog.setPositiveButton("OK",
+            dialog.setPositiveButton(R.string.OK,
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
@@ -99,13 +82,11 @@ public class SetNewPersonActivity extends Activity {
                         }
                     });
             dialog.show();
-        }
-
-        if (!shSettings.contains(getString
+        } else if (!shSettings.contains(getString
                 (R.string.SHAREDPREFERENCE_PASSWORD))) {
             dialog.setTitle(R.string.failTitle);
             dialog.setMessage(R.string.noPasswordSet);
-            dialog.setPositiveButton("OK",
+            dialog.setPositiveButton(R.string.OK,
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
@@ -113,18 +94,34 @@ public class SetNewPersonActivity extends Activity {
                         }
                     });
             dialog.show();
+        } else {
+            new Thread() {
+                @Override
+                public void run() {
+                    Loader.load(opencv_nonfree.class);
+                }
+            }.start();
+            learnedPersons = getSharedPreferences(getString
+                    (R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
+            Map<String, ?> map = learnedPersons.getAll();
+            sortedMap = new TreeMap(new ValueComparatorDec(map));
+            sortedMap.putAll(map);
+            if (sortedMap.size() > 0) {
+                Iterator it = sortedMap.entrySet().iterator();
+                Map.Entry entry = (Map.Entry) it.next();
+                personId = Integer.parseInt((String) entry.getKey());
+            }
         }
 
         btnSetNewPerson.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 person = personName.getText().toString().toLowerCase();
-
-                Log.d("név", person);
+                //Log.d("SetNewPersonActivity", "Person name: "+person);
                 if (person.isEmpty()) {
                     dialog.setTitle(R.string.failTitle);
                     dialog.setMessage(R.string.nameFailMessage);
-                    dialog.setPositiveButton("OK",
+                    dialog.setPositiveButton(R.string.OK,
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface arg0,
@@ -136,7 +133,7 @@ public class SetNewPersonActivity extends Activity {
                 } else if (sortedMap.containsValue(person)) {
                     dialog.setTitle(R.string.failTitle);
                     dialog.setMessage(R.string.nameExistMessage);
-                    dialog.setPositiveButton("OK",
+                    dialog.setPositiveButton(R.string.OK,
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface arg0,
@@ -146,7 +143,6 @@ public class SetNewPersonActivity extends Activity {
                             });
                     dialog.show();
                 } else {
-
                     if (!isParent.isChecked()) {
                         person = "CHILD-" + person;
                     }
@@ -155,37 +151,11 @@ public class SetNewPersonActivity extends Activity {
                 }
             }
         });
-
-    }
-
-    public void hideKeyboard(View view) {
-        if (!(view instanceof EditText)) {
-            view.setOnTouchListener(new OnTouchListener() {
-
-                @Override
-                public boolean onTouch(View arg0, MotionEvent arg1) {
-                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                    return false;
-                }
-
-            });
-        }
     }
 
     private void setCameraView() {
         setContentView(R.layout.activity_create_photo);
-        camera = CameraSet.initializeCamera(this,(FrameLayout)findViewById(R.id.camera_preview));
-
-        //frontCameraIndex = CameraSet.getFrontCameraIndex();
-        //camera = Camera.open(frontCameraIndex);
-        /*Camera.Parameters params = camera.getParameters();
-        params.setRotation(CameraSet.setCameraRotation(this.getWindowManager().getDefaultDisplay().getRotation(),
-                frontCameraIndex));
-        camera.setParameters(params);
-        cameraPreview = new CameraView(this, camera);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        preview.addView(cameraPreview);*/
+        camera = CameraSet.initializeCamera(this, (FrameLayout) findViewById(R.id.camera_preview));
         btnCapture = (Button) findViewById(R.id.btnCapture);
         btnCapture.setOnClickListener(new OnClickListener() {
 
@@ -193,7 +163,7 @@ public class SetNewPersonActivity extends Activity {
             public void onClick(View v) {
                 btnCapture.setEnabled(false);
                 if (numberOfPhotos < 6) {
-                    Log.d("onClick", "csináljfotót");
+                    //Log.d("SetNewPersonActivity", "Create next photo");
                     camera.takePicture(null, null, picture);
                 } else {
                     finish();
@@ -205,8 +175,6 @@ public class SetNewPersonActivity extends Activity {
     private PictureCallback picture = new PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            Log.d("onClick", "indítsd a feldolgozást");
-
             new createFacePhoto(data).execute();
         }
     };
@@ -222,7 +190,6 @@ public class SetNewPersonActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
-
             pd.setTitle(R.string.pleaseWait);
             pd.setMessage(getString(R.string.working));
             pd.show();
@@ -246,7 +213,7 @@ public class SetNewPersonActivity extends Activity {
                 numberOfPhotos++;
                 if (numberOfPhotos == NUMBER_OF_PHOTOS) {
                     camera.stopPreview();
-                    camera.release();
+
                     new Trainer().execute();
                 } else {
                     camera.startPreview();
@@ -258,12 +225,9 @@ public class SetNewPersonActivity extends Activity {
         protected Void doInBackground(Object... params) {
             if (!isCancelled()) {
                 Bitmap bitmap = FaceDetection.cropFace(data);
-                predict = FaceDetection.predict(SetNewPersonActivity.this, bitmap);
-                Log.d("predict",predict+"");
-                if (predict == -1)
-                {
-                    //matVector.put(FaceDetection.matForLBPH(bitmap));
-                    // blist.add(FaceDetection.cropFace(data));
+                predict = FaceDetection.predict(SetNewPersonActivity.this, bitmap, predictValue);
+                //Log.d("SetNewPersonActivity", "Predict result: "+predict);
+                if (predict == -1) {
                     FaceDetection.saveCroppedFace(SetNewPersonActivity.this, bitmap, person, personId);
                 }
             }
@@ -278,6 +242,7 @@ public class SetNewPersonActivity extends Activity {
         protected void onPreExecute() {
             pd.setTitle(R.string.pleaseWait);
             pd.setMessage(getString(R.string.learning));
+            btnCapture.setEnabled(false);
             pd.show();
         }
 
@@ -292,25 +257,38 @@ public class SetNewPersonActivity extends Activity {
         protected Void doInBackground(Void... params) {
 
             FaceDetection.learnJPG(personId, SetNewPersonActivity.this);
-            //FaceDetection.learn(blist, personId);
             return null;
         }
 
         private void savePerson() {
-            // TODO Auto-generated method stub
             Editor e = learnedPersons.edit();
             e.putString(Integer.toString(personId), person);
-            e.apply();
+            e.commit();
         }
+    }
 
+    public void hideKeyboard(View view) {
+        if (!(view instanceof EditText)) {
+            view.setOnTouchListener(new OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View arg0, MotionEvent arg1) {
+                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    return false;
+                }
+
+            });
+        }
     }
 
     @Override
     protected void onPause() {
+        camera.release();
+        camera = null;
         onDestroy();
         super.onPause();
     }
-
 
 
     @Override

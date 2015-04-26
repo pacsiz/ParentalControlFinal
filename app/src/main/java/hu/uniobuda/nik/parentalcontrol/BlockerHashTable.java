@@ -15,8 +15,7 @@ public class BlockerHashTable {
     }
 
     public static boolean getBoolean(String key) {
-        boolean result = tempAllowedPackages.get(key);
-        return result;
+        return tempAllowedPackages.get(key);
     }
 
     public static void setBoolean(String key, Boolean value) {
@@ -24,8 +23,7 @@ public class BlockerHashTable {
     }
 
     public static boolean containsBoolean(String key) {
-        boolean result = tempAllowedPackages.containsKey(key);
-        return result;
+        return tempAllowedPackages.containsKey(key);
     }
 
     public static void deleteBoolean(String key)
@@ -38,13 +36,13 @@ public class BlockerHashTable {
         tempAllowedPackages.clear();
         SharedPreferences sh = context.getSharedPreferences(context.getString
                 (R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_PRIVATE);
-        Log.d("refresh", "refresh");
+        //Log.d("BlockerHashTable", "refreshing");
         Map<String, ?> map = sh.getAll();
         for (Map.Entry entry : map.entrySet()) {
             tempAllowedPackages.put(entry.getKey().toString(), true);
-            Log.d("pname", entry.getKey().toString());
+            Log.d("BlockerHashTable", "Put in package: "+entry.getKey().toString());
         }
-        /*empAllowedPackages.put("hu.uniobuda.nik.parentalcontrol", true);
+        /*tempAllowedPackages.put("hu.uniobuda.nik.parentalcontrol", true);
         tempAllowedPackages.put("com.android.settings", true);
         tempAllowedPackages.put("com.android.packageinstaller", true);*/
 

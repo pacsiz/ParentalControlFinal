@@ -19,14 +19,15 @@
         android:text="@string/newPersonInfo" />
 
     <TextView
-        android:gravity="center_horizontal"
+        android:gravity="left"
         android:id="@+id/nameLabel"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/nameLabel"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/btnSetNewPerson"
-        android:layout_toStartOf="@+id/btnSetNewPerson" />
+        android:layout_toStartOf="@+id/btnSetNewPerson"
+        android:layout_alignRight="@+id/isParentLabel"
+        android:layout_alignEnd="@+id/isParentLabel" />
 
     <EditText
         android:id="@+id/personName"
@@ -67,8 +68,8 @@
         android:id="@+id/isParent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/isParentLabel"
         android:paddingTop="30dp"
-        android:layout_alignLeft="@+id/personName"
-        android:layout_alignStart="@+id/personName" />
+        android:layout_alignBottom="@+id/isParentLabel"
+        android:layout_alignRight="@+id/personName"
+        android:layout_alignEnd="@+id/personName" />
 </RelativeLayout>

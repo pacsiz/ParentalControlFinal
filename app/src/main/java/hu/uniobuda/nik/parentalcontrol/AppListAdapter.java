@@ -5,7 +5,6 @@ import java.util.List;
 
 import android.content.Context;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,12 +13,8 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.CompoundButton;
 
-public class AppListAdapter extends ArrayAdapter<AppInfo> //implements CompoundButton.OnCheckedChangeListener
-{
-
-    SparseBooleanArray mCheckStates;
+public class AppListAdapter extends ArrayAdapter<AppInfo> {
     private List<AppInfo> appList;
     private Context context;
     ArrayList<String> checkedApps;
@@ -30,12 +25,10 @@ public class AppListAdapter extends ArrayAdapter<AppInfo> //implements CompoundB
         this.appList = appList;
         this.context = ctx;
         this.checkedApps = checkedApps;
-        //mCheckStates = new SparseBooleanArray(appList.size());
         itemChecked = new boolean[appList.size()];
-
         for (int i = 0; i < appList.size(); i++) {
-            if(checkedApps.contains(appList.get(i).pName))
-                itemChecked[i]= true;
+            if (checkedApps.contains(appList.get(i).pName))
+                itemChecked[i] = true;
         }
     }
 
@@ -46,44 +39,40 @@ public class AppListAdapter extends ArrayAdapter<AppInfo> //implements CompoundB
 
         if (convertView == null) {
             holder = new AppInfoHolder();
-            LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(R.layout.applist_layout, parent, false);
 
             ImageView appIcon = (ImageView) v.findViewById(R.id.appIcon);
             TextView appName = (TextView) v.findViewById(R.id.appName);
-            CheckBox appChk = (CheckBox)v.findViewById(R.id.appChk);
+            CheckBox appChk = (CheckBox) v.findViewById(R.id.appChk);
 
             holder.appName = appName;
             holder.appIcon = appIcon;
-            holder.appChk =appChk;
+            holder.appChk = appChk;
 
             v.setTag(holder);
-        }
-        else{
-            holder = (AppInfoHolder)v.getTag();
+        } else {
+            holder = (AppInfoHolder) v.getTag();
         }
 
         AppInfo appinfo = appList.get(position);
         holder.appName.setText(appinfo.appName);
         holder.appIcon.setImageDrawable(appinfo.appIcon);
 
-        if (itemChecked[position])
-        {
+        if (itemChecked[position]) {
             holder.appChk.setChecked(true);
-        }
-        else
+        } else
             holder.appChk.setChecked(false);
 
         holder.appChk.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if(holder.appChk.isChecked()){
-                    Log.d("adapter", "listenerTrue");
+                if (holder.appChk.isChecked()) {
+                    //Log.d("AppListAdapter", "CheckboxListener true");
                     itemChecked[position] = true;
-                }
-                else{
-                    Log.d("adapter", "listenerFalse");
+                } else {
+                    //Log.d("AppListAdapter", "CheckboxListener false");
                     itemChecked[position] = false;
                 }
             }

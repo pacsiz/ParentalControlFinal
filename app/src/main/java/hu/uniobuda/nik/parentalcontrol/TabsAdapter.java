@@ -5,17 +5,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
 
 import hu.uniobuda.nik.parentalcontrol.fragments.HelpScreenFragment;
 
-
-/**
- * Created by Pacsiz on 2015.04.20..
- */
 public class TabsAdapter extends FragmentPagerAdapter {
 
+    private final int NUMBER_OF_FRAGMENST = 6;
     Context context;
+
     public TabsAdapter(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
@@ -25,42 +22,25 @@ public class TabsAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int index) {
 
         Bundle bundle = new Bundle();
-        bundle.putInt("index",index);
-        Log.d("index", index+"");
+        bundle.putInt(context.getString(R.string.BUNDLE_FRAGMENT_INDEX), index);
         HelpScreenFragment fragment = new HelpScreenFragment();
         fragment.setArguments(bundle);
         return fragment;
-        /*switch (index) {
-            case 0:
-                // Top Rated fragment activity
-                return new HelpScreenFragment();
-            case 1:
-                // Games fragment activity
-                return new StartServiceFragment();
-            case 2:
-                // Movies fragment activity
-                return new SetNewPersonFragment();
-        }
-        return null;*/
     }
 
     @Override
     public int getCount() {
-        // get item count - equal to number of tabs
-        return 6;
+        return NUMBER_OF_FRAGMENST;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                // Top Rated fragment activity
                 return context.getString(R.string.help_main_screen_title);
             case 1:
-                // Games fragment activity
                 return context.getString(R.string.help_password_title);
             case 2:
-                // Movies fragment activity
                 return context.getString(R.string.help_apps_title);
             case 3:
                 return context.getString(R.string.help_person_title);
