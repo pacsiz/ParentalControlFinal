@@ -14,7 +14,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -23,7 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.concurrent.locks.Lock;
+
+import hu.uniobuda.nik.parentalcontrol.activities.MainScreenActivity;
 
 public class CheckService extends Service {
 
@@ -146,7 +146,7 @@ public class CheckService extends Service {
                     //Log.d("CheckService", "foregroundTaskPackageName BEFORE: " + foregroundTaskPackageName);
                     //Log.d("CheckService", "previousPackage BEFORE: " + previousPackage);
                     if (!(foregroundTaskPackageName.equals(previousPackage))
-                            && !previousPackage.equals("") && (!className.equals(".PasswordRequestActivity"))) {
+                            && !previousPackage.equals("") && (!className.equals(".PasswordRequestActivity") || !className.equals(".CheckPersonActivity"))) {
                         Log.d("CheckService", "classname: " + className);
 
                         Intent packageChanged = new Intent();

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,7 +26,7 @@ public class AppListAdapter extends ArrayAdapter<AppInfo> {
         this.checkedApps = checkedApps;
         itemChecked = new boolean[appList.size()];
         for (int i = 0; i < appList.size(); i++) {
-            if (checkedApps.contains(appList.get(i).pName))
+            if (checkedApps.contains(appList.get(i).getpName()))
                 itemChecked[i] = true;
         }
     }
@@ -56,8 +55,8 @@ public class AppListAdapter extends ArrayAdapter<AppInfo> {
         }
 
         AppInfo appinfo = appList.get(position);
-        holder.appName.setText(appinfo.appName);
-        holder.appIcon.setImageDrawable(appinfo.appIcon);
+        holder.appName.setText(appinfo.getAppName());
+        holder.appIcon.setImageDrawable(appinfo.getAppIcon());
 
         if (itemChecked[position]) {
             holder.appChk.setChecked(true);

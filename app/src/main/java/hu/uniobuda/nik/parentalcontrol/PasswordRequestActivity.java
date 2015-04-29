@@ -2,6 +2,7 @@ package hu.uniobuda.nik.parentalcontrol;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -40,11 +41,18 @@ public class PasswordRequestActivity extends Activity {
 
         packageName = getIntent().getStringExtra(getString(R.string.EXTRA_PACKAGE_NAME));
         deviceAccessControl = packageName == null;
+
+        if(deviceAccessControl && !(((KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE)).inKeyguardRestrictedInputMode()))
+        {
+            actionCode = ACTION_LOCK;
+        }
         //Log.d("PasswordRequestActivity", "Access control enabled: "+deviceAccessControl);
 
         pwSh = getSharedPreferences(getString
                 (R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
 
+        Log.d("PRA","IskeyguardLocked: "+((KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE)).isKeyguardLocked());
+        Log.d("PRA","Restricted input mode: "+((KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE)).inKeyguardRestrictedInputMode());
         ok.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String pw = PasswordCreator.createPassword(getPassword.getText().toString());
@@ -124,6 +132,7 @@ public class PasswordRequestActivity extends Activity {
 
     @Override
     protected void onRestart() {
+        Log.d("PRA", "ONRESTART");
         if(deviceAccessControl) actionCode = ACTION_LOCK;
         super.onRestart();
     }

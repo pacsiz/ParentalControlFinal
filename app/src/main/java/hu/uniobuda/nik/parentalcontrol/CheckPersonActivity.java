@@ -4,6 +4,7 @@ import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.opencv_nonfree;
 
 import android.app.Activity;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -50,6 +51,11 @@ public class CheckPersonActivity extends Activity {
         skip = (Button)findViewById(R.id.btnSkip);
         packageName = getIntent().getStringExtra(getString(R.string.EXTRA_PACKAGE_NAME));
         deviceAccessControl = packageName == null;
+
+        if(deviceAccessControl && !(((KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE)).inKeyguardRestrictedInputMode()))
+        {
+            actionCode = ACTION_LOCK;
+        }
 
         learnedPersons = getSharedPreferences(getString
                 (R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
@@ -109,14 +115,14 @@ public class CheckPersonActivity extends Activity {
     @Override
     protected void onStop() {
         Log.d("OnStop", actionCode + "");
-        camera.stopPreview();
+        //camera.stopPreview();
         delay.removeCallbacks(r);
         switch(actionCode){
             case ACTION_LOCK:
                 AccessControl.lock(CheckPersonActivity.this);
                 break;
             case ACTION_FINISH:
-                AccessControl.allow(CheckPersonActivity.this, personName, null);
+                AccessControl.allow(CheckPersonActivity.this, personName, packageName);
                 break;
             case ACTION_SKIP:
                 Intent i = new Intent(CheckPersonActivity.this, PasswordRequestActivity.class);
