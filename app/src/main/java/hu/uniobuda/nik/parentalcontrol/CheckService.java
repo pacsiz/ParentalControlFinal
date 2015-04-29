@@ -17,10 +17,13 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.locks.Lock;
 
 public class CheckService extends Service {
 
@@ -34,11 +37,11 @@ public class CheckService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
+        Log.e("service started", "");
         final SharedPreferences settings = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
         SharedPreferences apps = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_PRIVATE);
-
-        if (apps.getAll().isEmpty()) {
+        Map map = apps.getAll();
+        if (map.isEmpty()) {
             Editor e = apps.edit();
             e.putString("hu.uniobuda.nik.parentalcontrol", "all");
             e.putString("com.android.settings", "all");
@@ -47,7 +50,7 @@ public class CheckService extends Service {
         }
         // TODO FrontCamera itt felesleges, mindig adott helyen lekérem
         //frontCamera = settings.getBoolean(getString
-                //(R.string.SHAREDPREFERENCE_FACE_REG_ENABLED), false);
+        //(R.string.SHAREDPREFERENCE_FACE_REG_ENABLED), false);
         urlEnabled = settings.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), false);
 
         apiLevel = Build.VERSION.SDK_INT;
@@ -72,34 +75,32 @@ public class CheckService extends Service {
         lock = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                //Log.d("CheckServiceBroadcast", "unlock: "+intent.getAction());
+                Log.d("CheckServiceBroadcast", "lock: "+intent.getAction());
                 mt.interrupt();
+
             }
         };
 
         unlock = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                //Log.d("CheckServiceBroadcast", "unlock: "+intent.getAction());
-                if (settings.getBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED), false)) {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mt = new MonitorlogThread();
-                            mt.start();
-                        }
-                    }, 3000);
-                } else {
+                Log.d("CheckServiceBroadcast", "unlock: "+intent.getAction());
+                if(!mt.isAlive())
+                {
                     mt = new MonitorlogThread();
                     mt.start();
                 }
+                Intent i = new Intent();
+                i.setAction(getString(R.string.BROADCAST_UNLOCK));
+                sendBroadcast(i);
             }
         };
 
         registerReceiver(lock, new IntentFilter(Intent.ACTION_SCREEN_OFF));
-        registerReceiver(unlock, new IntentFilter(Intent.ACTION_USER_PRESENT));
+        registerReceiver(unlock, new IntentFilter(Intent.ACTION_SCREEN_ON));
 
         mt.start();
+
         return Service.START_STICKY;
     }
 
@@ -111,6 +112,7 @@ public class CheckService extends Service {
 
     @Override
     public void onDestroy() {
+        Log.d("CheckService", "ONDESTROY");
         mt.interrupt();
         unregisterReceiver(lock);
         unregisterReceiver(unlock);
@@ -122,26 +124,30 @@ public class CheckService extends Service {
 
     private class MonitorlogThread extends Thread {
 
-        private String previousPackage = "";
+        private volatile String previousPackage = "";
 
         @Override
         public void run() {
+            Log.e("thread elinditva", "");
             while (!this.isInterrupted()) {
-
                 try {
-                    Thread.sleep(150);
                     String foregroundTaskPackageName;
+                    String className = "";
                     //Log.d("CheckService","apilevel: "+apiLevel);
                     if (apiLevel < Build.VERSION_CODES.LOLLIPOP) {
-                        foregroundTaskPackageName = getPackageNameOldApi();
-                        // Log.d("CheckService","getPackageNameOldApi");
+                        String[] array = getPackageNameOldApi();
+                        foregroundTaskPackageName = array[0];
+                        className = array[1];
+                        //Log.d("CheckService","packageName: "+foregroundTaskPackageName);
                     } else {
                         //Log.d("CheckService","getPackageNameOldApi");
                         foregroundTaskPackageName = getPackageNameNewApi();
                     }
-
+                    //Log.d("CheckService", "foregroundTaskPackageName BEFORE: " + foregroundTaskPackageName);
+                    //Log.d("CheckService", "previousPackage BEFORE: " + previousPackage);
                     if (!(foregroundTaskPackageName.equals(previousPackage))
-                            && !previousPackage.equals("")) {
+                            && !previousPackage.equals("") && (!className.equals(".PasswordRequestActivity"))) {
+                        Log.d("CheckService", "classname: " + className);
 
                         Intent packageChanged = new Intent();
                         packageChanged
@@ -150,24 +156,31 @@ public class CheckService extends Service {
                                 foregroundTaskPackageName);
                         //packageChanged.putExtra(getString(R.string.EXTRA_FACE_REG_ENABLED), frontCamera);
                         sendBroadcast(packageChanged);
-                        //Log.d("CheckService", "foregroundTaskPackageName: "+foregroundTaskPackageName);
+                        Log.d("CheckService", "foregroundTaskPackageName IF: " + foregroundTaskPackageName);
+                        Log.d("CheckService", "previousPackage IF: " + previousPackage);
                     }
                     previousPackage = foregroundTaskPackageName;
+                    Thread.sleep(100);
 
                 } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    return;
+                    break;
                 }
             }
+            Thread.currentThread().interrupt();
+            return;
         }
 
-        private String getPackageNameOldApi() {
+        private String[] getPackageNameOldApi() {
             ActivityManager am = (ActivityManager) getBaseContext()
                     .getSystemService(ACTIVITY_SERVICE);
             RunningTaskInfo foregroundTaskInfo = am.getRunningTasks(1)
                     .get(0);
-            return foregroundTaskInfo.topActivity
+            String[] array = new String[2];
+            array[0] = foregroundTaskInfo.topActivity
                     .getPackageName();
+            array[1] = foregroundTaskInfo.topActivity
+                    .getShortClassName();
+            return array;
         }
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)

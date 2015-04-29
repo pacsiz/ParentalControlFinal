@@ -282,14 +282,6 @@ public class SetNewPersonActivity extends Activity {
         }
     }
 
-    @Override
-    protected void onPause() {
-        camera.release();
-        camera = null;
-        onDestroy();
-        super.onPause();
-    }
-
 
     @Override
     protected void onDestroy() {

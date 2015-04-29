@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
-import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.PictureCallback;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,10 +20,10 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 public class CheckPersonActivity extends Activity {
-
+    private static final int ACTION_NOT_SET = 0;
     private static final int ACTION_FINISH = 1;
     private static final int ACTION_SKIP = 2;
-    private static final int ACTION_HOME = 3;
+    private static final int ACTION_CHECK = 3;
     private static final int ACTION_LOCK = 4;
     private Camera camera = null;
     private CameraView cameraPreview;
@@ -33,13 +32,15 @@ public class CheckPersonActivity extends Activity {
     int fails = 0;
     String packageName;
     private SharedPreferences learnedPersons;
-    boolean accessControl;
-    int actionCode = 0;
+    boolean deviceAccessControl = false;
+    int actionCode = ACTION_NOT_SET;
     int predictValue;
     Handler delay = new Handler();
     Runnable r;
 
     Button skip;
+
+    String personName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +49,8 @@ public class CheckPersonActivity extends Activity {
 
         skip = (Button)findViewById(R.id.btnSkip);
         packageName = getIntent().getStringExtra(getString(R.string.EXTRA_PACKAGE_NAME));
-        if (packageName != null) {
-            actionCode = ACTION_HOME;
-        }
-        accessControl = getIntent().getBooleanExtra(getString(R.string.EXTRA_ACCESS_CONTROL), false);
+        deviceAccessControl = packageName == null;
+
         learnedPersons = getSharedPreferences(getString
                 (R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
         SharedPreferences settings = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
@@ -73,16 +72,11 @@ public class CheckPersonActivity extends Activity {
             }
         };
 
-        delay.postDelayed(r, 3000);
-
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 actionCode = ACTION_SKIP;
-                delay.removeCallbacks(r);
-                Intent i = new Intent(CheckPersonActivity.this, PasswordRequestActivity.class);
-                i.putExtra(getString(R.string.EXTRA_PACKAGE_NAME), packageName);
-                startActivity(i);
+                onStop();
             }
         });
     }
@@ -94,35 +88,51 @@ public class CheckPersonActivity extends Activity {
         }
     };
 
-
     @Override
-    public void onBackPressed() {
-        if (actionCode != 0)
-        {
-            AccessControl.block(CheckPersonActivity.this, null);
-        }
+    protected void onRestart() {
+        if(deviceAccessControl) actionCode = ACTION_LOCK;
+        super.onRestart();
     }
 
     @Override
-    protected void onPause() {
-        camera.release();
-        camera = null;
-        super.onPause();
+    protected void onStart() {
+        delay.postDelayed(r, 3000);
+        camera.startPreview();
+        super.onStart();
+    }
+
+    @Override
+    public void onBackPressed() {
+        onStop();
     }
 
     @Override
     protected void onStop() {
-        if (actionCode == 0) {
-            AccessControl.lock(CheckPersonActivity.this);
-        }
+        Log.d("OnStop", actionCode + "");
+        camera.stopPreview();
         delay.removeCallbacks(r);
+        switch(actionCode){
+            case ACTION_LOCK:
+                AccessControl.lock(CheckPersonActivity.this);
+                break;
+            case ACTION_FINISH:
+                AccessControl.allow(CheckPersonActivity.this, personName, null);
+                break;
+            case ACTION_SKIP:
+                Intent i = new Intent(CheckPersonActivity.this, PasswordRequestActivity.class);
+                i.putExtra(getString(R.string.EXTRA_PACKAGE_NAME), packageName);
+                startActivity(i);
+                break;
+            case ACTION_CHECK:
+                AccessControl.personCheck(CheckPersonActivity.this, personName, packageName);
+                break;
+            default:
+                // ki kell hagyni a finish()-t, mivel ilyen állapotban a SCREEN_ON után fut le, ahol a create() után lefut az onStop() is.
+                super.onStop();
+                return;
+        }
+        finish();
         super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-
-        super.onDestroy();
     }
 
     private class DelayedPhoto extends AsyncTask<Object, Object, Void> {
@@ -154,40 +164,27 @@ public class CheckPersonActivity extends Activity {
         protected void onPostExecute(Void result) {
             //Log.d("CheckPersonActivity", "Predict result: "+pResult);
             //Log.d("CheckPersonActivity", "Package name: "+packageName);
-            //Log.d("CheckPersonActivity", "Access control enabled: "+accessControl);
+            //Log.d("CheckPersonActivity", "Access control enabled: "+deviceAccessControl);
             if (learnedPersons.contains(Integer.toString(pResult))) {
-                String personName = learnedPersons.getString(Integer.toString(pResult), "");
+                personName = learnedPersons.getString(Integer.toString(pResult), "");
 
                 if (personName.startsWith("CHILD-")) {
 
                     personName = personName.substring(6, 7).toUpperCase() + personName.substring(7);
                     //Log.d(""CheckPersonActivity"", "Child name: "+personName);
-                    if (accessControl) {
+                    if (deviceAccessControl) {
                         if (AccessControl.accessControl(personName, CheckPersonActivity.this)) {
                             actionCode = ACTION_FINISH;
-                            AccessControl.allow(CheckPersonActivity.this, personName, null);
-                            //finish();
                         } else {
                             actionCode = ACTION_LOCK;
-                            AccessControl.lock(CheckPersonActivity.this);
-                            //finish();
                         }
-                        //finish();
                     } else {
-                        actionCode = ACTION_HOME;
-
-                        //AccessControl.deny(CheckPersonActivity.this, personName, packageName);
-                        AccessControl.personCheck(CheckPersonActivity.this, personName, packageName);
+                        actionCode = ACTION_CHECK;
                     }
-
-                    finish();
-
                 } else {
                     actionCode = ACTION_FINISH;
-
-                    AccessControl.allow(CheckPersonActivity.this, personName, packageName);
-                    finish();
                 }
+                onStop();
             } else {
                 fails += 1;
                 if (fails < 3) {
@@ -196,13 +193,9 @@ public class CheckPersonActivity extends Activity {
                     camera.startPreview();
                     delay.postDelayed(r, 3000);
                 } else {
-                    actionCode = ACTION_FINISH;
-
-                    Toast.makeText(CheckPersonActivity.this,
-                            R.string.passwordRequest, Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(CheckPersonActivity.this, PasswordRequestActivity.class);
-                    i.putExtra(getString(R.string.EXTRA_PACKAGE_NAME), packageName);
-                    startActivity(i);
+                    actionCode = ACTION_SKIP;
+                    Toast.makeText(CheckPersonActivity.this, R.string.passwordRequest, Toast.LENGTH_SHORT).show();
+                    onStop();
                 }
             }
         }

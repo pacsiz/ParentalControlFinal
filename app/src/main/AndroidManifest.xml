@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="hu.uniobuda.nik.parentalcontrol"
-    android:installLocation="preferExternal">
+    >
 
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -124,7 +125,7 @@
         <receiver android:name=".Blocker" >
             <intent-filter>
                 <action android:name="hu.uniobuda.nik.parentalcontrol.NEW_APP_STARTED" />
-                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="hu.uniobuda.nik.parentalcontrol.UNLOCK"/>
             </intent-filter>
         </receiver>
         <receiver

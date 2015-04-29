@@ -4,12 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.wifi.WifiManager;
 import android.os.*;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -19,40 +14,33 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import javax.mail.MessagingException;
-
-public class PasswordRequestActivity
-        extends Activity {
+public class PasswordRequestActivity extends Activity {
+    private static final int ACTION_NOT_SET = 0;
     private static final int ACTION_FINISH = 1;
-    private static final int ACTION_HOME = 2;
+    private static final int ACTION_BLOCK = 2;
     private static final int ACTION_LOCK = 3;
-    int actionCode;
+    int actionCode = ACTION_NOT_SET;
 
     EditText getPassword;
     Button ok;
     Button forgotPassword;
     String packageName;
     SharedPreferences pwSh;
-    boolean accessControl;
+    boolean deviceAccessControl = false;
 
     protected void onCreate(Bundle paramBundle) {
+        Log.d("PRA", "ONCREATE");
         super.onCreate(paramBundle);
         setContentView(R.layout.activity_password_request);
         hideKeyboard(findViewById(R.id.pwReqlayout));
 
-        actionCode = 0;
         getPassword = ((EditText) findViewById(R.id.getPassword));
         ok = (Button) findViewById(R.id.OK);
         forgotPassword = (Button) findViewById(R.id.btnForgotPassword);
-        packageName = getIntent().getStringExtra(getString
-                (R.string.EXTRA_PACKAGE_NAME));
 
-        if (packageName != null) {
-            actionCode = ACTION_HOME;
-        }
-
-        accessControl = getIntent().getBooleanExtra(getString(R.string.EXTRA_ACCESS_CONTROL), false);
-        //Log.d("PasswordRequestActivity", "Access control enabled: "+accessControl);
+        packageName = getIntent().getStringExtra(getString(R.string.EXTRA_PACKAGE_NAME));
+        deviceAccessControl = packageName == null;
+        //Log.d("PasswordRequestActivity", "Access control enabled: "+deviceAccessControl);
 
         pwSh = getSharedPreferences(getString
                 (R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
@@ -64,27 +52,23 @@ public class PasswordRequestActivity
                         (R.string.SHAREDPREFERENCE_PASSWORD), "");
                 if (pw.equals(savedPw)) {
                     actionCode = ACTION_FINISH;
-                    if (!accessControl) {
-
+                    if (!deviceAccessControl) {
                         if (packageName != null && !packageName.equals("hu.uniobuda.nik.parentalcontrol")) {
                             BlockerHashTable.setBoolean(packageName, false);
+                            Log.d("PasswordRequestActivity", "Package set false: " + packageName);
                         }
                     }
                     Toast.makeText(PasswordRequestActivity.this, R.string.accessAllowedByPassword, Toast.LENGTH_LONG).show();
                     //AccessControl.playSound(R.raw.ok,PasswordRequestActivity.this);
-                    finish();
-
                 } else {
-                    if (accessControl) {
+                    if (deviceAccessControl) {
                         actionCode = ACTION_LOCK;
-                        AccessControl.lock(PasswordRequestActivity.this);
                     } else {
-                        actionCode = ACTION_HOME;
-                        AccessControl.block(PasswordRequestActivity.this, null);
+                        actionCode = ACTION_BLOCK;
                     }
-                    finish();
                     Toast.makeText(PasswordRequestActivity.this, R.string.incorrectPassword, Toast.LENGTH_LONG).show();
                 }
+                onStop();
             }
         });
 
@@ -114,8 +98,20 @@ public class PasswordRequestActivity
 
     @Override
     protected void onStop() {
-        if (actionCode == 0) {
-            AccessControl.lock(PasswordRequestActivity.this);
+        Log.d("OnStop", actionCode + "");
+        switch(actionCode){
+            case ACTION_LOCK:
+                AccessControl.lock(PasswordRequestActivity.this);
+                break;
+            case ACTION_FINISH:
+                break;
+            case ACTION_BLOCK:
+                AccessControl.block(PasswordRequestActivity.this, null);
+                break;
+            default:
+                // ki kell hagyni a finish()-t, mivel ilyen állapotban a SCREEN_ON után fut le, ahol a create() után lefut az onStop() is.
+                super.onStop();
+                return;
         }
         finish();
         super.onStop();
@@ -123,10 +119,13 @@ public class PasswordRequestActivity
 
     @Override
     public void onBackPressed() {
-        if (actionCode != 0)
-        {
-           AccessControl.block(PasswordRequestActivity.this, null);
-        }
+        onStop();
+    }
+
+    @Override
+    protected void onRestart() {
+        if(deviceAccessControl) actionCode = ACTION_LOCK;
+        super.onRestart();
     }
 
     public void hideKeyboard(View view) {
