@@ -11,8 +11,13 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
-import android.preference.SwitchPreference;
 import android.util.Log;
+
+import hu.uniobuda.nik.parentalcontrol.service.CheckService;
+import hu.uniobuda.nik.parentalcontrol.backend.DomainBlocker;
+import hu.uniobuda.nik.parentalcontrol.custompreference.LongTextCheckBoxPreference;
+import hu.uniobuda.nik.parentalcontrol.backend.RootCheck;
+import hu.uniobuda.nik.parentalcontrol.service.ServiceInfo;
 
 public class SettingsActivity extends PreferenceActivity {
 
@@ -36,26 +41,26 @@ public class SettingsActivity extends PreferenceActivity {
             urlEnabled.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    if (RootCheck.isDeviceRooted() && !urlEnabled.isChecked()) {
-                        if (ServiceInfo.isServiceRunning(CheckService.class, SettingsActivity.this)) {
-                            if (urlEnabled.isChecked()) {
-                                IPTablesAPI.unblockAllURL(SettingsActivity.this);
-                            } else {
-                                IPTablesAPI.blockAllURL(SettingsActivity.this);
-                            }
-                        }
-                    } else {
+                    if (!RootCheck.isDeviceRooted() && (boolean)newValue) {
                         AlertDialog.Builder dialog = new AlertDialog.Builder(SettingsActivity.this);
                         dialog.setTitle(R.string.failTitle);
                         dialog.setMessage(getString(R.string.rootFailed));
                         dialog.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
+                            public void onClick(DialogInterface dialogInterface, int which) {
+                                dialogInterface.dismiss();
                             }
                         });
                         dialog.show();
                     }
+                    if (ServiceInfo.isServiceRunning(CheckService.class,SettingsActivity.this)) {
+                        if ((boolean)newValue) {
+                            DomainBlocker.unblockAllURL(SettingsActivity.this);
+                        } else {
+                            DomainBlocker.blockAllURL(SettingsActivity.this);
+                        }
+                    }
+
                     Editor e = sh.edit();
                     e.putBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), (boolean) newValue);
                     e.commit();
@@ -104,28 +109,26 @@ public class SettingsActivity extends PreferenceActivity {
             urlEnabled.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    if (RootCheck.isDeviceRooted() && !urlEnabled.isChecked()) {
-
-                        if (ServiceInfo.isServiceRunning(CheckService.class, getActivity())) {
-                            if (urlEnabled.isChecked()) {
-                                IPTablesAPI.unblockAllURL(getActivity());
-                            } else {
-                                IPTablesAPI.blockAllURL(getActivity());
-                            }
-                        }
-                    } else {
+                    if (!RootCheck.isDeviceRooted() && (boolean)newValue) {
                         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
                         dialog.setTitle(R.string.failTitle);
                         dialog.setMessage(getString(R.string.rootFailed));
                         dialog.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
+                            public void onClick(DialogInterface dialogInterface, int which) {
+                                dialogInterface.dismiss();
                             }
                         });
                         dialog.show();
-
                     }
+                    if (ServiceInfo.isServiceRunning(CheckService.class, getActivity())) {
+                        if ((boolean)newValue) {
+                            DomainBlocker.unblockAllURL(getActivity());
+                        } else {
+                            DomainBlocker.blockAllURL(getActivity());
+                        }
+                    }
+
                     Editor e = sh.edit();
                     e.putBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), (boolean) newValue);
                     e.commit();

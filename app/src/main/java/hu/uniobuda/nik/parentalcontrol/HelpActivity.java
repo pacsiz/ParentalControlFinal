@@ -7,6 +7,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 
+import hu.uniobuda.nik.parentalcontrol.adapters.TabsAdapter;
+
 public class HelpActivity extends ActionBarActivity {
 
     ViewPager viewPager;

@@ -1,6 +1,5 @@
 package hu.uniobuda.nik.parentalcontrol;
 
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,22 +9,18 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class ChildListActivty extends ActionBarActivity {
+import hu.uniobuda.nik.parentalcontrol.backend.ValueComparatorInc;
 
+public class ChildListActivty extends ActionBarActivity {
 
     TextView childListInfo;
     ListView chilListView;
@@ -41,9 +36,9 @@ public class ChildListActivty extends ActionBarActivity {
         chilListView = (ListView)findViewById(R.id.childlistView);
 
         SharedPreferences persons = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
-        Map map = persons.getAll();
-        TreeMap<String, ?> sortedMap = new TreeMap(new ValueComparatorInc(map));
-        sortedMap.putAll(map);
+        Map personsMap = persons.getAll();
+        TreeMap<String, ?> sortedMap = new TreeMap(new ValueComparatorInc(personsMap));
+        sortedMap.putAll(personsMap);
         ArrayList<String> list = new ArrayList<>();
 
         for (Map.Entry<String, ?> entry : sortedMap.entrySet()) {
@@ -72,6 +67,4 @@ public class ChildListActivty extends ActionBarActivity {
             }
         });
     }
-
-
 }

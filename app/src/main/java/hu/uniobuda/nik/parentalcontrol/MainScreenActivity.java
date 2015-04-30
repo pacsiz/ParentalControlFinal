@@ -20,12 +20,17 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import hu.uniobuda.nik.parentalcontrol.camera.CameraSet;
+import hu.uniobuda.nik.parentalcontrol.service.CheckService;
+import hu.uniobuda.nik.parentalcontrol.service.CheckServiceStarter;
+import hu.uniobuda.nik.parentalcontrol.backend.DevAdminReceiver;
+import hu.uniobuda.nik.parentalcontrol.service.ServiceInfo;
 
 public class MainScreenActivity extends ActionBarActivity {
 
@@ -36,7 +41,6 @@ public class MainScreenActivity extends ActionBarActivity {
     boolean isRunning;
     SharedPreferences sh;
     private static int REQUEST_CODE = 1001;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

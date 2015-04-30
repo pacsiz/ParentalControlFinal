@@ -14,24 +14,24 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class DeviceAccessActivity extends ListActivity{
+import hu.uniobuda.nik.parentalcontrol.backend.ValueComparatorInc;
+
+public class DeviceAccessActivity extends ListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         SharedPreferences persons = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
-        Map map = persons.getAll();
-        TreeMap<String, ?> sortedMap = new TreeMap(new ValueComparatorInc(map));
-        sortedMap.putAll(map);
+        Map personsMap = persons.getAll();
+        TreeMap<String, ?> sortedMap = new TreeMap(new ValueComparatorInc(personsMap));
+        sortedMap.putAll(personsMap);
         ArrayList<String> list = new ArrayList<>();
 
-        for (Map.Entry<String, ?> entry : sortedMap.entrySet())
-        {
+        for (Map.Entry<String, ?> entry : sortedMap.entrySet()) {
             String name = entry.getValue().toString();
-            if (name.contains("CHILD-"))
-            {
-                list.add(name.substring(6,7).toUpperCase()+name.substring(7));
+            if (name.contains("CHILD-")) {
+                list.add(name.substring(6, 7).toUpperCase() + name.substring(7));
             }
         }
 
@@ -43,7 +43,7 @@ public class DeviceAccessActivity extends ListActivity{
                 String name = listView.getItemAtPosition(position).toString();
                 Intent i = new Intent(DeviceAccessActivity.this,
                         DeviceAccessSettingsActivity.class);
-                i.putExtra(getString(R.string.EXTRA_PERSON_NAME),name);
+                i.putExtra(getString(R.string.EXTRA_PERSON_NAME), name);
                 startActivity(i);
             }
         });

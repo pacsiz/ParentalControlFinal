@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="hu.uniobuda.nik.parentalcontrol"
-    android:installLocation="preferExternal">
+    package="hu.uniobuda.nik.parentalcontrol">
 
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -12,7 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
-    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -24,7 +23,7 @@
         android:theme="@style/AppTheme"
         >
         <activity
-            android:name=".activities.MainScreenActivity"
+            android:name=".MainScreenActivity"
             android:excludeFromRecents="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
@@ -35,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CheckPersonActivity"
+            android:name=".identification.CheckPersonActivity"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_check_person"
             android:launchMode="singleInstance"
@@ -48,7 +47,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.DeletePersonActivity"
+            android:name=".DeletePersonActivity"
             android:label="@string/deletePerson"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -58,7 +57,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.FilterAppsActivity"
+            android:name=".FilterAppsActivity"
             android:label="@string/title_activity_filter_apps"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -78,11 +77,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.PasswordActivity"
+            android:name=".PasswordActivity"
             android:label="@string/newPassword"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -92,7 +91,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.URLActivity"
+            android:name=".URLActivity"
             android:label="@string/title_activity_url"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -102,7 +101,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PasswordRequestActivity"
+            android:name=".identification.PasswordRequestActivity"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_password_request"
             android:launchMode="singleInstance"
@@ -110,26 +109,26 @@
             android:screenOrientation="portrait" />
 
         <service
-            android:name=".CheckService"
+            android:name=".service.CheckService"
             android:enabled="true"
             android:exported="false"
             android:process=":remote"/>
 
         <receiver
-            android:name=".CheckServiceStarter"
+            android:name=".service.CheckServiceStarter"
             android:enabled="false" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".Blocker" >
+        <receiver android:name=".identification.Blocker" >
             <intent-filter>
                 <action android:name="hu.uniobuda.nik.parentalcontrol.NEW_APP_STARTED" />
                 <action android:name="hu.uniobuda.nik.parentalcontrol.UNLOCK"/>
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".DevAdminReceiver"
+            android:name=".backend.DevAdminReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN" >
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
@@ -142,7 +141,7 @@
         </receiver>
 
         <activity
-            android:name=".activities.DeviceAccessActivity"
+            android:name=".DeviceAccessActivity"
             android:label="@string/title_activity_device_access"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -152,7 +151,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.DeviceAccessSettingsActivity"
+            android:name=".DeviceAccessSettingsActivity"
             android:label="@string/title_activity_device_access_person_settings"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -162,7 +161,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.ChildListActivty"
+            android:name=".ChildListActivty"
             android:label="@string/title_activity_child_list_activty"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
             <intent-filter>
@@ -172,11 +171,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.ChildPreferencesActivity"
+            android:name=".ChildPreferencesActivity"
             android:label="@string/title_activity_child_preference" >
         </activity>
         <activity
-            android:name=".activities.HelpActivity"
+            android:name=".HelpActivity"
             android:label="@string/title_activity_help" >
         </activity>
     </application>

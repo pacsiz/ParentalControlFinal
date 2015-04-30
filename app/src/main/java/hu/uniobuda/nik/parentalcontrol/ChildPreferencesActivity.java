@@ -3,7 +3,6 @@ package hu.uniobuda.nik.parentalcontrol;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -21,7 +20,6 @@ public class ChildPreferencesActivity extends PreferenceActivity {
 
             String personName = getIntent().getStringExtra(getString(R.string.EXTRA_PERSON_NAME));
             PreferenceCategory prefCat = (PreferenceCategory) findPreference("childPreferenceCategory");
-
             Preference childSelectApps = findPreference("childSelectApps");
             Preference childDeviceAccess = findPreference("childDeviceAccess");
             setIntent(ChildPreferencesActivity.this, FilterAppsActivity.class, personName, childSelectApps);
@@ -68,5 +66,4 @@ public class ChildPreferencesActivity extends PreferenceActivity {
             preference.setIntent(intent);
         }
     }
-
 }

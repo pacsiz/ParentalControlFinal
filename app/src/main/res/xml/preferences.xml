@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/basic_title">
-        <hu.uniobuda.nik.parentalcontrol.LongTextPreference android:title="@string/newPassword">
+        <hu.uniobuda.nik.parentalcontrol.custompreference.LongTextPreference android:title="@string/newPassword">
             <intent android:action="parentalcontrol.action.START_SETNEWPASSWORD_ACTIVITY" />
-        </hu.uniobuda.nik.parentalcontrol.LongTextPreference>
-        <hu.uniobuda.nik.parentalcontrol.LongTextPreference android:title="@string/selectApps">
+        </hu.uniobuda.nik.parentalcontrol.custompreference.LongTextPreference>
+        <hu.uniobuda.nik.parentalcontrol.custompreference.LongTextPreference android:title="@string/selectApps">
             <intent android:action="parentalcontrol.action.START_SELECTAPPS_ACTIVITY" />
-        </hu.uniobuda.nik.parentalcontrol.LongTextPreference>
-        <hu.uniobuda.nik.parentalcontrol.LongTextPreference android:title="@string/title_childControl">
+        </hu.uniobuda.nik.parentalcontrol.custompreference.LongTextPreference>
+        <hu.uniobuda.nik.parentalcontrol.custompreference.LongTextPreference android:title="@string/title_childControl">
             <intent android:action="parentalcontrol.action.START_CHILDLIST" />
-        </hu.uniobuda.nik.parentalcontrol.LongTextPreference>
+        </hu.uniobuda.nik.parentalcontrol.custompreference.LongTextPreference>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/rec_title">
-        <hu.uniobuda.nik.parentalcontrol.LongTextPreference android:title="@string/setNewPerson">
+        <hu.uniobuda.nik.parentalcontrol.custompreference.LongTextPreference android:title="@string/setNewPerson">
             <intent android:action="parentalcontrol.action.START_SETNEWPERSON_ACTIVITY" />
-        </hu.uniobuda.nik.parentalcontrol.LongTextPreference>
-        <hu.uniobuda.nik.parentalcontrol.LongTextPreference android:title="@string/deletePerson">
+        </hu.uniobuda.nik.parentalcontrol.custompreference.LongTextPreference>
+        <hu.uniobuda.nik.parentalcontrol.custompreference.LongTextPreference android:title="@string/deletePerson">
             <intent android:action="parentalcontrol.action.START_DELETEPERSON_ACTIVITY" />
-        </hu.uniobuda.nik.parentalcontrol.LongTextPreference>
-        <hu.uniobuda.nik.parentalcontrol.SeekBarPreference
+        </hu.uniobuda.nik.parentalcontrol.custompreference.LongTextPreference>
+        <hu.uniobuda.nik.parentalcontrol.custompreference.SeekBarPreference
             android:key="predictValuePreference"
             android:title="@string/predictValue_title"
             android:dialogTitle="@string/predictValue_dialog"
             android:summary="@string/predictValue_summary"
             android:persistent="false"
             android:defaultValue="82">
-        </hu.uniobuda.nik.parentalcontrol.SeekBarPreference>
+        </hu.uniobuda.nik.parentalcontrol.custompreference.SeekBarPreference>
 
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/url_title">
-        <hu.uniobuda.nik.parentalcontrol.LongTextCheckBoxPreference
+        <hu.uniobuda.nik.parentalcontrol.custompreference.LongTextCheckBoxPreference
             android:title="@string/url_isOn"
             android:key="urlEnabled"
             android:persistent="false"/>
-        <hu.uniobuda.nik.parentalcontrol.LongTextPreference
+        <hu.uniobuda.nik.parentalcontrol.custompreference.LongTextPreference
             android:title="@string/url_custom_title"
             android:key="url_custom">
             <intent android:action="parentalcontrol.action.START_URLACTIVITY" />
-        </hu.uniobuda.nik.parentalcontrol.LongTextPreference>
+        </hu.uniobuda.nik.parentalcontrol.custompreference.LongTextPreference>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/title_deviceAccess">
-        <hu.uniobuda.nik.parentalcontrol.LongTextCheckBoxPreference
+        <hu.uniobuda.nik.parentalcontrol.custompreference.LongTextCheckBoxPreference
             android:title="@string/deviceAccess_isEnabled"
             android:key="deviceAccessEnabled"
             android:persistent="false"/>

@@ -17,12 +17,9 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
-import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.PictureCallback;
-import android.hardware.camera2.CameraManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,22 +31,26 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import hu.uniobuda.nik.parentalcontrol.camera.CameraSet;
+import hu.uniobuda.nik.parentalcontrol.camera.CameraView;
+import hu.uniobuda.nik.parentalcontrol.backend.FaceDetection;
+import hu.uniobuda.nik.parentalcontrol.backend.ValueComparatorDec;
+
 public class SetNewPersonActivity extends Activity {
 
     public static final int NUMBER_OF_PHOTOS = 5;
+    public static final int DEFAULT_THRESHOLD = 882;
     private Button btnSetNewPerson;
     private EditText personName;
     private Button btnCapture;
     private CheckBox isParent;
     private Camera camera = null;
-    private CameraView cameraPreview;
     private String person;
     private int numberOfPhotos;
     private SharedPreferences learnedPersons;
-    Map sortedMap;
-    int predictValue;
-
-    int personId = 0;
+    private Map sortedMap;
+    private int predictValue;
+    private int personId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +58,9 @@ public class SetNewPersonActivity extends Activity {
         setContentView(R.layout.activity_set_new_person);
 
         numberOfPhotos = 0;
-        SharedPreferences shSettings = getSharedPreferences(getString
+        SharedPreferences settings = getSharedPreferences(getString
                 (R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
-        predictValue = shSettings.getInt(getString(R.string.SHAREDPREFERENCE_PREDICT_VALUE),82);
-
+        predictValue = settings.getInt(getString(R.string.SHAREDPREFERENCE_PREDICT_VALUE), DEFAULT_THRESHOLD);
 
         btnSetNewPerson = (Button) findViewById(R.id.btnSetNewPerson);
         personName = (EditText) findViewById(R.id.personName);
@@ -69,8 +69,7 @@ public class SetNewPersonActivity extends Activity {
 
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 
-
-        if (!shSettings.getBoolean(getString
+        if (!settings.getBoolean(getString
                 (R.string.SHAREDPREFERENCE_FACE_REG_ENABLED), false)) {
             dialog.setTitle(R.string.failTitle);
             dialog.setMessage(R.string.cameraFailMessage);
@@ -82,7 +81,7 @@ public class SetNewPersonActivity extends Activity {
                         }
                     });
             dialog.show();
-        } else if (!shSettings.contains(getString
+        } else if (!settings.contains(getString
                 (R.string.SHAREDPREFERENCE_PASSWORD))) {
             dialog.setTitle(R.string.failTitle);
             dialog.setMessage(R.string.noPasswordSet);
@@ -103,9 +102,9 @@ public class SetNewPersonActivity extends Activity {
             }.start();
             learnedPersons = getSharedPreferences(getString
                     (R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
-            Map<String, ?> map = learnedPersons.getAll();
-            sortedMap = new TreeMap(new ValueComparatorDec(map));
-            sortedMap.putAll(map);
+            Map<String, ?> persons = learnedPersons.getAll();
+            sortedMap = new TreeMap(new ValueComparatorDec(persons));
+            sortedMap.putAll(persons);
             if (sortedMap.size() > 0) {
                 Iterator it = sortedMap.entrySet().iterator();
                 Map.Entry entry = (Map.Entry) it.next();
@@ -124,9 +123,8 @@ public class SetNewPersonActivity extends Activity {
                     dialog.setPositiveButton(R.string.OK,
                             new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onClick(DialogInterface arg0,
-                                                    int arg1) {
-                                    arg0.dismiss();
+                                public void onClick(DialogInterface dialogInterface, int arg1) {
+                                    dialogInterface.dismiss();
                                 }
                             });
                     dialog.show();
@@ -136,9 +134,8 @@ public class SetNewPersonActivity extends Activity {
                     dialog.setPositiveButton(R.string.OK,
                             new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onClick(DialogInterface arg0,
-                                                    int arg1) {
-                                    arg0.dismiss();
+                                public void onClick(DialogInterface dialogInterface, int arg1) {
+                                    dialogInterface.dismiss();
                                 }
                             });
                     dialog.show();
@@ -281,7 +278,6 @@ public class SetNewPersonActivity extends Activity {
             });
         }
     }
-
 
     @Override
     protected void onDestroy() {

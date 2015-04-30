@@ -156,7 +156,7 @@
     <string name="adminFailure">Az eszközkezelő funkció nélkül a szolgáltatás nem működik, kérem kapcsolja be!</string>
 
     <string name="askResetPassword">Biztosan új jelszót szeretne generálni?\n
-    Az új jelszó elküldéséhez internetkapcsolat szükséges+</string>
+    Az új jelszó elküldéséhez internetkapcsolat szükséges!</string>
 
 
     <string name="deviceAccess_persons">Korlátozandó személyek beállításai</string>

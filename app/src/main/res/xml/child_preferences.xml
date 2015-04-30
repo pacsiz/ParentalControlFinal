@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:key="childPreferenceCategory">
-        <hu.uniobuda.nik.parentalcontrol.LongTextPreference
+        <hu.uniobuda.nik.parentalcontrol.custompreference.LongTextPreference
             android:title="@string/selectApps"
             android:key="childSelectApps">
             <intent android:action="parentalcontrol.action.START_SELECTAPPS_ACTIVITY" />
-        </hu.uniobuda.nik.parentalcontrol.LongTextPreference>
-        <hu.uniobuda.nik.parentalcontrol.LongTextPreference
+        </hu.uniobuda.nik.parentalcontrol.custompreference.LongTextPreference>
+        <hu.uniobuda.nik.parentalcontrol.custompreference.LongTextPreference
             android:title="@string/title_deviceAccess"
             android:key="childDeviceAccess">
             <intent android:action="parentalcontrol.action.START_DEVICE_ACCESS_ACTIVITY" />
-        </hu.uniobuda.nik.parentalcontrol.LongTextPreference>
+        </hu.uniobuda.nik.parentalcontrol.custompreference.LongTextPreference>
     </PreferenceCategory>
 
 </PreferenceScreen>

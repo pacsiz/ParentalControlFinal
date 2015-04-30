@@ -3,7 +3,7 @@
     android:id="@+id/childListLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="hu.uniobuda.nik.parentalcontrol.activities.ChildListActivty">
+    tools:context="hu.uniobuda.nik.parentalcontrol.ChildListActivty">
 
 
     <ListView

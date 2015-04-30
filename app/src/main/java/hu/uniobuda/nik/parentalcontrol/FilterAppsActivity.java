@@ -15,10 +15,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ResolveInfo;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -26,6 +24,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import hu.uniobuda.nik.parentalcontrol.adapters.AppInfo;
+import hu.uniobuda.nik.parentalcontrol.adapters.AppListAdapter;
+import hu.uniobuda.nik.parentalcontrol.identification.BlockerHashTable;
 
 public class FilterAppsActivity extends ActionBarActivity {
     AppListAdapter adapter;
@@ -56,9 +58,9 @@ public class FilterAppsActivity extends ActionBarActivity {
         personName = getIntent().getStringExtra(getString(R.string.EXTRA_PERSON_NAME));
         if (personName == null) {
             personName = "all";
-            childName.setText(getString(R.string.followingPersonSettings) +" "+ getString(R.string.all));
+            childName.setText(getString(R.string.followingPersonSettings) + " " + getString(R.string.all));
         } else {
-            childName.setText(getString(R.string.followingPersonSettings) +" "+ personName);
+            childName.setText(getString(R.string.followingPersonSettings) + " " + personName);
         }
 
         checkedValue.clear();
@@ -70,7 +72,7 @@ public class FilterAppsActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 CheckBox cb = (CheckBox) view.findViewById(R.id.appChk);
                 cb.performClick();
-                String pName = list.get(position).pName;
+                String pName = list.get(position).getpName();
                 if (cb.isChecked()) {
                     checkedValue.add(pName);
                     if (tempDelete.contains(pName)) {
@@ -125,7 +127,11 @@ public class FilterAppsActivity extends ActionBarActivity {
                 e.putString("com.android.settings", "all");
                 e.putString("com.android.packageinstaller", "all");
                 e.commit();
-                 finish();
+                if (BlockerHashTable.isEmpty()) {
+                    BlockerHashTable.refresh(FilterAppsActivity.this);
+                }
+
+                finish();
             }
         });
     }
@@ -159,17 +165,17 @@ public class FilterAppsActivity extends ActionBarActivity {
             for (int i = 0; i < apps.size(); i++) {
                 ResolveInfo info = apps.get(i);
                 AppInfo newInfo = new AppInfo();
-                newInfo.pName = info.activityInfo.packageName;
-                if (newInfo.pName.equals("hu.uniobuda.nik.parentalcontrol") ||
-                        newInfo.pName.equals("com.android.settings")) {
+                newInfo.setpName(info.activityInfo.packageName);
+                if (newInfo.getpName().equals("hu.uniobuda.nik.parentalcontrol") ||
+                        newInfo.getpName().equals("com.android.settings")) {
                     continue;
                 } else {
-                    newInfo.appName = info.loadLabel(getPackageManager()).toString();
-                    newInfo.pName = info.activityInfo.packageName;
-                    newInfo.appIcon = info.loadIcon(getPackageManager());
-                    if (shSelectedApps.contains(newInfo.pName)) {
-                        if (selectedAppsMap.get(newInfo.pName).toString().contains(personName)) {
-                            checkedValue.add(newInfo.pName);
+                    newInfo.setAppName(info.loadLabel(getPackageManager()).toString());
+                    newInfo.setpName(info.activityInfo.packageName);
+                    newInfo.setAppIcon(info.loadIcon(getPackageManager()));
+                    if (shSelectedApps.contains(newInfo.getpName())) {
+                        if (selectedAppsMap.get(newInfo.getpName()).toString().contains(personName)) {
+                            checkedValue.add(newInfo.getpName());
                         }
                     }
                     selectedApps.add(newInfo);
@@ -181,8 +187,3 @@ public class FilterAppsActivity extends ActionBarActivity {
 
 }
 
-class AppInfo {
-    public String appName = "";
-    public String pName = "";
-    public Drawable appIcon;
-}

@@ -1,7 +1,6 @@
 package hu.uniobuda.nik.parentalcontrol;
 
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,6 +32,11 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
+import hu.uniobuda.nik.parentalcontrol.identification.BlockerHashTable;
+import hu.uniobuda.nik.parentalcontrol.backend.FaceData;
+import hu.uniobuda.nik.parentalcontrol.backend.FaceDataEditor;
+import hu.uniobuda.nik.parentalcontrol.backend.ValueComparatorInc;
+
 public class DeletePersonActivity extends ActionBarActivity {
     SharedPreferences persons;
     ArrayAdapter adapter;
@@ -48,16 +52,14 @@ public class DeletePersonActivity extends ActionBarActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffd6d6d6")));
 
-
-
         personListInfo = (TextView) findViewById(R.id.personListInfo);
         personlistView = (ListView) findViewById(R.id.personlistView);
 
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         persons = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
-        Map map = persons.getAll();
-        TreeMap<String, ?> sortedMap = new TreeMap(new ValueComparatorInc(map));
-        sortedMap.putAll(map);
+        Map personsMap = persons.getAll();
+        TreeMap<String, ?> sortedMap = new TreeMap(new ValueComparatorInc(personsMap));
+        sortedMap.putAll(personsMap);
 
         for (Map.Entry<String, ?> entry : sortedMap.entrySet()) {
             String name = entry.getValue().toString();
@@ -86,34 +88,21 @@ public class DeletePersonActivity extends ActionBarActivity {
                 dialog.setNegativeButton(getString(R.string.cancel),
                         new OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                arg0.dismiss();
+                            public void onClick(DialogInterface dialogInterface, int arg1) {
+                                dialogInterface.dismiss();
                             }
                         });
                 dialog.setPositiveButton(R.string.OK,
                         new OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
+                            public void onClick(DialogInterface dialogInterface, int arg1) {
                                 int index = names.indexOf(name);
                                 new Remover(index).execute();
                                 deletePersonPackages(names.get(index));
-                                Editor e = persons.edit();
-                                e.remove(labels.get(index));
-                                //Log.d("DeletePersonActivity", "Delete person: "+names.get(index));
-
-                                File sh = new File(getApplicationInfo().dataDir + "/shared_prefs/" + names.get(index) + ".xml");
-                                //Log.d("DeletePersonActivity", "Delete person's preference: "+sh.getAbsolutePath());
-                                if (sh.exists()) {
-                                    sh.delete();
-                                }
-                                names.remove(index);
-                                labels.remove(index);
-                                e.commit();
 
                             }
                         });
                 dialog.show();
-
             }
         });
     }
@@ -154,7 +143,29 @@ public class DeletePersonActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-            adapter.notifyDataSetChanged();
+            if (adapter != null)
+            {
+                adapter.notifyDataSetChanged();
+            }
+
+            Editor e = persons.edit();
+            e.remove(labels.get(index));
+            //Log.d("DeletePersonActivity", "Delete person: "+names.get(index));
+
+            File sh = new File(getApplicationInfo().dataDir + "/shared_prefs/" + names.get(index).toLowerCase() + ".xml");
+            Log.d("DeletePersonActivity", "Delete person's preference: " + sh.getAbsolutePath());
+            Log.d("DPA", "sh exist " + sh.exists());
+            if (sh.exists()) {
+                sh.delete();
+            }
+            names.remove(index);
+            labels.remove(index);
+            e.commit();
+
+            if (names.size() == 0)
+            {
+                personListInfo.setText(R.string.emptyPersonList);
+            }
             pd.dismiss();
         }
 
@@ -165,11 +176,10 @@ public class DeletePersonActivity extends ActionBarActivity {
                 f.delete();
             } else {
                 try {
-
                     FaceDataEditor.loadXML(f.getAbsolutePath());
                     Iterator i = FaceDataEditor.faceData.iterator();
                     while (i.hasNext()) {
-                        if (((FaceData) i.next()).id == Integer.parseInt(labels.get(index))) {
+                        if (((FaceData) i.next()).getId() == Integer.parseInt(labels.get(index))) {
                             i.remove();
                         }
                     }
@@ -186,6 +196,5 @@ public class DeletePersonActivity extends ActionBarActivity {
             }
             return null;
         }
-
     }
 }

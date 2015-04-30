@@ -18,10 +18,15 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.text.DateFormatSymbols;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+
+import hu.uniobuda.nik.parentalcontrol.adapters.DeviceAccessSettingsListAdapter;
 
 
 public class DeviceAccessSettingsActivity extends Activity {
@@ -55,31 +60,33 @@ public class DeviceAccessSettingsActivity extends Activity {
         String weekdays[] = new DateFormatSymbols(Locale.ENGLISH).getWeekdays();
 
         //Order weekdays
-        for (int i = 0; i < weekdays.length-2; i++)
-        {
-            orderedWeekdays[i] = weekdays[i+2].toLowerCase();
+        for (int i = 0; i < weekdays.length - 2; i++) {
+            orderedWeekdays[i] = weekdays[i + 2].toLowerCase();
         }
         orderedWeekdays[6] = weekdays[1].toLowerCase();
 
         String name = getIntent().getStringExtra(getString(R.string.EXTRA_PERSON_NAME)).toLowerCase();
-        personName.setText(name.substring(0,1).toUpperCase()+name.substring(1));
+        personName.setText(name.substring(0, 1).toUpperCase() + name.substring(1));
 
-        SharedPreferences personSh = getSharedPreferences(name, Context.MODE_PRIVATE);
-        final Editor e = personSh.edit();
+        SharedPreferences persons = getSharedPreferences(name, Context.MODE_PRIVATE);
+        final Editor e = persons.edit();
 
-        String[] fromArr = personSh.getString(getString(R.string.SHAREDPREFERENCE_TIME_FROM),"").split(":");
-        String[] toArr = personSh.getString(getString(R.string.SHAREDPREFERENCE_TIME_TO), "").split(":");
+        final String[] fromArr = persons.getString(getString(R.string.SHAREDPREFERENCE_TIME_FROM), "").split(":");
+        final String[] toArr = persons.getString(getString(R.string.SHAREDPREFERENCE_TIME_TO), "").split(":");
+        String[] days = persons.getString(getString(R.string.SHAREDPREFERENCE_SELECTED_DAYS), "").split(":");
 
-        if(fromArr.length == 2)
-        {
+        for (String day : days) {
+            selectedDays.add(day);
+        }
+
+        if (fromArr.length == 2) {
             from.setText(fromArr[0] + ":" + (Integer.parseInt(fromArr[1]) < 10 ? "0" + fromArr[1] : fromArr[1]));
         }
-        if(toArr.length == 2)
-        {
-            to.setText(toArr[0]+":"+(Integer.parseInt(toArr[1])<10 ?"0"+toArr[1]:toArr[1]));
+        if (toArr.length == 2) {
+            to.setText(toArr[0] + ":" + (Integer.parseInt(toArr[1]) < 10 ? "0" + toArr[1] : toArr[1]));
         }
 
-        isAccessEnabled.setChecked(personSh.getBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_FOR_PERSON), false));
+        isAccessEnabled.setChecked(persons.getBoolean(getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_FOR_PERSON), false));
         isAccessEnabled.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,13 +106,14 @@ public class DeviceAccessSettingsActivity extends Activity {
 
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                from.setText(hourOfDay + ":" + (minute<10 ?"0"+minute:minute));
+                                from.setText(hourOfDay + ":" + (minute < 10 ? "0" + minute : minute));
                                 e.putString(getString(R.string.SHAREDPREFERENCE_TIME_FROM),
                                         hourOfDay + ":" + minute);
                             }
                         }, hour, minute, true);
 
                 tpd.setTitle(R.string.selectFromTime);
+                tpd.updateTime(Integer.parseInt(fromArr[0]), Integer.parseInt(fromArr[1]));
                 tpd.show();
             }
         });
@@ -116,19 +124,19 @@ public class DeviceAccessSettingsActivity extends Activity {
                 Calendar currentTime = Calendar.getInstance();
                 int hour = currentTime.get(Calendar.HOUR_OF_DAY);
                 int minute = currentTime.get(Calendar.MINUTE);
+
                 TimePickerDialog tpd = new TimePickerDialog(DeviceAccessSettingsActivity.this,
                         new TimePickerDialog.OnTimeSetListener() {
-
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
-                                to.setText(hourOfDay + ":" + (minute<10 ?"0"+minute:minute));
+                                to.setText(hourOfDay + ":" + (minute < 10 ? "0" + minute : minute));
                                 e.putString(getString(R.string.SHAREDPREFERENCE_TIME_TO),
                                         hourOfDay + ":" + minute);
                             }
                         }, hour, minute, true);
 
                 tpd.setTitle(R.string.selectToTime);
+                tpd.updateTime(Integer.parseInt(toArr[0]), Integer.parseInt(toArr[1]));
                 tpd.show();
             }
         });
@@ -137,7 +145,7 @@ public class DeviceAccessSettingsActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                AlertDialog.Builder builder=new AlertDialog.Builder(DeviceAccessSettingsActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(DeviceAccessSettingsActivity.this);
                 builder.setTitle(R.string.selectDays);
 
                 ListView list = new ListView(DeviceAccessSettingsActivity.this);
@@ -159,12 +167,9 @@ public class DeviceAccessSettingsActivity extends Activity {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         CheckBox checkBox = (CheckBox) view.findViewById(R.id.urlCheckBox);
                         checkBox.performClick();
-                        if(checkBox.isChecked())
-                        {
+                        if (checkBox.isChecked()) {
                             selectedDays.add(orderedWeekdays[position]);
-                        }
-                        else
-                        {
+                        } else {
                             selectedDays.remove(orderedWeekdays[position]);
                         }
                     }
@@ -174,16 +179,15 @@ public class DeviceAccessSettingsActivity extends Activity {
                 builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                            StringBuilder sb = new StringBuilder();
+                        StringBuilder sb = new StringBuilder();
 
-                            for (String day : selectedDays)
-                            {
-                                sb.append(day+":");
-                            }
-                            //Log.d("DeviceAccessSettingsActivity", "Saved days: "+sb.toString());
+                        for (String day : selectedDays) {
+                            sb.append(day + ":");
+                        }
+                        //Log.d("DeviceAccessSettingsActivity", "Saved days: "+sb.toString());
 
-                            e.putString(getString(R.string.SHAREDPREFERENCE_SELECTED_DAYS),sb.toString());
-                            dialog.dismiss();
+                        e.putString(getString(R.string.SHAREDPREFERENCE_SELECTED_DAYS), sb.toString());
+                        dialog.dismiss();
                     }
                 });
 
@@ -207,5 +211,4 @@ public class DeviceAccessSettingsActivity extends Activity {
             }
         });
     }
-
 }

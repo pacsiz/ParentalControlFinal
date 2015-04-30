@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -21,6 +20,11 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Map;
 
+import hu.uniobuda.nik.parentalcontrol.service.CheckService;
+import hu.uniobuda.nik.parentalcontrol.backend.DomainBlocker;
+import hu.uniobuda.nik.parentalcontrol.service.ServiceInfo;
+import hu.uniobuda.nik.parentalcontrol.adapters.URLLIstAdapter;
+
 
 public class URLActivity extends Activity {
 
@@ -30,7 +34,7 @@ public class URLActivity extends Activity {
     ListView urlListView;
     ArrayList<String> urls;
     ArrayList<String> tempDeletedUrls;
-    SharedPreferences sh;
+    SharedPreferences url;
     URLLIstAdapter adapter;
     Editor e;
 
@@ -39,8 +43,8 @@ public class URLActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_url);
 
-        sh = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
-        if (!sh.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), false)) {
+        SharedPreferences settings = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
+        if (!settings.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), false)) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setTitle(R.string.failTitle);
             dialog.setMessage(getString(R.string.urlDisabled));
@@ -54,12 +58,12 @@ public class URLActivity extends Activity {
             dialog.show();
         }
 
-        sh = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_URLS), Context.MODE_PRIVATE);
+        url = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_URLS), Context.MODE_PRIVATE);
         addUrl = (Button) findViewById(R.id.btnUrlAdd);
         deleteUrl = (Button) findViewById(R.id.btnUrlDelete);
         saveUrl = (Button) findViewById(R.id.btnUrlSave);
         urlListView = (ListView) findViewById(R.id.urlListView);
-        e = sh.edit();
+        e = url.edit();
 
         new backgroundLoadURLS().execute();
         tempDeletedUrls = new ArrayList<>();
@@ -136,10 +140,10 @@ public class URLActivity extends Activity {
             @Override
             public void run() {
                 for (String url : unBlockURL) {
-                    IPTablesAPI.unblockDomain(url);
+                    DomainBlocker.unblockDomain(url);
                 }
                 for (String url : blockURL) {
-                    IPTablesAPI.blockDomain(url);
+                    DomainBlocker.blockDomain(url);
                 }
             }
         }.start();
@@ -168,7 +172,7 @@ public class URLActivity extends Activity {
         @Override
         protected ArrayList<String> doInBackground(Void... params) {
             ArrayList<String> temp = new ArrayList<>();
-            Map<String, ?> map = sh.getAll();
+            Map<String, ?> map = url.getAll();
             for (Map.Entry entry : map.entrySet()) {
                 temp.add(entry.getKey().toString());
             }
