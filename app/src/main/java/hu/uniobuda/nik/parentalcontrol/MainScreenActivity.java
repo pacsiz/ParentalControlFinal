@@ -49,7 +49,6 @@ public class MainScreenActivity extends ActionBarActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffd6d6d6")));
 
-
         serviceState = (TextView) findViewById(R.id.isRunning);
         btnSettings = (Button) findViewById(R.id.btnSettings);
         btnStartService = (Button) findViewById(R.id.btnStartService);
@@ -153,7 +152,6 @@ public class MainScreenActivity extends ActionBarActivity {
             }
         });
     }
-
 
     private void enableService() {
         PackageManager pm = getPackageManager();

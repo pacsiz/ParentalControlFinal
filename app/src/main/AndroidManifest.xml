@@ -20,7 +20,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
+        android:theme="@style/Theme.AppCompat.Light"
         >
         <activity
             android:name=".MainScreenActivity"
@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".identification.CheckPersonActivity"
+            android:name=".CheckPersonActivity"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_check_person"
             android:launchMode="singleInstance"
@@ -101,7 +101,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".identification.PasswordRequestActivity"
+            android:name=".PasswordRequestActivity"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_password_request"
             android:launchMode="singleInstance"
@@ -123,7 +123,7 @@
         </receiver>
         <receiver android:name=".identification.Blocker" >
             <intent-filter>
-                <action android:name="hu.uniobuda.nik.parentalcontrol.NEW_APP_STARTED" />
+                <action android:name="hu.uniobuda.nik.parentalcontrol.NEW_APP_STARTED"/>
                 <action android:name="hu.uniobuda.nik.parentalcontrol.UNLOCK"/>
             </intent-filter>
         </receiver>
@@ -140,16 +140,6 @@
                 android:resource="@xml/device_admin_policy" />
         </receiver>
 
-        <activity
-            android:name=".DeviceAccessActivity"
-            android:label="@string/title_activity_device_access"
-            android:screenOrientation="portrait" >
-            <intent-filter>
-                <action android:name="parentalcontrol.action.START_DEVICE_ACCESS_ACTIVITY" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".DeviceAccessSettingsActivity"
             android:label="@string/title_activity_device_access_person_settings"

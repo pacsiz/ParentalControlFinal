@@ -97,8 +97,9 @@ public class DeletePersonActivity extends ActionBarActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int arg1) {
                                 int index = names.indexOf(name);
-                                new Remover(index).execute();
                                 deletePersonPackages(names.get(index));
+                                new Remover(index).execute();
+
 
                             }
                         });
@@ -153,8 +154,8 @@ public class DeletePersonActivity extends ActionBarActivity {
             //Log.d("DeletePersonActivity", "Delete person: "+names.get(index));
 
             File sh = new File(getApplicationInfo().dataDir + "/shared_prefs/" + names.get(index).toLowerCase() + ".xml");
-            Log.d("DeletePersonActivity", "Delete person's preference: " + sh.getAbsolutePath());
-            Log.d("DPA", "sh exist " + sh.exists());
+            //Log.d("DeletePersonActivity", "Delete person's preference: " + sh.getAbsolutePath());
+
             if (sh.exists()) {
                 sh.delete();
             }
@@ -184,13 +185,7 @@ public class DeletePersonActivity extends ActionBarActivity {
                         }
                     }
                     FaceDataEditor.writeXML(f.getAbsolutePath());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ParserConfigurationException e) {
-                    e.printStackTrace();
-                } catch (SAXException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
+                } catch (InterruptedException | ParserConfigurationException | SAXException | IOException e) {
                     e.printStackTrace();
                 }
             }

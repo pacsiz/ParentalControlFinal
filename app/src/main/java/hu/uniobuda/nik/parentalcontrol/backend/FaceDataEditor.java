@@ -34,15 +34,12 @@ public class FaceDataEditor {
 
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
-
-            //Log.d("FaceDataEditor", "---- " + node.getNodeName() + " ----");
+;
             if (node.getNodeName().equals("labels")) {
                 NodeList childNodes = node.getChildNodes();
 
                 for (int j = 0; j < childNodes.getLength(); j++) {
-                    //Log.d("FaceDataEditor","---- " + childNodes.item(j).getNodeName() + " ----");
                     if (childNodes.item(j).getNodeName().equals("data")) {
-                        //Log.d("FaceDataEditor","---- " + childNodes.item(j).getTextContent() + " ----");
                         String[] l = childNodes.item(j).getTextContent().trim().split(" ");
                         for (String s : l) {
                             ids.add(Integer.parseInt(s));
@@ -70,31 +67,23 @@ public class FaceDataEditor {
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
 
-            //Log.d("FaceDataEditor","---- " + node.getNodeName() + " ----");
             if (node.getNodeName().equals("histograms")) {
                 NodeList childNodes = node.getChildNodes();
 
                 for (int j = 0; j < childNodes.getLength(); j++) {
-                    //Log.d("FaceDataEditor","---- " + childNodes.item(j).getNodeName() + " ----");
                     if (childNodes.item(j).getNodeName().equals("_")) {
                         NodeList dataNodes = childNodes.item(j).getChildNodes();
                         FaceData data = new FaceData();
 
                         for (int h = 0; h < dataNodes.getLength(); h++) {
-                            //Log.d("FaceDataEditor","---- " + dataNodes.item(h).getNodeName() + " ----");
-
                             if (dataNodes.item(h).getNodeName().equals("rows")) {
                                 data.setRows(dataNodes.item(h).getTextContent());
-                                //Log.d("FaceDataEditor","---- Rows: " + dataNodes.item(h).getTextContent() + " ----");
                             } else if (dataNodes.item(h).getNodeName().equals("cols")) {
                                 data.setCols(dataNodes.item(h).getTextContent());
-                                //Log.d("FaceDataEditor","---- Cols: " + dataNodes.item(h).getTextContent() + " ----");
                             } else if (dataNodes.item(h).getNodeName().equals("dt")) {
                                 data.setDt(dataNodes.item(h).getTextContent());
-                                //Log.d("FaceDataEditor","---- DT: " + dataNodes.item(h).getTextContent() + " ----");
                             } else if (dataNodes.item(h).getNodeName().equals("data")) {
                                 data.setData(dataNodes.item(h).getTextContent());
-                                //Log.d("FaceDataEditor","---- Data: " + dataNodes.item(h).getTextContent().substring(0, 12) + "... ----");
                             }
                         }
                         data.setId(ids[faceData.size()]);

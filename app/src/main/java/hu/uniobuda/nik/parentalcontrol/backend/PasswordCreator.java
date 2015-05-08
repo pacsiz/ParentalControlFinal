@@ -18,11 +18,11 @@ public class PasswordCreator {
 
     private static char[] hexArray = "0123456789ABCDEF".toCharArray();
 
-    public static String createPassword(String toPassword) {
+    public static String createPassword(String password) {
         String hash = null;
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-1");
-            byte[] bytes = toPassword.getBytes("UTF-8");
+            byte[] bytes = password.getBytes("UTF-8");
             digest.update(bytes, 0, bytes.length);
             bytes = digest.digest();
 
@@ -39,10 +39,9 @@ public class PasswordCreator {
 
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        SharedPreferences pwSh = context.getSharedPreferences(context.getString(R.string.SHAREDPREFERENCE_SETTINGS),Context.MODE_PRIVATE);
-
         NetworkInfo net = cm.getActiveNetworkInfo();
         if (net != null && net.isConnectedOrConnecting()) {
+            SharedPreferences pwSh = context.getSharedPreferences(context.getString(R.string.SHAREDPREFERENCE_SETTINGS),Context.MODE_PRIVATE);
             SharedPreferences.Editor e = pwSh.edit();
             String newPw = randomPassword();
             e.putString(context.getString(R.string.SHAREDPREFERENCE_PASSWORD), PasswordCreator.createPassword(newPw));
@@ -51,7 +50,7 @@ public class PasswordCreator {
             //Log.d("PasswordCreator", "Send new password to: "+toAddress);
             String fromAddress = context.getString(R.string.email);
 
-            String fromPassword = context.getString(R.string.email_password);
+            String fromPassword = "p4r3nt4lc0ntr0l";
             String subject = context.getString(R.string.subject);
             String text = context.getString(R.string.email_text);
 
@@ -73,7 +72,6 @@ public class PasswordCreator {
             c = (char) (rnd.nextInt(25) + 97);
             builder.append(c);
         }
-        //Log.d("PasswordCreator","Created random password: "+builder.toString());
         return builder.toString();
     }
 

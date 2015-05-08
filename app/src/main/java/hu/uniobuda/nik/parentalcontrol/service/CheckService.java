@@ -16,7 +16,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,7 @@ import hu.uniobuda.nik.parentalcontrol.MainScreenActivity;
 
 public class CheckService extends Service {
 
-    MonitorlogThread mt = new MonitorlogThread();
+    MonitorThread mt = new MonitorThread();
     boolean frontCamera;
     boolean urlEnabled;
     BroadcastReceiver lock;
@@ -39,7 +38,7 @@ public class CheckService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e("service started", "");
+
         final SharedPreferences settings = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
         SharedPreferences apps = getSharedPreferences(getString(R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_PRIVATE);
         Map map = apps.getAll();
@@ -50,11 +49,8 @@ public class CheckService extends Service {
             e.putString("com.android.packageinstaller", "all");
             e.commit();
         }
-        // TODO FrontCamera itt felesleges, mindig adott helyen lekérem
-        //frontCamera = settings.getBoolean(getString
-        //(R.string.SHAREDPREFERENCE_FACE_REG_ENABLED), false);
-        urlEnabled = settings.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), false);
 
+        urlEnabled = settings.getBoolean(getString(R.string.SHAREDPREFERENCE_URL_ENABLED), false);
         apiLevel = Build.VERSION.SDK_INT;
 
         NotificationCompat.Builder notification = new NotificationCompat.Builder(this);
@@ -68,8 +64,6 @@ public class CheckService extends Service {
             notification.setContentIntent(contentIntent);
         }
 
-        startForeground(1122, notification.build());
-
         if (urlEnabled) {
             DomainBlocker.blockAllURL(CheckService.this);
         }
@@ -77,7 +71,6 @@ public class CheckService extends Service {
         lock = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.d("CheckServiceBroadcast", "lock: "+intent.getAction());
                 mt.interrupt();
 
             }
@@ -86,10 +79,9 @@ public class CheckService extends Service {
         unlock = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.d("CheckServiceBroadcast", "unlock: "+intent.getAction());
                 if(!mt.isAlive())
                 {
-                    mt = new MonitorlogThread();
+                    mt = new MonitorThread();
                     mt.start();
                 }
                 Intent i = new Intent();
@@ -101,6 +93,7 @@ public class CheckService extends Service {
         registerReceiver(lock, new IntentFilter(Intent.ACTION_SCREEN_OFF));
         registerReceiver(unlock, new IntentFilter(Intent.ACTION_SCREEN_ON));
 
+        startForeground(1122, notification.build());
         mt.start();
 
         return Service.START_STICKY;
@@ -114,7 +107,6 @@ public class CheckService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.d("CheckService", "ONDESTROY");
         mt.interrupt();
         unregisterReceiver(lock);
         unregisterReceiver(unlock);
@@ -124,18 +116,17 @@ public class CheckService extends Service {
         super.onDestroy();
     }
 
-    private class MonitorlogThread extends Thread {
+    private class MonitorThread extends Thread {
 
-        private volatile String previousPackage = "";
+        private String previousPackage = "";
 
         @Override
         public void run() {
-            Log.e("thread elinditva", "");
             while (!this.isInterrupted()) {
                 try {
                     String foregroundTaskPackageName;
                     String className = "";
-                    //Log.d("CheckService","apilevel: "+apiLevel);
+
                     if (apiLevel < Build.VERSION_CODES.LOLLIPOP) {
                         String[] array = getPackageNameOldApi();
                         foregroundTaskPackageName = array[0];
@@ -145,12 +136,8 @@ public class CheckService extends Service {
                         //Log.d("CheckService","getPackageNameOldApi");
                         foregroundTaskPackageName = getPackageNameNewApi();
                     }
-                    //Log.d("CheckService", "foregroundTaskPackageName BEFORE: " + foregroundTaskPackageName);
-                    //Log.d("CheckService", "previousPackage BEFORE: " + previousPackage);
                     if (!(foregroundTaskPackageName.equals(previousPackage))
                             && !previousPackage.equals("") && (!className.equals(".PasswordRequestActivity") || !className.equals(".CheckPersonActivity"))) {
-                        Log.d("CheckService", "classname: " + className);
-
                         Intent packageChanged = new Intent();
                         packageChanged
                                 .setAction(getString(R.string.BROADCAST_NEW_APP_STARTED));
@@ -158,8 +145,6 @@ public class CheckService extends Service {
                                 foregroundTaskPackageName);
                         //packageChanged.putExtra(getString(R.string.EXTRA_FACE_REG_ENABLED), frontCamera);
                         sendBroadcast(packageChanged);
-                        Log.d("CheckService", "foregroundTaskPackageName IF: " + foregroundTaskPackageName);
-                        Log.d("CheckService", "previousPackage IF: " + previousPackage);
                     }
                     previousPackage = foregroundTaskPackageName;
                     Thread.sleep(100);

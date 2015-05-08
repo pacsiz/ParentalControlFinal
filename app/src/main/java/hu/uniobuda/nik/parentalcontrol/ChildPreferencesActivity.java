@@ -22,8 +22,8 @@ public class ChildPreferencesActivity extends PreferenceActivity {
             PreferenceCategory prefCat = (PreferenceCategory) findPreference("childPreferenceCategory");
             Preference childSelectApps = findPreference("childSelectApps");
             Preference childDeviceAccess = findPreference("childDeviceAccess");
-            setIntent(ChildPreferencesActivity.this, FilterAppsActivity.class, personName, childSelectApps);
-            setIntent(ChildPreferencesActivity.this, DeviceAccessSettingsActivity.class, personName, childDeviceAccess);
+            //setIntent(ChildPreferencesActivity.this, FilterAppsActivity.class, personName, childSelectApps);
+            //setIntent(ChildPreferencesActivity.this, DeviceAccessSettingsActivity.class, personName, childDeviceAccess);
             prefCat.setTitle(personName + " " + getString(R.string.childSettings));
             addPreferencesFromResource(R.xml.child_preferences);
 

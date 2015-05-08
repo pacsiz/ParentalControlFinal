@@ -64,10 +64,12 @@ public class DomainBlocker {
                 alreadyBlocked = true;
         }
 
-        if (alreadyBlocked)
-            System.out.println(ip + " is already blocked.");
-        else
+        if (!alreadyBlocked)
+        {
             runCommand(new String[]{"iptables -I INPUT -s " + ip + " -j DROP"});
+        }
+        //else
+            //Log.d("DomaniBlocker",ip + " is already blocked.");
 
         return alreadyBlocked;
     }
@@ -81,22 +83,7 @@ public class DomainBlocker {
                 runCommand(new String[]{"iptables -D INPUT " + entry.getKey()});
             }
         }
-
-        if (!wasBlocked)
-            System.out.println(ip + " was not blocked.");
-
         return wasBlocked;
-    }
-
-    public static boolean isBlockedIP(String ip) {
-        boolean blocked = false;
-
-        for (Map.Entry<Integer, String> entry : enumerateBlocks().entrySet()) {
-            if (entry.getValue().equals(ip))
-                blocked = true;
-        }
-
-        return blocked;
     }
 
     public static Map<Integer, String> enumerateBlocks() {
@@ -116,7 +103,6 @@ public class DomainBlocker {
                 if (s.startsWith("DROP")) {
                     blocked.put(id, s.substring(s.indexOf("--") + 2).trim().split(" ")[0]);
                 }
-
                 if (s.length() == 0) {
                     break;
                 }
@@ -158,7 +144,6 @@ public class DomainBlocker {
 
             return buffer.toString();
 
-            //return "";
         } catch (IOException e) {
             e.printStackTrace();
             return "ERROR";

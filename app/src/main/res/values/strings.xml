@@ -19,7 +19,7 @@
 
     <string name="xmlName">faces.xml</string>
     <string name="email">oeparentalcontrol@gmail.com</string>
-    <string name="email_password">p4r3nt4lc0ntr0l</string>
+
     <string name="subject">Elfelejtett jelszó</string>
     <string name="email_text">Parental Control alkalmazáshoz genereált új jelszava: </string>
     <string name="email_sent">Új jelszó e-mailben elküldve!</string>
@@ -149,7 +149,7 @@
 
     <string name="urlDisabled">Az URL blokkolás funkció nincs bekapcsolva!</string>
     <string name="rootFailed">Az Ön készüléke valószínűleg nem root-olt, az URL blokkolás csak root-olt készülékeken használható!</string>
-    <string name="usageStatsMustEnabled">A program helyes működéséhez engedélyeznie kell a használati statiszikákta a Parental Control számára!</string>
+    <string name="usageStatsMustEnabled">A program helyes működéséhez engedélyeznie kell a használati statisztikákat a Parental Control számára!</string>
 
     <string name="childSettings">beállításai</string>
 

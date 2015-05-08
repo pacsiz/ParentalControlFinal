@@ -111,9 +111,10 @@ public class DeviceAccessSettingsActivity extends Activity {
                                         hourOfDay + ":" + minute);
                             }
                         }, hour, minute, true);
-
                 tpd.setTitle(R.string.selectFromTime);
-                tpd.updateTime(Integer.parseInt(fromArr[0]), Integer.parseInt(fromArr[1]));
+                if (fromArr.length>1) {
+                    tpd.updateTime(Integer.parseInt(fromArr[0]), Integer.parseInt(fromArr[1]));
+                }
                 tpd.show();
             }
         });
@@ -134,9 +135,10 @@ public class DeviceAccessSettingsActivity extends Activity {
                                         hourOfDay + ":" + minute);
                             }
                         }, hour, minute, true);
-
                 tpd.setTitle(R.string.selectToTime);
-                tpd.updateTime(Integer.parseInt(toArr[0]), Integer.parseInt(toArr[1]));
+                if (toArr.length>1) {
+                    tpd.updateTime(Integer.parseInt(toArr[0]), Integer.parseInt(toArr[1]));
+                }
                 tpd.show();
             }
         });

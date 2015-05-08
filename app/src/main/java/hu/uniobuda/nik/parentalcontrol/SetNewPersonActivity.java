@@ -32,14 +32,13 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import hu.uniobuda.nik.parentalcontrol.camera.CameraSet;
-import hu.uniobuda.nik.parentalcontrol.camera.CameraView;
 import hu.uniobuda.nik.parentalcontrol.backend.FaceDetection;
 import hu.uniobuda.nik.parentalcontrol.backend.ValueComparatorDec;
 
 public class SetNewPersonActivity extends Activity {
 
     public static final int NUMBER_OF_PHOTOS = 5;
-    public static final int DEFAULT_THRESHOLD = 882;
+    public static final int DEFAULT_THRESHOLD = 82;
     private Button btnSetNewPerson;
     private EditText personName;
     private Button btnCapture;
@@ -60,7 +59,6 @@ public class SetNewPersonActivity extends Activity {
         numberOfPhotos = 0;
         SharedPreferences settings = getSharedPreferences(getString
                 (R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
-        predictValue = settings.getInt(getString(R.string.SHAREDPREFERENCE_PREDICT_VALUE), DEFAULT_THRESHOLD);
 
         btnSetNewPerson = (Button) findViewById(R.id.btnSetNewPerson);
         personName = (EditText) findViewById(R.id.personName);
@@ -100,6 +98,8 @@ public class SetNewPersonActivity extends Activity {
                     Loader.load(opencv_nonfree.class);
                 }
             }.start();
+
+            predictValue = settings.getInt(getString(R.string.SHAREDPREFERENCE_PREDICT_VALUE), DEFAULT_THRESHOLD);
             learnedPersons = getSharedPreferences(getString
                     (R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
             Map<String, ?> persons = learnedPersons.getAll();
@@ -172,16 +172,16 @@ public class SetNewPersonActivity extends Activity {
     private PictureCallback picture = new PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            new createFacePhoto(data).execute();
+            new CreateFacePhoto(data).execute();
         }
     };
 
-    private class createFacePhoto extends AsyncTask<Object, Object, Void> {
+    private class CreateFacePhoto extends AsyncTask<Object, Object, Void> {
         private byte[] data;
         int predict;
         ProgressDialog pd = new ProgressDialog(SetNewPersonActivity.this);
 
-        public createFacePhoto(byte[] data) {
+        public CreateFacePhoto(byte[] data) {
             this.data = data;
         }
 
@@ -253,7 +253,7 @@ public class SetNewPersonActivity extends Activity {
         @Override
         protected Void doInBackground(Void... params) {
 
-            FaceDetection.learnJPG(personId, SetNewPersonActivity.this);
+            FaceDetection.learnJPG(SetNewPersonActivity.this);
             return null;
         }
 

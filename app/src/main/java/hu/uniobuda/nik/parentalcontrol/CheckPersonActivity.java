@@ -20,6 +20,11 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import hu.uniobuda.nik.parentalcontrol.camera.CameraSet;
+import hu.uniobuda.nik.parentalcontrol.camera.CameraView;
+import hu.uniobuda.nik.parentalcontrol.backend.FaceDetection;
+import hu.uniobuda.nik.parentalcontrol.identification.AccessControl;
+
 public class CheckPersonActivity extends Activity {
     private static final int ACTION_NOT_SET = 0;
     private static final int ACTION_FINISH = 1;
@@ -114,8 +119,6 @@ public class CheckPersonActivity extends Activity {
 
     @Override
     protected void onStop() {
-        Log.d("OnStop", actionCode + "");
-        //camera.stopPreview();
         delay.removeCallbacks(r);
         switch(actionCode){
             case ACTION_LOCK:
@@ -130,10 +133,9 @@ public class CheckPersonActivity extends Activity {
                 startActivity(i);
                 break;
             case ACTION_CHECK:
-                AccessControl.personCheck(CheckPersonActivity.this, personName, packageName);
+                AccessControl.checkChild(CheckPersonActivity.this, personName, packageName);
                 break;
             default:
-                // ki kell hagyni a finish()-t, mivel ilyen állapotban a SCREEN_ON után fut le, ahol a create() után lefut az onStop() is.
                 super.onStop();
                 return;
         }
@@ -179,7 +181,7 @@ public class CheckPersonActivity extends Activity {
                     personName = personName.substring(6, 7).toUpperCase() + personName.substring(7);
                     //Log.d(""CheckPersonActivity"", "Child name: "+personName);
                     if (deviceAccessControl) {
-                        if (AccessControl.accessControl(personName, CheckPersonActivity.this)) {
+                        if (AccessControl.childAccessControl(personName, CheckPersonActivity.this)) {
                             actionCode = ACTION_FINISH;
                         } else {
                             actionCode = ACTION_LOCK;
@@ -206,6 +208,4 @@ public class CheckPersonActivity extends Activity {
             }
         }
     }
-
-
 }

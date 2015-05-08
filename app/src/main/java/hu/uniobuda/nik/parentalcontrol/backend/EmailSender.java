@@ -59,10 +59,8 @@ public class EmailSender {
                     transport.connect(host, fromAddress, fromPassword);
                     transport.sendMessage(emailMessage, emailMessage.getAllRecipients());
                     transport.close();
-                } catch (MessagingException e) {
+                } catch (MessagingException | UnsupportedEncodingException e) {
 
-                    e.printStackTrace();
-                } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
             }

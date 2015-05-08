@@ -11,7 +11,6 @@ public class CameraSet {
 
     public static Camera initializeCamera(Activity activity, FrameLayout preview)
     {
-
         int fronCameraIndex = getFrontCameraIndex();
         Camera camera = Camera.open(fronCameraIndex);
         Camera.Parameters params = camera.getParameters();

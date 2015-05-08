@@ -18,7 +18,7 @@ import hu.uniobuda.nik.parentalcontrol.R;
 
 public class AccessControl {
 
-    public static boolean accessControl(String childName, Context context) {
+    public static boolean childAccessControl(String childName, Context context) {
         SharedPreferences childSettings = context.getSharedPreferences(childName.toLowerCase(), Context.MODE_PRIVATE);
         boolean accessControlEnabled = childSettings.getBoolean(context.getString(R.string.SHAREDPREFERENCE_ACCESS_CONTROL_FOR_PERSON), false);
         //Log.d("AccessControl", "accessControlEnabled: " + accessControlEnabled);
@@ -81,7 +81,7 @@ public class AccessControl {
 
     public static void allow(Context context, String personName, String packageName) {
         String str = context.getString(R.string.accessAllowed);
-        Toast.makeText(context, str+" " + personName.substring(0, 1).toUpperCase() +
+        Toast.makeText(context, str + " " + personName.substring(0, 1).toUpperCase() +
                 personName.substring(1), Toast.LENGTH_LONG).show();
 
         if (packageName != null && !packageName.equals(("hu.uniobuda.nik.parentalcontrol"))) {
@@ -110,22 +110,22 @@ public class AccessControl {
     }
 
 
-    public static void personCheck(Context context, String personName, String packageName) {
+    public static void checkChild(Context context, String childName, String packageName) {
         //Log.d("AccessControl", "personCheck personName: "+personName);
         //Log.d("AccessControl", "personCheck packageName: "+packageName);
         SharedPreferences apps = context.getSharedPreferences(context.getString(R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_PRIVATE);
         Map<String, ?> map = apps.getAll();
         String blockedPerson = map.get(packageName).toString();
-        if (blockedPerson.contains(personName) || blockedPerson.contains("all")) {
-            deny(context, personName, packageName);
+        if (blockedPerson.contains(childName) || blockedPerson.contains("all")) {
+            deny(context, childName, packageName);
         } else {
-            allow(context, personName, packageName);
+            allow(context, childName, packageName);
         }
     }
 
     public static void lock(Context context) {
-        //playSound(R.raw.fail, context);
-        DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+        DevicePolicyManager dpm = (DevicePolicyManager)
+                context.getSystemService(Context.DEVICE_POLICY_SERVICE);
         dpm.lockNow();
     }
 
@@ -157,6 +157,4 @@ public class AccessControl {
             }
         });*/
     }
-
-
 }

@@ -15,9 +15,7 @@ public class HelpScreenFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        int layoutIndex = 0;
-        Log.d("arg",getArguments().getInt("index")+"");
+
         switch (getArguments().getInt("index"))
         {
             case 0:
@@ -39,7 +37,6 @@ public class HelpScreenFragment extends Fragment {
                 //layoutIndex = R.layout.fragment_deviceaccess_help;
                 return inflater.inflate(R.layout.fragment_deviceaccess_help, container, false);
         }
-        //Log.d("layoutindex",layoutIndex+"");
         return null;
     }
 }

@@ -10,48 +10,47 @@ import hu.uniobuda.nik.parentalcontrol.R;
 
 public class BlockerHashTable {
 
-    private static Hashtable<String, Boolean> tempAllowedPackages = new Hashtable<String, Boolean>();
+    private static Hashtable<String, Boolean> packagesToBlock = new Hashtable<String, Boolean>();
 
     public static void clear() {
-        tempAllowedPackages.clear();
+        packagesToBlock.clear();
     }
 
     public static boolean getBoolean(String key) {
-        return tempAllowedPackages.get(key);
+        return packagesToBlock.get(key);
     }
 
     public static void setBoolean(String key, Boolean value) {
-        tempAllowedPackages.put(key, value);
+        packagesToBlock.put(key, value);
     }
 
     public static boolean containsBoolean(String key) {
-        return tempAllowedPackages.containsKey(key);
+        return packagesToBlock.containsKey(key);
     }
 
     public static void deleteBoolean(String key)
     {
-        tempAllowedPackages.remove(key);
+        packagesToBlock.remove(key);
     }
 
     public static void refresh(Context context)
     {
-        tempAllowedPackages.clear();
+        packagesToBlock.clear();
         SharedPreferences sh = context.getSharedPreferences(context.getString
                 (R.string.SHAREDPREFERENCE_PACKAGES), Context.MODE_PRIVATE);
-        //Log.d("BlockerHashTable", "refreshing");
         Map<String, ?> map = sh.getAll();
         for (Map.Entry entry : map.entrySet()) {
-            tempAllowedPackages.put(entry.getKey().toString(), true);
-            Log.d("BlockerHashTable", "Put in package: "+entry.getKey().toString());
+            packagesToBlock.put(entry.getKey().toString(), true);
+            //Log.d("BlockerHashTable", "Put in package: "+entry.getKey().toString());
         }
-        /*tempAllowedPackages.put("hu.uniobuda.nik.parentalcontrol", true);
-        tempAllowedPackages.put("com.android.settings", true);
-        tempAllowedPackages.put("com.android.packageinstaller", true);*/
+        /*packagesToBlock.put("hu.uniobuda.nik.parentalcontrol", true);
+        packagesToBlock.put("com.android.settings", true);
+        packagesToBlock.put("com.android.packageinstaller", true);*/
 
     }
 
     public static boolean isEmpty() {
-        return tempAllowedPackages.isEmpty();
+        return packagesToBlock.isEmpty();
     }
 
 }

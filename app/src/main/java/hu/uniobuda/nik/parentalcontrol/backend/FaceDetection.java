@@ -35,7 +35,7 @@ public class FaceDetection {
 
     private static final int NUMBER_OF_PHOTOS = 5;
 
-    public static void learnJPG(int personId, Context context) {
+    public static void learnJPG(Context context) {
         File root = context.getCacheDir();
 
         FilenameFilter imgFilter = new FilenameFilter() {
@@ -61,7 +61,6 @@ public class FaceDetection {
             labelsBuf.put(counter, label);
             counter++;
         }
-
 
         FaceRecognizer faceRecognizer = createLBPHFaceRecognizer();
         File f = new File(context.getFilesDir(), context.getString(R.string.xmlName));
@@ -135,7 +134,6 @@ public class FaceDetection {
 
     public static int predict(Context context, Bitmap bitmap, int threshold) {
         FaceRecognizer fr = createLBPHFaceRecognizer();
-        Log.d("FaceDetection", "Threshold: "+threshold);
         File file = new File(context.getFilesDir(), context.getString(R.string.xmlName));
         if (file.exists()) {
             fr.load(file.getAbsolutePath());

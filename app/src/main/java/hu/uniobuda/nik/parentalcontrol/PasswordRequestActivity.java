@@ -15,6 +15,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import hu.uniobuda.nik.parentalcontrol.backend.PasswordCreator;
+import hu.uniobuda.nik.parentalcontrol.identification.AccessControl;
+import hu.uniobuda.nik.parentalcontrol.identification.BlockerHashTable;
+
 public class PasswordRequestActivity extends Activity {
     private static final int ACTION_NOT_SET = 0;
     private static final int ACTION_FINISH = 1;
@@ -30,7 +34,6 @@ public class PasswordRequestActivity extends Activity {
     boolean deviceAccessControl = false;
 
     protected void onCreate(Bundle paramBundle) {
-        Log.d("PRA", "ONCREATE");
         super.onCreate(paramBundle);
         setContentView(R.layout.activity_password_request);
         hideKeyboard(findViewById(R.id.pwReqlayout));
@@ -42,7 +45,8 @@ public class PasswordRequestActivity extends Activity {
         packageName = getIntent().getStringExtra(getString(R.string.EXTRA_PACKAGE_NAME));
         deviceAccessControl = packageName == null;
 
-        if(deviceAccessControl && !(((KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE)).inKeyguardRestrictedInputMode()))
+        if(deviceAccessControl &&
+                !(((KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE)).inKeyguardRestrictedInputMode()))
         {
             actionCode = ACTION_LOCK;
         }
@@ -51,8 +55,6 @@ public class PasswordRequestActivity extends Activity {
         pwSh = getSharedPreferences(getString
                 (R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
 
-        Log.d("PRA","IskeyguardLocked: "+((KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE)).isKeyguardLocked());
-        Log.d("PRA","Restricted input mode: "+((KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE)).inKeyguardRestrictedInputMode());
         ok.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String pw = PasswordCreator.createPassword(getPassword.getText().toString());
@@ -63,7 +65,7 @@ public class PasswordRequestActivity extends Activity {
                     if (!deviceAccessControl) {
                         if (packageName != null && !packageName.equals("hu.uniobuda.nik.parentalcontrol")) {
                             BlockerHashTable.setBoolean(packageName, false);
-                            Log.d("PasswordRequestActivity", "Package set false: " + packageName);
+                            //Log.d("PasswordRequestActivity", "Package set false: " + packageName);
                         }
                     }
                     Toast.makeText(PasswordRequestActivity.this, R.string.accessAllowedByPassword, Toast.LENGTH_LONG).show();
@@ -106,7 +108,6 @@ public class PasswordRequestActivity extends Activity {
 
     @Override
     protected void onStop() {
-        Log.d("OnStop", actionCode + "");
         switch(actionCode){
             case ACTION_LOCK:
                 AccessControl.lock(PasswordRequestActivity.this);
@@ -117,7 +118,6 @@ public class PasswordRequestActivity extends Activity {
                 AccessControl.block(PasswordRequestActivity.this, null);
                 break;
             default:
-                // ki kell hagyni a finish()-t, mivel ilyen állapotban a SCREEN_ON után fut le, ahol a create() után lefut az onStop() is.
                 super.onStop();
                 return;
         }
@@ -132,7 +132,6 @@ public class PasswordRequestActivity extends Activity {
 
     @Override
     protected void onRestart() {
-        Log.d("PRA", "ONRESTART");
         if(deviceAccessControl) actionCode = ACTION_LOCK;
         super.onRestart();
     }

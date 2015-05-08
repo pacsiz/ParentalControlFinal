@@ -27,5 +27,4 @@ public class HelpActivity extends ActionBarActivity {
         viewPager.setAdapter(adapter);
 
     }
-
 }

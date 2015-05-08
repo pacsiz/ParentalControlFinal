@@ -157,11 +157,11 @@ public class FilterAppsActivity extends ActionBarActivity {
 
         @Override
         protected List<AppInfo> doInBackground(Void... arg0) {
-
             ArrayList<AppInfo> selectedApps = new ArrayList<AppInfo>();
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
             List<ResolveInfo> apps = getPackageManager().queryIntentActivities(intent, 0);
+
             for (int i = 0; i < apps.size(); i++) {
                 ResolveInfo info = apps.get(i);
                 AppInfo newInfo = new AppInfo();
