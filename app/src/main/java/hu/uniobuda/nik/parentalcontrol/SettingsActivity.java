@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
-import android.util.Log;
 
 import hu.uniobuda.nik.parentalcontrol.service.CheckService;
 import hu.uniobuda.nik.parentalcontrol.backend.DomainBlocker;

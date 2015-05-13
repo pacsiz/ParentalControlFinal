@@ -146,13 +146,14 @@ public class CheckPersonActivity extends Activity {
     private class DelayedPhoto extends AsyncTask<Object, Object, Void> {
 
         byte[] data;
-
+        //long recognitionTime;
         public DelayedPhoto(byte[] data) {
             this.data = data;
         }
 
         @Override
         protected void onPreExecute() {
+            //recognitionTime = System.nanoTime();
             if (!FaceDetection.numberOfFaces(data, CheckPersonActivity.this)) {
                 cancel(true);
                 onPostExecute(null);
@@ -170,9 +171,8 @@ public class CheckPersonActivity extends Activity {
 
         @Override
         protected void onPostExecute(Void result) {
-            //Log.d("CheckPersonActivity", "Predict result: "+pResult);
-            //Log.d("CheckPersonActivity", "Package name: "+packageName);
-            //Log.d("CheckPersonActivity", "Access control enabled: "+deviceAccessControl);
+            //recognitionTime = (System.nanoTime() - recognitionTime)/1000000;
+            //Log.i("CheckPersonActivity","Face recognition time: "+recognitionTime+" ms");
             if (learnedPersons.contains(Integer.toString(pResult))) {
                 personName = learnedPersons.getString(Integer.toString(pResult), "");
 

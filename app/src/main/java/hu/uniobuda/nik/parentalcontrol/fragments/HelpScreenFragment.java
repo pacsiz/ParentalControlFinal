@@ -19,22 +19,16 @@ public class HelpScreenFragment extends Fragment {
         switch (getArguments().getInt("index"))
         {
             case 0:
-                //layoutIndex = R.layout.fragment_main_help_screen;
                 return inflater.inflate(R.layout.fragment_main_help_screen, container, false);
             case 1:
-                //layoutIndex = R.layout.fragment_password_help;
                 return inflater.inflate(R.layout.fragment_password_help, container, false);
             case 2:
-                //layoutIndex = R.layout.fragment_apps_help;
                 return inflater.inflate(R.layout.fragment_apps_help, container, false);
             case 3:
-                //layoutIndex = R.layout.fragment_person_help;
                 return inflater.inflate(R.layout.fragment_person_help, container, false);
             case 4:
-                //layoutIndex = R.layout.fragment_url_help;
                 return inflater.inflate(R.layout.fragment_url_help, container, false);
             case 5:
-                //layoutIndex = R.layout.fragment_deviceaccess_help;
                 return inflater.inflate(R.layout.fragment_deviceaccess_help, container, false);
         }
         return null;

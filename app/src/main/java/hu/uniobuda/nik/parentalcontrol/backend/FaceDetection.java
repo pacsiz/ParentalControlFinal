@@ -17,7 +17,6 @@ import static org.bytedeco.javacpp.opencv_imgproc.*;
 
 
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
@@ -25,8 +24,6 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
 import android.media.FaceDetector;
 import android.media.FaceDetector.Face;
-import android.os.Environment;
-import android.util.Log;
 import android.widget.Toast;
 
 import hu.uniobuda.nik.parentalcontrol.R;

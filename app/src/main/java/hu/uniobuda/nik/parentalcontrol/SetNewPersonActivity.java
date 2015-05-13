@@ -95,7 +95,10 @@ public class SetNewPersonActivity extends Activity {
             new Thread() {
                 @Override
                 public void run() {
+                    //long loadLib = System.nanoTime();
                     Loader.load(opencv_nonfree.class);
+                    //loadLib = (System.nanoTime() - loadLib)/1000000;
+                    //Log.i("SetNewPersonActivity","Loading library time: "+loadLib+" ms");
                 }
             }.start();
 
@@ -179,6 +182,7 @@ public class SetNewPersonActivity extends Activity {
     private class CreateFacePhoto extends AsyncTask<Object, Object, Void> {
         private byte[] data;
         int predict;
+        //long createPhotoTime;
         ProgressDialog pd = new ProgressDialog(SetNewPersonActivity.this);
 
         public CreateFacePhoto(byte[] data) {
@@ -190,6 +194,7 @@ public class SetNewPersonActivity extends Activity {
             pd.setTitle(R.string.pleaseWait);
             pd.setMessage(getString(R.string.working));
             pd.show();
+            //createPhotoTime = System.nanoTime();
             if (!FaceDetection.numberOfFaces(data, SetNewPersonActivity.this)) {
                 cancel(true);
                 pd.dismiss();
@@ -202,6 +207,8 @@ public class SetNewPersonActivity extends Activity {
         protected void onPostExecute(Void result) {
             pd.dismiss();
             btnCapture.setEnabled(true);
+            //createPhotoTime = (System.nanoTime()-createPhotoTime)/1000000;
+            //Log.i("SetNewPersonActivity","Create photo time: "+createPhotoTime+" ms");
 
             if (predict > -1) {
                 Toast.makeText(SetNewPersonActivity.this, R.string.facePredicted, Toast.LENGTH_SHORT).show();
@@ -234,9 +241,10 @@ public class SetNewPersonActivity extends Activity {
 
     private class Trainer extends AsyncTask<Void, Void, Void> {
         ProgressDialog pd = new ProgressDialog(SetNewPersonActivity.this);
-
+         //long trainTime;
         @Override
         protected void onPreExecute() {
+            //trainTime = System.nanoTime();
             pd.setTitle(R.string.pleaseWait);
             pd.setMessage(getString(R.string.learning));
             btnCapture.setEnabled(false);
@@ -245,6 +253,8 @@ public class SetNewPersonActivity extends Activity {
 
         @Override
         protected void onPostExecute(Void result) {
+            //trainTime = (System.nanoTime() - trainTime)/1000000;
+            //Log.i("SetNewPersonActivity","Train person time: "+trainTime+" ms");
             pd.dismiss();
             savePerson();
             finish();

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.*;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -46,7 +45,8 @@ public class PasswordRequestActivity extends Activity {
         deviceAccessControl = packageName == null;
 
         if(deviceAccessControl &&
-                !(((KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE)).inKeyguardRestrictedInputMode()))
+                !(((KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE))
+                        .inKeyguardRestrictedInputMode()))
         {
             actionCode = ACTION_LOCK;
         }

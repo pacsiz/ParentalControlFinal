@@ -16,7 +16,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import hu.uniobuda.nik.parentalcontrol.backend.FaceData;
 
 public class FaceDataEditor {
     public static ArrayList<FaceData> faceData = new ArrayList<>();

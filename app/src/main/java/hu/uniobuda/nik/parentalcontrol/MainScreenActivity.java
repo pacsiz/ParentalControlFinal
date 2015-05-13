@@ -155,7 +155,8 @@ public class MainScreenActivity extends ActionBarActivity {
 
     private void enableService() {
         PackageManager pm = getPackageManager();
-        pm.setComponentEnabledSetting(new ComponentName(MainScreenActivity.this, CheckServiceStarter.class),
+        pm.setComponentEnabledSetting(new ComponentName
+                        (MainScreenActivity.this, CheckServiceStarter.class),
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
 

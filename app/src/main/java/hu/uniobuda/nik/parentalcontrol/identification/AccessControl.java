@@ -129,11 +129,11 @@ public class AccessControl {
         dpm.lockNow();
     }
 
-    public static void playSound(int soundId, Context context) {
+    /*public static void playSound(int soundId, Context context) {
 
         MediaPlayer mp = MediaPlayer.create(context, soundId);
         mp.start();
-        /*SoundPool soundPool;
+        SoundPool soundPool;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             AudioAttributes audioAttributes = new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_NOTIFICATION)
@@ -155,6 +155,6 @@ public class AccessControl {
             public void onLoadComplete(SoundPool soundPool, int i, int i2) {
                 soundPool.play(id,0.7f,0.7f,1,0,1f);
             }
-        });*/
-    }
+        });
+    }*/
 }

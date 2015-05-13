@@ -1,7 +1,5 @@
 package hu.uniobuda.nik.parentalcontrol.backend;
 
-import android.os.Build;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;

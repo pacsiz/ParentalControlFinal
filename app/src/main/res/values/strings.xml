@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!--SharedPreferences-->
+    <string name="SHAREDPREFERENCE_SETTINGS">pc_settings</string>
+    <string name="SHAREDPREFERENCE_FACE_REG_ENABLED">faceRegEnabled</string>
+    <string name="SHAREDPREFERENCE_PACKAGES">apps</string>
+    <string name="SHAREDPREFERENCE_PERSONS">persons</string>
+    <string name="SHAREDPREFERENCE_PASSWORD">password</string>
+    <string name="SHAREDPREFERENCE_URL_ENABLED">urlEnabled</string>
+    <string name="SHAREDPREFERENCE_URLS">urls</string>
+    <string name="SHAREDPREFERENCE_ACCESS_CONTROL_FOR_PERSON">accessControlForPerson</string>
+    <string name="SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED">accessControlEnabled</string>
+    <string name="SHAREDPREFERENCE_TIME_FROM">timeFrom</string>
+    <string name="SHAREDPREFERENCE_TIME_TO">timeTo</string>
+    <string name="SHAREDPREFERENCE_SELECTED_DAYS">selectedDays</string>
+    <string name="SHAREDPREFERENCE_EMAIL">email</string>
+    <string name="SHAREDPREFERENCE_PREDICT_VALUE">predict</string>
+
+    <!--Extras-->
+    <string name="EXTRA_FACE_REG_ENABLED">hu.uniobuda.nik.extra.FACE_REG_ENABLED</string>
+    <string name="EXTRA_PACKAGE_NAME">hu.uniobuda.nik.extra.PACKAGE_NAME</string>
+    <string name="EXTRA_PERSON_NAME">hu.uniobuda.nik.extra.PERSON_NAME</string>
+    <string name="EXTRA_ACCESS_CONTROL">hu.uniobuda.nik.extra.ACCESS_CONTROL</string>
+    <string name="EXTRA_DISABLE_REQUEST">hu.uniobuda.nik.extra.DISABLE_REQUEST</string>
+
+    <!--Broadcasts-->
+    <string name="BROADCAST_NEW_APP_STARTED">hu.uniobuda.nik.parentalcontrol.NEW_APP_STARTED</string>
+    <string name="BROADCAST_UNLOCK">hu.uniobuda.nik.parentalcontrol.UNLOCK</string>
+
     <!-- Activity labels -->
     <string name="title_activity_check_person">Arcazonosítás</string>
     <string name="title_activity_password_request">Azonosítás jelszó segítségével</string>
@@ -16,25 +43,82 @@
     <string name="title_activity_device_access_person_settings">Készülék-hozzáférés beállítása</string>
     <string name="title_activity_settings">Beállítások</string>
 
+    <!--CheckPersonActivity strings-->
+    <string name="checkLabel">Tartsa az arca előtt a készüléket, néhány másodperc múlva egy fotó készül róla!</string>
+    <string name="skip">Kihagyás</string>
 
-    <string name="xmlName">faces.xml</string>
-    <string name="email">oeparentalcontrol@gmail.com</string>
-
-    <string name="subject">Elfelejtett jelszó</string>
-    <string name="email_text">Parental Control alkalmazáshoz genereált új jelszava: </string>
-    <string name="email_sent">Új jelszó e-mailben elküldve!</string>
-    <string name="email_send_fail">Nincs internetkapcsolat, az új jelszó nem küldhető el!</string>
-
-
-    <!--ChildListView strings -->
+    <!--ChildListActivity strings -->
     <string name="emptyChildList">Nincs felvett gyermek!</string>
 
+    <!--ChildPreferencesActivity-->
+    <string name="childSettings">beállításai</string>
 
     <!--DeletePersonActivity strings-->
     <string name="emptyPersonList">Nincs felvett személy!</string>
     <string name="deleteAlert">Törlés megerősítése</string>
     <string name="deleteMessage">Biztosan törli a személyt?</string>
     <string name="deleting">Törlés...</string>
+
+    <!--DeviceAccessSettingsActivity-->
+    <string name="personAccessControlIsEnabled">Korlátozás bekapcsolva a személy számára:</string>
+    <string name="selectDays">Napok kiválasztása</string>
+    <string name="selectFromTime">Mettől legyen korlátozás:</string>
+    <string name="selectToTime">Meddig legyen korlátozás</string>
+    <string name="monday">hétfő</string>
+    <string name="tuesday">kedd</string>
+    <string name="wednesday">szerda</string>
+    <string name="thursday">csütörtök</string>
+    <string name="friday">péntek</string>
+    <string name="saturday">szombat</string>
+    <string name="sunday">vasárnap</string>
+    <string name="from">METTŐL</string>
+    <string name="to">MEDDIG</string>
+
+    <!--FilterAppsActivity-->
+    <string name="followingPersonSettings">A következő személy beállításai:</string>
+    <string name="all">minden gyermek</string>
+    <string name="loadingApps">Telepített alkalmazások betöltése...</string>
+
+    <!--HelpActivity-->
+    <!--see on the bottom-->
+    <string name="BUNDLE_FRAGMENT_INDEX">index</string>
+
+    <!--MainScreenActivity-->
+    <string name="isNotRunning">A szolgáltatás nem fut!</string>
+    <string name="isRunning">A szolgáltatás fut!</string>
+    <string name="noPasswordSet">Amíg nincs jelszó beállítva, nem használhatja a szolgáltatást!</string>
+    <string name="adminFailure">Az eszközkezelő funkció nélkül a szolgáltatás nem működik, kérem kapcsolja be!</string>
+    <string name="usageStatsMustEnabled">A program helyes működéséhez engedélyeznie kell a használati statisztikákat a Parental Control számára!</string>
+    <string name="adminSetFailed">A eszközkezelő aktiválása sikertelen volt!</string>
+    <string name="adminSetOK">A eszközkezelő aktiválása sikeres volt!</string>
+
+    <!--PasswordActivity-->
+    <string name="newPw">Új jelszó:</string>
+    <string name="getPw">Jelszó megadása:</string>
+    <string name="pwConfirm">Jelszó megerősítése:</string>
+    <string name="email_address">E-mail cím megadása:</string>
+    <string name="passwordFailMessage">A beírt jelszavak nem egyeznek!</string>
+    <string name="emailFailMessage">Hibás e-mail címet adott meg!</string>
+    <string name="noPassword">Írjon be egy jelszót!</string>
+    <string name="passwordChanged">A jelszót sikeresen megváltoztatta</string>
+    <string name="shortPassword">A beírt jelszó túl rövid!</string>
+
+    <!--PasswordRequestActivity-->
+    <string name="accessAllowedByPassword">Hozzáférés engedélyezve, jelszó megadásával!</string>
+    <string name="incorrectPassword">Hibás jelszó, hozzáférés megtagadva!</string>
+    <string name="askResetPassword">Biztosan új jelszót szeretne generálni?\n
+    Az új jelszó elküldéséhez internetkapcsolat szükséges!</string>
+
+    <!--SetNewPersonActivity-->
+    <string name="newPersonInfo">Új személy felvételéhez több fényképre van szükség, amely alapján a program meg tudja tanulni az adott személy jellemző vonásait. Ehhez 5 kép fog készülni.</string>
+    <string name="cameraFailMessage">Készüléke nem rendelkezik előlapi kamerával, ezért az arc azonosítás funkció nem elérhető!</string>
+    <string name="nameFailMessage">Kérem adja meg a felveendő szeméyl nevét!</string>
+    <string name="nameLabel">Írja be a nevet:</string>
+    <string name="facePredicted">Ez az arc egy már felvett személyhez tartozik!</string>
+    <string name="nameExistMessage">Már van ilyen néven felvett személy!</string>
+    <string name="isParentLabel">A felvenni kívánt személy szülő:</string>
+    <string name="working">Feldolgozás folyamatban...</string>
+    <string name="learning">Tanulás folyamatban...</string>
 
     <!--SettingsActivity strings-->
     <string name="basic_title">Általános beállítások</string>
@@ -52,167 +136,59 @@
     <string name="title_deviceAccess">Készülék-hozzáférés</string>
     <string name="deviceAccess_isEnabled">Készülék-hozzáférés korlátozása</string>
     <string name="title_childControl">Gyermekek korlátozása</string>
+    <string name="rootFailed">Az Ön készüléke valószínűleg nem root-olt, az URL blokkolás csak root-olt készülékeken használható!</string>
 
-    <!--CheckPersonActivity strings-->
-    <string name="checkLabel">Tartsa az arca előtt a készüléket, néhány másodperc múlva egy fotó készül róla!</string>
-    <string name="skip">Kihagyás</string>
+    <!--URLActivity-->
+    <string name="url_add_message">Írja be a tiltandó URL címet:</string>
+    <string name="loadingURLs">Mentett URL-k betöltése...</string>
+    <string name="urlDisabled">Az URL blokkolás funkció nincs bekapcsolva!</string>
 
+    <!--Service-->
+    <string name="serviceTitle">Parental Control Service</string>
+    <string name="serviceMessage">A védelem aktív</string>
 
-    <string name="SHAREDPREFERENCE_SETTINGS">pc_settings</string>
-    <string name="SHAREDPREFERENCE_FACE_REG_ENABLED">faceRegEnabled</string>
-    <string name="SHAREDPREFERENCE_PACKAGES">apps</string>
-    <string name="SHAREDPREFERENCE_PERSONS">persons</string>
-    <string name="SHAREDPREFERENCE_PASSWORD">password</string>
-    <string name="SHAREDPREFERENCE_URL_ENABLED">urlEnabled</string>
-    <string name="SHAREDPREFERENCE_URLS">urls</string>
-    <string name="SHAREDPREFERENCE_ACCESS_CONTROL_FOR_PERSON">accessControlForPerson</string>
-    <string name="SHAREDPREFERENCE_ACCESS_CONTROL_ENABLED">accessControlEnabled</string>
-    <string name="SHAREDPREFERENCE_TIME_FROM">timeFrom</string>
-    <string name="SHAREDPREFERENCE_TIME_TO">timeTo</string>
-    <string name="SHAREDPREFERENCE_SELECTED_DAYS">selectedDays</string>
-    <string name="SHAREDPREFERENCE_EMAIL">email</string>
-    <string name="SHAREDPREFERENCE_PREDICT_VALUE">predict</string>
-
-    <string name="EXTRA_FACE_REG_ENABLED">hu.uniobuda.nik.extra.FACE_REG_ENABLED</string>
-    <string name="EXTRA_PACKAGE_NAME">hu.uniobuda.nik.extra.PACKAGE_NAME</string>
-    <string name="EXTRA_PERSON_NAME">hu.uniobuda.nik.extra.PERSON_NAME</string>
-    <string name="EXTRA_ACCESS_CONTROL">hu.uniobuda.nik.extra.ACCESS_CONTROL</string>
-    <string name="EXTRA_DISABLE_REQUEST">hu.uniobuda.nik.extra.DISABLE_REQUEST</string>
-
-    <string name="BUNDLE_FRAGMENT_INDEX">index</string>
-
-    <string name="BROADCAST_NEW_APP_STARTED">hu.uniobuda.nik.parentalcontrol.NEW_APP_STARTED</string>
-    <string name="BROADCAST_REFRESH_SERVICE_HASHTABLE">hu.uniobuda.nik.parentalcontrol.REFRESH_SERVICE_HASHTABLE</string>
-    <string name="BROADCAST_REFRESH_MAIN_HASHTABLE">hu.uniobuda.nik.parentalcontrol.REFRESH_MAIN_HASHTABLE</string>
-    <string name="BROADCAST_UNLOCK">hu.uniobuda.nik.parentalcontrol.UNLOCK</string>
-
-
-    <string name="noFrontCamera">NO_FRONT_CAMREA_AVAILABLE</string>
-
-    <string name="monday">hétfő</string>
-    <string name="tuesday">kedd</string>
-    <string name="wednesday">szerda</string>
-    <string name="thursday">csütörtök</string>
-    <string name="friday">péntek</string>
-    <string name="saturday">szombat</string>
-    <string name="sunday">vasárnap</string>
-
-
-    <string name="app_name">ParentalControl</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <!--Buttons-->
     <string name="startService">Szolgáltatás indítása</string>
     <string name="stopService">Szolgáltatás leállítása</string>
     <string name="settings">Beállítások</string>
-
     <string name="help">Segítség</string>
-    <string name="isNotRunning">A szolgáltatás nem fut!</string>
-    <string name="isRunning">A szolgáltatás fut!</string>
-    <string name="from">METTŐL</string>
-    <string name="to">MEDDIG</string>
     <string name="back">Vissza</string>
     <string name="save">Mentés</string>
     <string name="cancel">Mégse</string>
     <string name="delete">Törlés</string>
     <string name="add">Hozzáadás</string>
-    <string name="pleaseWait">Kérem várjon...</string>
-    <string name="loadingApps">Telepített alkalmazások betöltése...</string>
-    <string name="working">Feldolgozás folyamatban...</string>
-    <string name="learning">Tanulás folyamatban...</string>
-    <string name="all">minden gyermek</string>
-
-
-
-
-
-    <string name="newPersonInfo">Új személy felvételéhez több fényképre van szükség, amely alapján a program meg tudja tanulni az adott személy jellemző vonásait. Ehhez 5 kép fog készülni.</string>
-    <string name="failTitle">Hiba</string>
-    <string name="cameraFailMessage">Készüléke nem rendelkezik előlapi kamerával, ezért az arc azonosítás funkció nem elérhető!</string>
-    <string name="nameFailMessage">Kérem adja meg a felveendő szeméyl nevét!</string>
+    <string name="url_add_title">URL hozzáadása</string>
+    <string name="OK">Rendben</string>
+    <string name="forgotPassword">Elfelejtett jelszó</string>
     <string name="capture">Kép készítése</string>
-    <string name="nameLabel">Írja be a nevet:</string>
+    <string name="subject">Elfelejtett jelszó</string>
+
+    <!--Toasts-->
     <string name="faceNotFound">Nem található arc a képen, kérem készítsen új képet!</string>
     <string name="moreFaces">A képen több arc található, készítsen olyan képet, amelyen csak egy van!</string>
-    <string name="facePredicted">Ez az arc egy már felvett személyhez tartozik!</string>
-    <string name="nameExistMessage">Már van ilyen néven felvett személy!</string>
-
-
-    <string name="URLSettings">URL blokkolás beállítása</string>
-
-    <string name="nonRooted">A készülék nincs root-olva!</string>
-    <string name="isRooted">A készülék root-olva van!</string>
-
-    <string name="url_add_title">URL hozzáadása</string>
-    <string name="url_add_message">Írja be a tiltandó URL címet:</string>
-
-
-
-    <string name="urlDisabled">Az URL blokkolás funkció nincs bekapcsolva!</string>
-    <string name="rootFailed">Az Ön készüléke valószínűleg nem root-olt, az URL blokkolás csak root-olt készülékeken használható!</string>
-    <string name="usageStatsMustEnabled">A program helyes működéséhez engedélyeznie kell a használati statisztikákat a Parental Control számára!</string>
-
-    <string name="childSettings">beállításai</string>
-
-    <string name="adminFailure">Az eszközkezelő funkció nélkül a szolgáltatás nem működik, kérem kapcsolja be!</string>
-
-    <string name="askResetPassword">Biztosan új jelszót szeretne generálni?\n
-    Az új jelszó elküldéséhez internetkapcsolat szükséges!</string>
-
-
-    <string name="deviceAccess_persons">Korlátozandó személyek beállításai</string>
-
-
-
-    <string name="isParentLabel">A felvenni kívánt személy szülő:</string>
-
-    <string name="newPw">Új jelszó:</string>
-    <string name="getPw">Jelszó megadása:</string>
-    <string name="pwConfirm">Jelszó megerősítése:</string>
-    <string name="email_address">E-mail cím megadása:</string>
-    <string name="passwordFailMessage">A beírt jelszavak nem egyeznek!</string>
-    <string name="emailFailMessage">Hibás e-mail címet adott meg!</string>
-    <string name="incorrectPassword">Hibás jelszó, hozzáférés megtagadva!</string>
-    <string name="noPassword">Írjon be egy jelszót!</string>
-    <string name="passwordChanged">A jelszót sikeresen megváltoztatta</string>
-    <string name="noPasswordSet">Amíg nincs jelszó beállítva, nem használhatja a szolgáltatást!</string>
-    <string name="shortPassword">A beírt jelszó túl rövid!</string>
-    <string name="adminSetFailed">A eszközkezelő aktiválása sikertelen volt!</string>
-    <string name="adminSetOK">A eszközkezelő aktiválása sikeres volt!</string>
-
-
     <string name="childDenied">Gyermek hozzáférése blokkolva: </string>
     <string name="accessAllowed">Hozzáférés engedélyezve: </string>
     <string name="recognitionFailMessage">Az arc azonosítása nem sikerült, kérem készítsen új képet!</string>
     <string name="passwordRequest">Az arc azonosítása háromszor nem sikerült, kérem adja meg a mesterjelszót!</string>
+    <string name="email_sent">Új jelszó e-mailben elküldve!</string>
+    <string name="email_send_fail">Nincs internetkapcsolat, az új jelszó nem küldhető el!</string>
 
-    <string name="OK">Rendben</string>
-    <string name="forgotPassword">Elfelejtett jelszó</string>
-    <string name="accessAllowedByPassword">Hozzáférés engedélyezve, jelszó megadásával!</string>
-    <string name="serviceTitle">Parental Control Service</string>
-    <string name="serviceMessage">A védelem aktív</string>
+    <!--Others-->
+    <string name="app_name">ParentalControl</string>
+    <string name="pleaseWait">Kérem várjon...</string>
+    <string name="failTitle">Hiba</string>
+    <string name="email_text">Parental Control alkalmazáshoz genereált új jelszava: </string>
+    <string name="xmlName">faces.xml</string>
+    <string name="email">oeparentalcontrol@gmail.com</string>
+    <string name="about">Szülői felügyelet támogatása mobil alkalmazással\n
+    Matolcsi Dániel\nOE-NIK\n2015</string>
 
-
-
-
-
-
-
-    <string name="followingPersonSettings">A következő személy beállításai:</string>
-    <string name="personAccessControlIsEnabled">Korlátozás bekapcsolva a személy számára:</string>
-    <string name="selectDays">Napok kiválasztása</string>
-    <string name="selectFromTime">Mettől legyen korlátozás:</string>
-    <string name="selectToTime">Meddig legyen korlátozás</string>
-
-
-
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <!--Help texts-->
     <string name="help_main_screen_text">Köszönöm, hogy kipróbálja az alkalmazásomat!</string>
-    <string name="help_main_screen_text2">A Parental Control applikáció segítségével lehetősége nyílik a kiválasztott alkalmazások elindítását és a készülék
+    <string name="help_main_screen_text2">A Parental Control alkalmazás segítségével lehetősége nyílik a kiválasztott alkalmazások elindítását és a készülék
     feloldását azonosításhoz kötni. Amennyiben a készülék rendelkezik előlapi kamerával, mindez arc alapján történik, ellenkező esetben jelszó segítségével. Ezen felül
     a program képes megadott URL címek tiltására is.\n
-    A szolgáltatás működéséhez szükséges, hogy a program eszközkezelőként engedélyezve legyen - amennyiben ez még nem történt meg, úgy a szolgáltatás indításakor
+    A szolgáltatás működéséhez szükséges, hogy a program eszközadminisztrátorként engedélyezve legyen - amennyiben ez még nem történt meg, úgy a szolgáltatás indításakor
     figyelmeztet a program.</string>
     <string name="help_main_screen_text3">A program használatához mindenképp meg kell adnia egy mesterjelszót, mely segítségével feloldhatja a blokkolást, abban
     az esetben is, ha az arc alapú azonosítás nem volt sikeres!</string>
@@ -242,7 +218,10 @@
     <string name="help_person_text4">Ajánlott, hogy a hétköznapokban előforduló, különböző mimikákat használjunk (pl. mosoly) valamint jó fényviszonyok közt készíteni a képeket,
     hogy az arc alapú azonosítás nagyobb eséllyel legyen sikeres!</string>
     <string name="help_person_text5">Egy felvett személy törölhető a Beállítások->Felvett személy törlése menüpont alatt, a személy nevére koppintva.</string>
-    <string name="help_person_text6">Az a személy, aki nincs felvéve, nem ismeri program, tehát nem jogosult a tiltások feloldására!</string>
+    <string name="help_person_text6">Az a személy, aki nincs felvéve, nem ismeri program, tehát nem jogosult a tiltások feloldására!\n
+    Kérem ügyeljen arra, hogy a Beállítások->Tűréshatár magadása pont alatt testreszabja az azonosítás mértékét!\n
+    Kisebb érték: nagyobb biztonság, nehezebb felismerés\n
+    Nagyobb érték: kisebb biztonság, könnyebb felismerés</string>
 
     <string name="help_url_text">Ahhoz, hogy az URL blokkolás működjön, root-olt készülékre van szükség!</string>
     <string name="help_url_text2">Az URL blokkolás használatához először engedélyeznie kell az opciót a Beállítások->
@@ -263,6 +242,5 @@
     <string name="help_url_title">URL tiltás</string>
     <string name="help_deviceAccess_title">Készülék-hozzáférés</string>
 
-    <string name="about">Szülői felügyelet támogatása mobil alkalmazással\n
-    Matolcsi Dániel\nOE-NIK\n2015</string>
+
 </resources>

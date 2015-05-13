@@ -1,5 +1,7 @@
 package hu.uniobuda.nik.parentalcontrol;
 
+import android.app.KeyguardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.test.ActivityUnitTestCase;
 import android.widget.Button;
@@ -45,10 +47,17 @@ public class PasswordRequestActivityAccessBlockTest extends ActivityUnitTestCase
     public void testLifeCycleAccessBlock()
     {
         getInstrumentation().callActivityOnStop(activity);
-        assertEquals(0, activity.actionCode);
-        getInstrumentation().callActivityOnRestart(activity);
-        assertEquals(3,activity.actionCode);
-        ok.performClick();
-        assertEquals(3,activity.actionCode);
+        if(((KeyguardManager)activity.getSystemService(Context.KEYGUARD_SERVICE)).inKeyguardRestrictedInputMode())
+        {
+            assertEquals(0, activity.actionCode);
+            getInstrumentation().callActivityOnRestart(activity);
+            assertEquals(3,activity.actionCode);
+            ok.performClick();
+            assertEquals(3,activity.actionCode);
+        }
+        else
+        {
+            assertEquals(3,activity.actionCode);
+        }
     }
 }

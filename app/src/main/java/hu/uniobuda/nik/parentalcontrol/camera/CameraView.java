@@ -16,7 +16,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         this.mCamera = camera;
         this.mSurfaceHolder = this.getHolder();
         this.mSurfaceHolder.addCallback(this);
-        this.mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS); // régi api miatt
+        this.mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS); //Android 2.3
     }
 
     @Override

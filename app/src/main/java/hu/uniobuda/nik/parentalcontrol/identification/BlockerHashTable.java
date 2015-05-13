@@ -43,10 +43,6 @@ public class BlockerHashTable {
             packagesToBlock.put(entry.getKey().toString(), true);
             //Log.d("BlockerHashTable", "Put in package: "+entry.getKey().toString());
         }
-        /*packagesToBlock.put("hu.uniobuda.nik.parentalcontrol", true);
-        packagesToBlock.put("com.android.settings", true);
-        packagesToBlock.put("com.android.packageinstaller", true);*/
-
     }
 
     public static boolean isEmpty() {

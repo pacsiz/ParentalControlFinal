@@ -64,12 +64,11 @@ public class DomainBlocker {
                 alreadyBlocked = true;
         }
 
-        if (!alreadyBlocked)
-        {
+        if (!alreadyBlocked) {
             runCommand(new String[]{"iptables -I INPUT -s " + ip + " -j DROP"});
         }
         //else
-            //Log.d("DomaniBlocker",ip + " is already blocked.");
+        //Log.d("DomaniBlocker",ip + " is already blocked.");
 
         return alreadyBlocked;
     }

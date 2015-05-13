@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="hu.uniobuda.nik.parentalcontrol">
+    package="hu.uniobuda.nik.parentalcontrol"
+    android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -8,9 +9,9 @@
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
 
 
     <uses-feature android:name="android.hardware.camera" />
@@ -20,16 +21,14 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.AppCompat.Light"
-        >
+        android:theme="@style/Theme.AppCompat.Light">
         <activity
             android:name=".MainScreenActivity"
             android:excludeFromRecents="true"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -39,7 +38,7 @@
             android:label="@string/title_activity_check_person"
             android:launchMode="singleInstance"
             android:noHistory="true"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="parentalcontrol.action.START_REC_TEST" />
 
@@ -49,7 +48,7 @@
         <activity
             android:name=".DeletePersonActivity"
             android:label="@string/deletePerson"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="parentalcontrol.action.START_DELETEPERSON_ACTIVITY" />
 
@@ -57,22 +56,44 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".DeviceAccessSettingsActivity"
+            android:label="@string/title_activity_device_access_person_settings"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="parentalcontrol.action.START_DEVICE_ACCESS_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ChildListActivty"
+            android:label="@string/title_activity_child_list_activty"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+            <intent-filter>
+                <action android:name="parentalcontrol.action.START_CHILDLIST" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ChildPreferencesActivity"
+            android:label="@string/title_activity_child_preference" />
+        <activity
+            android:name=".HelpActivity"
+            android:label="@string/title_activity_help" />
+        <activity
             android:name=".FilterAppsActivity"
             android:label="@string/title_activity_filter_apps"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="parentalcontrol.action.START_SELECTAPPS_ACTIVITY" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".SetNewPersonActivity"
             android:label="@string/setNewPerson"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="parentalcontrol.action.START_SETNEWPERSON_ACTIVITY" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -83,20 +104,18 @@
         <activity
             android:name=".PasswordActivity"
             android:label="@string/newPassword"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="parentalcontrol.action.START_SETNEWPASSWORD_ACTIVITY" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".URLActivity"
             android:label="@string/title_activity_url"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="parentalcontrol.action.START_URLACTIVITY" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -112,62 +131,33 @@
             android:name=".service.CheckService"
             android:enabled="true"
             android:exported="false"
-            android:process=":remote"/>
+            android:process=":remote" />
 
         <receiver
             android:name=".service.CheckServiceStarter"
-            android:enabled="false" >
+            android:enabled="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".identification.Blocker" >
+        <receiver android:name=".identification.Blocker">
             <intent-filter>
-                <action android:name="hu.uniobuda.nik.parentalcontrol.NEW_APP_STARTED"/>
-                <action android:name="hu.uniobuda.nik.parentalcontrol.UNLOCK"/>
+                <action android:name="hu.uniobuda.nik.parentalcontrol.NEW_APP_STARTED" />
+                <action android:name="hu.uniobuda.nik.parentalcontrol.UNLOCK" />
             </intent-filter>
         </receiver>
         <receiver
             android:name=".backend.DevAdminReceiver"
-            android:permission="android.permission.BIND_DEVICE_ADMIN" >
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
                 <action android:name="android.app.action.DEVICE_ADMIN_DISABLE_REQUESTED" />
             </intent-filter>
-
             <meta-data
                 android:name="android.app.device_admin"
                 android:resource="@xml/device_admin_policy" />
         </receiver>
 
-        <activity
-            android:name=".DeviceAccessSettingsActivity"
-            android:label="@string/title_activity_device_access_person_settings"
-            android:screenOrientation="portrait" >
-            <intent-filter>
-                <action android:name="parentalcontrol.action.START_DEVICE_ACCESS_ACTIVITY" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ChildListActivty"
-            android:label="@string/title_activity_child_list_activty"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
-            <intent-filter>
-                <action android:name="parentalcontrol.action.START_CHILDLIST" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ChildPreferencesActivity"
-            android:label="@string/title_activity_child_preference" >
-        </activity>
-        <activity
-            android:name=".HelpActivity"
-            android:label="@string/title_activity_help" >
-        </activity>
     </application>
 
 </manifest>

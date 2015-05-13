@@ -1,8 +1,6 @@
 package hu.uniobuda.nik.parentalcontrol.backend;
 
 
-import android.util.Log;
-
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
@@ -14,7 +12,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class EmailSender {
-    final String port = "587";// gmail's smtp port
+    final String port = "587";
     final String authRequired = "true";
     final String starttls = "true";
     final String host = "smtp.gmail.com";

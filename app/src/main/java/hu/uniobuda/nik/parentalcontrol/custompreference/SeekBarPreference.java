@@ -46,21 +46,17 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
         currentValue = predictValue.getInt(context.getString(R.string.SHAREDPREFERENCE_PREDICT_VALUE),defaultValue);
         Log.d("SeekBarPreference", "Current value: "+currentValue);
 
-        // Inflate layout
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.seekbarpreference, null);
 
-        // Setup minimum and maximum text labels
         ((TextView) view.findViewById(R.id.min_value)).setText(Integer.toString(minValue));
         ((TextView) view.findViewById(R.id.max_value)).setText(Integer.toString(maxValue));
 
-        // Setup SeekBar
         seekBar = (SeekBar) view.findViewById(R.id.seek_bar);
         seekBar.setMax(maxValue - minValue);
         seekBar.setProgress(currentValue - minValue);
         seekBar.setOnSeekBarChangeListener(this);
 
-        // Setup text label for current value
         valueText = (TextView) view.findViewById(R.id.current_value);
         valueText.setText(Integer.toString(currentValue));
 
@@ -82,10 +78,6 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
             SharedPreferences.Editor e = settings.edit();
             e.putInt(context.getString(R.string.SHAREDPREFERENCE_PREDICT_VALUE),currentValue);
             e.commit();
-        }
-        if (shouldPersist()) {
-
- //         persistInt(currentValue);
         }
         notifyChanged();
     }

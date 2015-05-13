@@ -130,6 +130,7 @@ public class DeletePersonActivity extends ActionBarActivity {
     private class Remover extends AsyncTask<Void, Void, Void> {
         ProgressDialog pd = new ProgressDialog(DeletePersonActivity.this);
         int index;
+        //long deleteTime;
 
         public Remover(int index) {
             this.index = index;
@@ -137,6 +138,7 @@ public class DeletePersonActivity extends ActionBarActivity {
 
         @Override
         protected void onPreExecute() {
+            //deleteTime = System.nanoTime();
             pd.setTitle(R.string.pleaseWait);
             pd.setMessage(getString(R.string.deleting));
             pd.show();
@@ -144,6 +146,8 @@ public class DeletePersonActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(Void result) {
+            //deleteTime = (System.nanoTime() - deleteTime)/1000000;
+            //Log.i("DeletePersonActivity","Delete person time: "+deleteTime+" ms");
             if (adapter != null)
             {
                 adapter.notifyDataSetChanged();
@@ -151,7 +155,6 @@ public class DeletePersonActivity extends ActionBarActivity {
 
             Editor e = persons.edit();
             e.remove(labels.get(index));
-            //Log.d("DeletePersonActivity", "Delete person: "+names.get(index));
 
             File sh = new File(getApplicationInfo().dataDir + "/shared_prefs/" + names.get(index).toLowerCase() + ".xml");
             //Log.d("DeletePersonActivity", "Delete person's preference: " + sh.getAbsolutePath());

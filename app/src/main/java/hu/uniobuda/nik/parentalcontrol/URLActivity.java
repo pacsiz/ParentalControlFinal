@@ -87,7 +87,6 @@ public class URLActivity extends Activity {
                 AlertDialog.Builder alert = new AlertDialog.Builder(URLActivity.this);
                 alert.setTitle(R.string.url_add_title);
                 alert.setMessage(getString(R.string.url_add_message));
-
                 final EditText input = new EditText(URLActivity.this);
                 alert.setView(input);
 
@@ -157,7 +156,7 @@ public class URLActivity extends Activity {
         @Override
         protected void onPreExecute() {
             pd.setTitle(R.string.pleaseWait);
-            pd.setMessage(getString(R.string.loadingApps));
+            pd.setMessage(getString(R.string.loadingURLs));
             pd.show();
         }
 

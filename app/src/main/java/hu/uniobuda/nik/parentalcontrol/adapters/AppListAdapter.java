@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import hu.uniobuda.nik.parentalcontrol.R;
-import hu.uniobuda.nik.parentalcontrol.adapters.AppInfo;
 
 public class AppListAdapter extends ArrayAdapter<AppInfo> {
     private List<AppInfo> appList;

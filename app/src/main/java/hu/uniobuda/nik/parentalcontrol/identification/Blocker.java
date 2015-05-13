@@ -17,8 +17,8 @@ import hu.uniobuda.nik.parentalcontrol.service.ServiceInfo;
 public class Blocker extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        context.startActivity(intent); //csak a BlockerTest miatt!
-       /* String packageName = intent.getStringExtra(context.getResources().getString(R.string.EXTRA_PACKAGE_NAME));
+        //context.startActivity(intent); //csak a BlockerTest miatt!
+       String packageName = intent.getStringExtra(context.getResources().getString(R.string.EXTRA_PACKAGE_NAME));
         SharedPreferences persons = context.getSharedPreferences(context.getString(R.string.SHAREDPREFERENCE_PERSONS), Context.MODE_PRIVATE);
         SharedPreferences sh = context.getSharedPreferences(context.getString(R.string.SHAREDPREFERENCE_SETTINGS), Context.MODE_PRIVATE);
         Map map = persons.getAll();
@@ -40,7 +40,7 @@ public class Blocker extends BroadcastReceiver {
                     openActivity(context, packageName, map, faceRecEnabled);
                 }
             }
-        }*/
+        }
     }
 
     private void openActivity(Context context, String packageName, Map persons, boolean faceRecEnabled){

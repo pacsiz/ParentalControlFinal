@@ -29,11 +29,9 @@ import hu.uniobuda.nik.parentalcontrol.MainScreenActivity;
 public class CheckService extends Service {
 
     MonitorThread mt = new MonitorThread();
-    boolean frontCamera;
     boolean urlEnabled;
     BroadcastReceiver lock;
     BroadcastReceiver unlock;
-    BroadcastReceiver refreshHashTable;
     int apiLevel;
 
     @Override
@@ -172,7 +170,7 @@ public class CheckService extends Service {
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         private String getPackageNameNewApi() {
-            UsageStatsManager usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);//"usagestats"
+            UsageStatsManager usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
             long time = System.currentTimeMillis();
             String packageName = "";
             List<UsageStats> stats = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 5000, time);
