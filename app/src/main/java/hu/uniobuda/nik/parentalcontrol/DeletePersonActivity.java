@@ -148,9 +148,9 @@ public class DeletePersonActivity extends ActionBarActivity {
         protected void onPostExecute(Void result) {
             //deleteTime = (System.nanoTime() - deleteTime)/1000000;
             //Log.i("DeletePersonActivity","Delete person time: "+deleteTime+" ms");
-            if (adapter != null)
+            if (names.size() > 0)
             {
-                adapter.notifyDataSetChanged();
+                personlistView.setAdapter(new ArrayAdapter(DeletePersonActivity.this, R.layout.personlist_layout, names));
             }
 
             Editor e = persons.edit();
